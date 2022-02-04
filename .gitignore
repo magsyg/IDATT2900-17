@@ -1,0 +1,15 @@
+### Logs ###
+logs
+*.log
+.log
+
+### Virtual environment ###
+.venv
+venv
+.env
+Pipfile.lock
+
+### Django ###
+*.db
+db.*
+migrations
