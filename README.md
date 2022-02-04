@@ -16,4 +16,4 @@ kjør med
 3. pipenv install 
 4. pipenv run python manage.py makemigrations
 5. pipenv run python manage.py migrate
-6. pipenv run python manage.py runserver
+6. pipenv run python manage.py runserver 8080

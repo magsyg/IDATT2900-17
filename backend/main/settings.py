@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z=b$p=b3oqrt&)%d&1bhpjazape0s&^at6*c+sjm+8ds9)freq'
+SECRET_KEY = ''
 
 # Custom User model
 AUTH_USER_MODEL = 'accounts.User'
