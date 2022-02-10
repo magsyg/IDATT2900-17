@@ -1,3 +1,4 @@
+from http.server import BaseHTTPRequestHandler
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -11,9 +12,12 @@ class CustomUserAdmin(BaseUserAdmin):
     form = CustomUserChangeForm
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name',)}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number')}),
         ('Permissions', {
             'fields': ('is_admin',),
+        }),
+        ('Company', {
+            'fields': ('company',),
         }),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -24,8 +28,8 @@ class CustomUserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2', 'is_admin', )}
          ),
     )
-    list_display = ('email', 'first_name', 'last_name', 'is_admin', )
+    list_display = ('email', 'first_name', 'last_name', 'company', 'is_admin', )
     list_filter = ('is_admin',)
-    search_fields = ('email', 'first_name', 'last_name',)
+    search_fields = ('email', 'first_name', 'last_name','company__name')
     ordering = ('email',)
     filter_horizontal = ()

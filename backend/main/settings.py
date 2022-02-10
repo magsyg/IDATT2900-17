@@ -33,7 +33,9 @@ ALLOWED_HOSTS = []
 
 # Our apps
 PROJECT_APPS = [
-    'accounts'
+    'main',
+    'accounts',
+    'companies'
 ]
 # Application definition
 INSTALLED_APPS = [
@@ -43,9 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Imported apps
+    'django_seed',
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'phonenumber_field',
 ]
 INSTALLED_APPS.extend(PROJECT_APPS)
 
@@ -62,7 +68,7 @@ MIDDLEWARE = [
 # Settings for rest framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.DjangoModelPermissions',
     ]
 }
 

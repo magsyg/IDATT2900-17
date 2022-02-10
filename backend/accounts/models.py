@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, first_name=None, last_name=None,**extra_fields):
@@ -40,14 +40,17 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(verbose_name='email address', max_length=255, unique=True,)
+
+    # Personal
     first_name = models.CharField(max_length=30, blank=True, null=True, verbose_name="Name")
     last_name = models.CharField(max_length=30, blank=True, null=True, verbose_name="Surname")
+    phone_number = PhoneNumberField(null=True, blank=True, verbose_name="Phone Number")
 
+    # Company
+    company = models.ForeignKey('companies.Company', null=True, blank=True,  on_delete=models.SET_NULL, related_name="members", verbose_name="Company")
+    
+    # User management
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
