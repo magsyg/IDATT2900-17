@@ -2,8 +2,7 @@
 
 # setup
 ## frontend
-1. yarn global add expo-cli
-2. cd frontend
+1. cd frontend
 kjør med
 - yarn android
 - yarn ios
