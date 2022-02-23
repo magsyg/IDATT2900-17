@@ -7,6 +7,7 @@ kjør med
 - yarn android
 - yarn ios
 - yarn web
+- expo start (Developer Mode)
 
 
 ## backend
