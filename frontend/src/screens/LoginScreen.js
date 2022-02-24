@@ -4,6 +4,7 @@ import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
 import Header from '../components/Header'
+import HeaderLine from '../components/HeaderLine'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
 import BackButton from '../components/BackButton'
@@ -31,9 +32,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <Background>
-      <BackButton goBack={navigation.goBack} />
-      <Logo />
-      <Header>Welcome back.</Header>
+      <Header>Hello There</Header>
       <TextInput
         label="Email"
         returnKeyType="next"
@@ -62,15 +61,13 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.forgot}>Forgot your password?</Text>
         </TouchableOpacity>
       </View>
-      <Button mode="contained" onPress={onLoginPressed}>
-        Login
+      <Button mode="contained" style = {styles.button}  onPress={onLoginPressed}>
+        Sign In
       </Button>
-      <View style={styles.row}>
-        <Text>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
-          <Text style={styles.link}>Sign up</Text>
-        </TouchableOpacity>
-      </View>
+      <HeaderLine>Or</HeaderLine>
+      <Button mode="contained" style = {styles.button} onPress={() => navigation.replace('RegisterScreen')}>
+        Create Account
+      </Button>
     </Background>
   )
 }
@@ -78,7 +75,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   forgotPassword: {
     width: '100%',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     marginBottom: 24,
   },
   row: {
@@ -87,10 +84,14 @@ const styles = StyleSheet.create({
   },
   forgot: {
     fontSize: 13,
-    color: theme.colors.secondary,
+    color: theme.colors.link,
   },
   link: {
     fontWeight: 'bold',
     color: theme.colors.primary,
   },
+  button: {
+    backgroundColor: theme.colors.grey,
+    color: theme.colors.primary
+  }
 })
