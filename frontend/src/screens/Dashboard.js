@@ -1,19 +1,59 @@
 import React from 'react'
+import { TouchableOpacity, StyleSheet, View, Image} from 'react-native'
+import { Avatar } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
 import Header from '../components/Header'
 import Paragraph from '../components/Paragraph'
 import Button from '../components/Button'
+import PillLink from '../components/PillLink'
+import {currentDate} from '../utils/date_management'
+import { placeholder } from '../core/placeholders'
+import { theme } from '../core/theme'
 
 export default function Dashboard({ navigation }) {
+  const today = currentDate()
   return (
     <Background>
-      <Logo />
-      <Header>Let’s start</Header>
-      <Paragraph>
-        Your amazing app starts here. Open you favorite code editor and start
-        editing this project.
-      </Paragraph>
+      <View style = {styles.column}>
+        <View style={[styles.row, {flex:2, paddingTop:32}]}>
+          <View style={{flex: 3}}>
+            <Header>Hi, {placeholder.first_name}</Header>
+          </View>
+          <View style={{flex: 1}}>
+            <Avatar.Image 
+              size={64} 
+              source={require('../assets/default_profile.png')}  
+            />
+          </View>
+        </View>
+        <Header>Notifications</Header> 
+        <View style={{flex:3}}>
+          <PillLink>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </PillLink>
+          <PillLink>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </PillLink>
+        </View>
+        <Header>Today, {today}</Header> 
+      </View>
     </Background>
   )
 }
+
+
+const styles = StyleSheet.create({
+  row: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: 'space-between'
+  },
+  column: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  notification: {
+    backgroundColor:theme.colors.grey,
+  }
+})
