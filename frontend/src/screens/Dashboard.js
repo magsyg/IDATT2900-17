@@ -7,12 +7,15 @@ import Header from '../components/Header'
 import Paragraph from '../components/Paragraph'
 import Button from '../components/Button'
 import PillLink from '../components/PillLink'
-import {currentDate} from '../utils/date_management'
+import { currentDate } from '../utils/date_management'
 import { placeholder } from '../core/placeholders'
 import { theme } from '../core/theme'
+import CalendarFull from '../components/calendar/Calendar.js'
+import AgendaScreen from '../components/calendar/Agenda.js'
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()
+ 
   return (
     <Background>
       <View style = {styles.column}>
@@ -36,7 +39,9 @@ export default function Dashboard({ navigation }) {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </PillLink>
         </View>
-        <Header>Today, {today}</Header> 
+        <Header>Today, {today}</Header>
+        <CalendarFull />
+        <AgendaScreen />                    
       </View>
     </Background>
   )
