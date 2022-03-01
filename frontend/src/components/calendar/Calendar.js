@@ -65,39 +65,22 @@ const CalendarsScreen = () => {
     );
   };
 */
-/*
-  const onPressArrowLeft = useCallback(
-    (subtract, month) => {
-      const newDate = getNewSelectedDate(month, false);
-      setSelectedValue(newDate);
-      subtract();
-    },
-    [getNewSelectedDate]
-  );
-  
-  const onPressArrowRight = useCallback(
-    (add, month) => {
-      const newDate = getNewSelectedDate(month, true);
-      setSelectedValue(newDate);
-      add();
-    },
-    [getNewSelectedDate]
-  );
-*/
-  const renderExamples = () => {
-    return (
-      <Fragment>
-        {renderCalendarWithSelectableDate()}
-      </Fragment>
-    );
-  };
 
+const renderExamples = () => {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} testID={testIDs.calendars.CONTAINER}>
-      {renderExamples()}
-    </ScrollView>
+    <Fragment>
+      {renderCalendarWithSelectableDate()}
+    </Fragment>
   );
 };
+
+return (
+  <ScrollView showsVerticalScrollIndicator={false} testID={testIDs.calendars.CONTAINER}>
+    {renderExamples()}
+  </ScrollView>
+);
+};
+
 export default CalendarsScreen;
 
 const styles = StyleSheet.create({

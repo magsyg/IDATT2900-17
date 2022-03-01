@@ -15,6 +15,12 @@ import AgendaScreen from '../components/calendar/Agenda.js'
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()
+  // showCalendar = true displays the Calendar, showCalendar = false displays the Agenda
+  let showCalendar = true;
+  const changeCalendar = () => {
+    console.log(showCalendar)
+    return showCalendar = !showCalendar;
+  }
  
   return (
     <Background>
@@ -40,8 +46,9 @@ export default function Dashboard({ navigation }) {
           </PillLink>
         </View>
         <Header>Today, {today}</Header>
-        <CalendarFull />
-        <AgendaScreen />                    
+        <Button mode="contained" style = {styles.button}  onPress={changeCalendar}/>
+        { showCalendar ? <CalendarFull /> : <AgendaScreen /> }
+                         
       </View>
     </Background>
   )
