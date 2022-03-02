@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 import { TouchableOpacity, StyleSheet, View, Text} from 'react-native'
 import { Avatar , DataTable } from 'react-native-paper'
 import Background from '../components/Background'
@@ -14,13 +15,39 @@ import { theme } from '../core/theme'
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()
-  
+  const [user, setUser] = useState({ user:'user' })
+
+  useEffect(() => {
+    axios.get().then((response) => {
+      console.log(response.data)
+    })
+    axios.get('/accounts/current_user/').then((response) => {
+      setUser(response.data);
+      console.log(response.data)
+    })  .catch(function (error) {
+      console.log("-----axios----")
+      if (error.response) {
+        // Request made and server responded
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+      console.log("-----axios----")
+    });
+  }, []);
+
   return (
     <Background>
       <View style = {styles.column}>
         <View style={[styles.row, {flex:1, paddingTop:32}]}>
           <View style={{flex: 3}}>
-            <Header style={{fontSize: 25}}>Hi, {placeholder.first_name}</Header>
+            <Header style={{fontSize: 25}}>Hi, {user.user}</Header>
           </View>
           <View style={{flex: 1}}>
             <Avatar.Image 
@@ -32,7 +59,7 @@ export default function Dashboard({ navigation }) {
         <View style={{flex:3}}>
           <Header style={{fontSize: 24}}>Notifications</Header> 
           <View>
-              <PillLink key={item.id}>
+              <PillLink>
                 Message
               </PillLink>
           </View>
