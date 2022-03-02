@@ -17,7 +17,7 @@ export default function App() {
     <Provider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Login"
+          initialRouteName="Dashboard"
           screenOptions={{
             headerShown: false,
           }}

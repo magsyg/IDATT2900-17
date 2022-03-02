@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   forgot: {
     fontSize: 13,
-    color: theme.colors.link,
+    color: theme.colors.secondary,
   },
   link: {
     fontWeight: 'bold',

@@ -6,9 +6,8 @@ export const theme = {
     ...DefaultTheme.colors, //TODO get correct colors
     text: '#000000',
     primary: '#2d2d2d',
+    secondary: '#89ADEC',
     grey: '#c8c8c8',
-    secondary: '#414757',
-    link:'#89adec',
     error: '#f13a59',
   },
 }
