@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
-import { TouchableOpacity, StyleSheet, View, Text} from 'react-native'
+import { TouchableOpacity, StyleSheet, View, ScrollView, Text} from 'react-native'
 import { Avatar , DataTable } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
@@ -15,7 +15,7 @@ import { theme } from '../core/theme'
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()
-  const [user, setUser] = useState({ user:'user' })
+  const [user, setUser] = useState({ first_name:"" })
 
   useEffect(() => {
     axios.get().then((response) => {
@@ -45,9 +45,9 @@ export default function Dashboard({ navigation }) {
   return (
     <Background>
       <View style = {styles.column}>
-        <View style={[styles.row, {flex:1, paddingTop:32}]}>
+        <View style={[styles.row, {flex:2, paddingTop:32}]}>
           <View style={{flex: 3}}>
-            <Header style={{fontSize: 25}}>Hi, {user.user}</Header>
+            <Header>Hi, {user.first_name}</Header>
           </View>
           <View style={{flex: 1}}>
             <Avatar.Image 
@@ -56,27 +56,85 @@ export default function Dashboard({ navigation }) {
             />
           </View>
         </View>
+        <Header>Notifications</Header> 
         <View style={{flex:3}}>
-          <Header style={{fontSize: 24}}>Notifications</Header> 
-          <View>
-              <PillLink>
-                Message
-              </PillLink>
-          </View>
+          <PillLink>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </PillLink>
+          <PillLink>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </PillLink>
         </View>
         <View style={[styles.column, {flex:3}]}>
-          <View style={[styles.row, {flex:1, justifyContent: 'space-between'}]}>
+          <View style={[styles.row, {flex:0, justifyContent: 'space-between'}]}>
               <Header style={{fontSize: 24}}>Today, {today}</Header>
               <View style={{top:16}}>
                 <Link>All</Link>
               </View>
           </View>
-          <View style={[styles.row,{flex:5}]}>
-            <Text style={{flex:2}}>0900-0930</Text>
-            <Text style={{flex:2}}>Appointment</Text>
-            <Text style={{flex:1}}>SR</Text>
-          </View>
-        </View>
+          <ScrollView style={[styles.column, {flex:1}]}>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+            <View style={[styles.row,{flex:1}]}>
+              <Text style={{flex:2}}>0900-0930</Text>
+              <Text style={{flex:2}}>Appointment</Text>
+              <Text style={{flex:1}}>SR</Text>
+            </View>
+          </ScrollView>
+        </View> 
       </View>
     </Background>
   )
