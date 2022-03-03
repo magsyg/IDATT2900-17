@@ -9,12 +9,15 @@ import Paragraph from '../components/Paragraph'
 import Button from '../components/Button'
 import Link from '../components/Link'
 import PillLink from '../components/PillLink'
-import {currentDate} from '../utils/date_management'
+import { currentDate } from '../utils/date_management'
 import { placeholder } from '../core/placeholders'
 import { theme } from '../core/theme'
+import CalendarFull from '../components/calendar/Calendar.js'
+import AgendaScreen from '../components/calendar/Agenda.js'
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()
+
   const [user, setUser] = useState({ first_name:"" })
 
   useEffect(() => {
@@ -41,6 +44,13 @@ export default function Dashboard({ navigation }) {
       console.log("-----axios----")
     });
   }, []);
+  
+  // showCalendar = true displays the Calendar, showCalendar = false displays the Agenda
+  let showCalendar = true;
+  const changeCalendar = () => {
+    console.log(showCalendar)
+    return showCalendar = !showCalendar;
+  }
 
   return (
     <Background>
@@ -65,6 +75,7 @@ export default function Dashboard({ navigation }) {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </PillLink>
         </View>
+
         <View style={[styles.column, {flex:3}]}>
           <View style={[styles.row, {flex:0, justifyContent: 'space-between'}]}>
               <Header style={{fontSize: 24}}>Today, {today}</Header>
@@ -134,7 +145,9 @@ export default function Dashboard({ navigation }) {
               <Text style={{flex:1}}>SR</Text>
             </View>
           </ScrollView>
-        </View> 
+        </View>         
+        <Button mode="contained" style = {styles.button}  onPress={changeCalendar}/>
+        { showCalendar ? <CalendarFull /> : <AgendaScreen /> }
       </View>
     </Background>
   )
