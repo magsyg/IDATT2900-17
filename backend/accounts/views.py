@@ -3,7 +3,7 @@ from email import message
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user_model, logout
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
@@ -13,7 +13,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-from .serializer import RegisterSerializer
+from .serializer import RegisterSerializer, UserSerializer
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
 
@@ -21,6 +21,7 @@ User = get_user_model()
 class CustomAuthToken(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -37,12 +38,9 @@ class CurrentUserView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        content = {
-            'user': str(request.user),  # `django.contrib.auth.User` instance.
-            'auth': str(request.auth),  # None
-        }
-        return Response(content)
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
 
 
 class RegistrationView(APIView):

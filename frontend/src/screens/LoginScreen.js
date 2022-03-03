@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios';
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
@@ -14,8 +15,42 @@ import { passwordValidator } from '../helpers/passwordValidator'
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
-  const [password, setPassword] = useState({ value: '', error: '' })
+  const [password, setPassword] = useState({ value: '', error: '' });
 
+
+  const loginRequest = () => {
+    const payload = { username: email.value, password: password.value } 
+    console.log(payload)
+    axios
+      .post(`/accounts/api-token-auth/`, payload)
+      .then(response => {
+        const { token, user } = response.data;
+        console.log(response.data)
+        // We set the returned token as the default authorization header
+        axios.defaults.headers.common.Authorization = `Token ${token}`;
+        // Navigate to the home screen
+        console.log("Success!")
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Dashboard' }],
+        })
+        console.log("Success!")
+      })
+      .catch(function (error) {
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+      });
+  }
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)
@@ -24,10 +59,7 @@ export default function LoginScreen({ navigation }) {
       setPassword({ ...password, error: passwordError })
       return
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    })
+    loginRequest()
   }
 
   return (
@@ -84,7 +116,7 @@ const styles = StyleSheet.create({
   },
   forgot: {
     fontSize: 13,
-    color: theme.colors.link,
+    color: theme.colors.secondary,
   },
   link: {
     fontWeight: 'bold',

@@ -3,6 +3,7 @@
 # setup
 ## frontend
 1. cd frontend
+2. sett din LAN-IP i config.js baseURL
 kjør med
 - yarn android
 - yarn ios
@@ -16,4 +17,4 @@ kjør med
 3. pipenv install 
 4. pipenv run python manage.py makemigrations
 5. pipenv run python manage.py migrate
-6. pipenv run python manage.py runserver 8080
+6. pipenv run python manage.py runserver {LANIP}:8080
