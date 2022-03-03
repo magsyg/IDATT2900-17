@@ -15,11 +15,10 @@ import {
 const Stack = createStackNavigator()
 
 export default class App extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 3000;
     axios.defaults.headers.common.Authorization = `Token 0292b9a675c10eb85fc5848bd2749a0074fc1ecb`; //TEST TOKEN
-    console.log(axios.defaults)
   }
 
   render() {

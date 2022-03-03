@@ -19,8 +19,8 @@ export default function LoginScreen({ navigation }) {
 
 
   const loginRequest = () => {
-    const payload = { email: email, password: password } 
-    console.log("error error")
+    const payload = { username: email.value, password: password.value } 
+    console.log(payload)
     axios
       .post(`/accounts/api-token-auth/`, payload)
       .then(response => {
@@ -29,9 +29,27 @@ export default function LoginScreen({ navigation }) {
         // We set the returned token as the default authorization header
         axios.defaults.headers.common.Authorization = `Token ${token}`;
         // Navigate to the home screen
+        console.log("Success!")
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Dashboard' }],
+        })
+        console.log("Success!")
       })
-      .catch(error => console.log(error));
-      console.log("error error")
+      .catch(function (error) {
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+      });
   }
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value)
