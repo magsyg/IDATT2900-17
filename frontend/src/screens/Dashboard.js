@@ -46,6 +46,7 @@ export default function Dashboard({ navigation }) {
           </PillLink>
         </View>
         <Header>Today, {today}</Header>
+        
         <Button mode="contained" style = {styles.button}  onPress={changeCalendar}/>
         { showCalendar ? <CalendarFull /> : <AgendaScreen /> }
                          

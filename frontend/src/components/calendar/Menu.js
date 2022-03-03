@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, View, ScrollView, TouchableOpacity, Text, Image, I18nManager} from 'react-native';
+import {Platform, StyleSheet, View, ScrollView, TouchableOpacity, Text, Image} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import testIDs from './testIDSs.js';
+import appIcon from './img/logo.png';
 
-const appIcon = ('../assets/logo.png');
 
 interface Props {
   componentId?: string;
@@ -11,26 +11,16 @@ interface Props {
 }
 
 export default class MenuScreen extends Component<Props> {
-  renderEntry(testID, title, screen, options) {
-    return (
-      <TouchableOpacity
-        testID={testID}
-        style={styles.menu}
-        onPress={() => this.openScreen(screen, options)}
-      >
-        <Text style={styles.menuText}>{title}</Text>
-      </TouchableOpacity>
-    );
-  }
-
   render() {
     return (
       <ScrollView>
         <View style={styles.container} testID={testIDs.menu.CONTAINER}>
-          <Image source={appIcon} style={styles.image}/>
-          {this.renderEntry(testIDs.menu.CALENDARS, 'Calendars', 'Calendars')}
-          {this.renderEntry(testIDs.menu.CALENDAR_LIST, 'Calendar List', 'CalendarsList')}
-          {this.renderEntry(testIDs.menu.AGENDA, 'Agenda', 'Agenda')}
+          <Image source={appIcon} style={styles.image} />
+          <TouchableOpacity
+            testID={testIDs.menu.CALENDARS}
+            style={styles.menu}
+            onPress={this.onCalendarsPress.bind(this)}
+          />
         </View>
       </ScrollView>
     );
@@ -57,8 +47,12 @@ export default class MenuScreen extends Component<Props> {
     });
   }
 
-  openScreen = (screen, options) => {
-    this.pushScreen(screen, options);
+  onCalendarsPress() {
+    this.pushScreen('Calendars');
+  }
+
+  onAgendaPress() {
+    this.pushScreen('Agenda');
   }
 }
 

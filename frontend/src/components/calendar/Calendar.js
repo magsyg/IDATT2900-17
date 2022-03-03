@@ -1,16 +1,28 @@
-import React, {useState, Fragment, useCallback} from 'react';
-import {StyleSheet, View, ScrollView, Text, TouchableOpacity} from 'react-native';
-import {Calendar, CalendarProps} from 'react-native-calendars';
+import React, { useState, Fragment, useCallback, useMemo } from 'react';
+import { StyleSheet, ScrollView } from 'react-native';
+import { Calendar, CalendarProps } from 'react-native-calendars';
 import testIDs from './testIDSs.js';
 
 const INITIAL_DATE = '2022-02-22';
 
 const CalendarsScreen = () => {
+
   const [selected, setSelected] = useState(INITIAL_DATE);
 
-  const onDayPress: CalendarProps['onDayPress'] = day => {
+  const onDayPress = useCallback(day => {
     setSelected(day.dateString);
-  };
+  }, []);
+
+  const marked = useMemo(() => {
+    return {
+      [selected]: {
+        selected: true,
+        disableTouchEvent: true,
+        selectedColor: 'orange',
+        selectedTextColor: 'red'
+      }
+    };
+  }, [selected]);
 
   const renderCalendarWithSelectableDate = () => {
     return (
@@ -23,14 +35,7 @@ const CalendarsScreen = () => {
           onDayPress={onDayPress}
           showWeekNumbers
           markingType={'multi-dot'}
-          markedDates={{
-            [selected]: {
-              selected: true,
-              disableTouchEvent: true,
-              selectedColor: 'orange',
-              selectedTextColor: 'red'
-            }
-          }}
+          markedDates={marked}
         />
       </Fragment>
     );
@@ -66,21 +71,20 @@ const CalendarsScreen = () => {
   };
 */
 
-const renderExamples = () => {
+  const renderExamples = () => {
+    return (
+      <Fragment>
+        {renderCalendarWithSelectableDate()}
+      </Fragment>
+    );
+  };
+
   return (
-    <Fragment>
-      {renderCalendarWithSelectableDate()}
-    </Fragment>
+    <ScrollView showsVerticalScrollIndicator={false} testID={testIDs.calendars.CONTAINER}>
+      {renderExamples()}
+    </ScrollView>
   );
-};
-
-return (
-  <ScrollView showsVerticalScrollIndicator={false} testID={testIDs.calendars.CONTAINER}>
-    {renderExamples()}
-  </ScrollView>
-);
-};
-
+}
 export default CalendarsScreen;
 
 const styles = StyleSheet.create({
