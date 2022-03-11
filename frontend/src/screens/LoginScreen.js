@@ -97,7 +97,7 @@ export default function LoginScreen({ navigation }) {
         Sign In
       </Button>
       <HeaderLine>Or</HeaderLine>
-      <Button mode="contained" style = {styles.button} onPress={() => navigation.replace('RegisterScreen')}>
+      <Button mode="contained" style = {styles.button} onPress={() => navigation.replace('Register')}>
         Create Account
       </Button>
     </Background>
