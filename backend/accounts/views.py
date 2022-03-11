@@ -1,5 +1,6 @@
 # imports
 from email import message
+from logging import raiseExceptions
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user_model, logout
@@ -14,6 +15,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
 from .serializer import RegisterSerializer, UserSerializer
+from companies.serializer import BrandSerializer, RetailerSerializer
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
 
@@ -53,6 +55,33 @@ class RegistrationView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.create()
+        token, created = Token.objects.get_or_create(user=user)
+
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
+
+class RegistrationNewCompanyView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        print(request.data['teamType'], request.data['teamType'] == 0)
+        company_serializer_class = RetailerSerializer if int(request.data['teamType']) == 0 else BrandSerializer
+        company_serializer = company_serializer_class(data=request.data, context={'request': request})
+        print(company_serializer.is_valid())
+        print(company_serializer.errors)
+        company_serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception=True)
+
+        user = serializer.create()
+        company = company_serializer.create()
+        user.company = company
+        user.save()
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({

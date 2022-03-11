@@ -2,10 +2,10 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { theme } from '../core/theme'
 
-export default function PillLink({children}) {
+export default function PillLink({onPress, style, children}) {
   return (
     <TouchableOpacity>
-      <Text style={styles.link}>{children}</Text>
+      <Text onPress={onPress} style={[styles.link, style]}>{children}</Text>
     </TouchableOpacity>
   )
 }
@@ -13,6 +13,6 @@ export default function PillLink({children}) {
 const styles = StyleSheet.create({
     link: {
         fontSize: 13,
-        color: theme.colors.link,
+        color: theme.colors.secondary,
     },
 })

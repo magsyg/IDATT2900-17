@@ -16,4 +16,5 @@ urlpatterns = [
     path('current_user/', view=views.CurrentUserView.as_view(), name="current_user"),
     path('api-token-auth/', view=views.CustomAuthToken.as_view()),
     path('register/', view=views.RegistrationView.as_view()),
+    path('register/newcompany', view=views.RegistrationNewCompanyView.as_view()),
 ]

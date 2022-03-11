@@ -10,7 +10,10 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = ('id', 'name', 'members')
-
+        extra_kwargs = {
+            'name': {'required': True},
+            'members': {'required':False}
+        }
 
     def validate(self, attrs):
         if self.Meta.model.objects.filter(name=attrs['name']).first():
@@ -27,11 +30,19 @@ class BrandSerializer(CompanySerializer):
     class Meta:
         model = Brand
         fields = ('id', 'name', 'members')
+        extra_kwargs = {
+            'name': {'required': True},
+            'members': {'required:':False}
+        }
 
 class RetailerSerializer(CompanySerializer):
     class Meta:
         model = Retailer
         fields = ('id', 'name', 'members')
+        extra_kwargs = {
+            'name': {'required': True},
+            'members': {'required':False}
+        }
 
 
     
