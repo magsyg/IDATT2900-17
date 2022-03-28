@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import RegisterCompanyScreen  from './RegisterCompanyScreen';
+import RegisterGetCompanyScreen  from './RegisterGetCompanyScreen';
 import RegisterScreen from './RegisterScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -9,6 +10,7 @@ export default function Register({ navigation }) {
     return (
       <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: { display: 'none' } }}>
         <Tab.Screen name="RegisterCompany" component={RegisterCompanyScreen} />
+        <Tab.Screen name="RegisterGetCompany" component={RegisterGetCompanyScreen} />
         <Tab.Screen name="RegisterScreen" component={RegisterScreen} />
       </Tab.Navigator>
     );

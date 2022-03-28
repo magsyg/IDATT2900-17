@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import axios from 'axios';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text,  Subheading } from 'react-native-paper'
@@ -14,7 +14,7 @@ import { passwordValidator } from '../../helpers/passwordValidator'
 import { nameValidator } from '../../helpers/nameValidator'
 
 export default function RegisterScreen({ route, navigation }) {
-  const { teamType } = route.params;
+  const { teamType, companyCode, companyName, companyID } = route.params;
   const teamTypeName = {0: "Retailer", 1:"Brand",2:"Multi-label Showroom"}
   const [firstName, setFirstName] = useState({ value: '', error: '' })
   const [lastName, setLastName] = useState({ value: '', error: '' })
@@ -23,7 +23,10 @@ export default function RegisterScreen({ route, navigation }) {
   const [password, setPassword] = useState({ value: '', error: '' })
   const [confirmPassword, setConfirmPassword] = useState({ value: '', error: '' })
 
-  
+  useEffect(() => {
+    console.log(route.params)
+    console.log(companyCode, companyName, companyID)
+  },[])
   const registerRequest = () => {
     const payload = { 
         teamType:teamType,
@@ -33,6 +36,7 @@ export default function RegisterScreen({ route, navigation }) {
         last_name:lastName.value,
         password: password.value, 
         password2: password.value, 
+        company_code:companyCode
       } 
     console.log(payload)
     axios
@@ -79,7 +83,9 @@ export default function RegisterScreen({ route, navigation }) {
       <BackButton goBack={navigation.goBack} />
       <Header style={{marginBottom:0,textAlign:'center'}}>Welcome To Gleu</Header>
       <Subheading style={{marginTop:0,textAlign:'center'}}>We're so happy you are here</Subheading>
-      <Text style={styles.teamText}>Registering as {teamTypeName[teamType]}</Text>
+      <Text style={styles.teamText}>
+      {typeof companyName == 'undefined' ? "Registering as " + teamTypeName[teamType]:"Joining company: " +companyName}</Text>
+      {typeof companyName == 'undefined' &&
       <TextInput
         label="Company/Shop name"
         returnKeyType="next"
@@ -88,6 +94,7 @@ export default function RegisterScreen({ route, navigation }) {
         error={!!company.error}
         errorText={company.error}
       />
+      }
       <TextInput
         label="Email"
         returnKeyType="next"
