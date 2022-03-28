@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.crypto import get_random_string
 
 class Company(models.Model):
     # description = models.CharField(max_length=30, blank=False, null=False, verbose_name="Description")
@@ -14,11 +15,39 @@ class Company(models.Model):
         return self.get_correct_model().__class__.__name__
 
     def __str__(self):
-        return f'{self.name} - {self.get_model_name()}'
-
+        return f'{self.get_correct_model().name} - {self.get_model_name()}'
 class Brand(Company):
     name = models.CharField(max_length=30, unique=True, blank=False, null=False, verbose_name="Name")
     products = models.CharField(max_length=30, blank=True, verbose_name="Name") #TODO add products
+
 class Retailer(Company):
     name = models.CharField(max_length=30, unique=True, blank=False, null=False, verbose_name="Name")
     brands = models.ManyToManyField('companies.Brand', null=True, related_name="retailers", blank=True, verbose_name="Partners")
+
+
+class CompanyCode(models.Model):
+    company = models.ForeignKey(Company, blank=False, null=False, on_delete=models.CASCADE)
+    code = models.CharField(max_length=8)
+
+    def save(self, *args, **kwargs):
+        """
+            Saves object, if it has no code, create new unique code.
+        """
+        if not self.code or len(self.code) != 8:
+            new_code = get_random_string(length=8)
+            while new_code in CompanyCode.objects.all().values_list("code", flat=True):
+                new_code = get_random_string(length=10)
+            self.code = new_code
+        super().save(*args, **kwargs)
+    
+    @staticmethod
+    def get_company_by_code(find_code):
+        """
+            Fetches first company base on code,
+            If code is found, returns code id and company
+            if no matching company is found, return None
+        """
+        codes = CompanyCode.objects.filter(code=find_code)
+        if codes:
+            return (codes.first().id, codes.first().company.get_correct_model())
+        return None

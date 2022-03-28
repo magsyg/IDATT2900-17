@@ -7,10 +7,10 @@ from django.http import JsonResponse, HttpResponse, Http404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
-from .models import Brand, Company, Retailer
+from .models import Brand, Company, Retailer, CompanyCode
 from .serializer import BrandSerializer, RetailerSerializer
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
@@ -81,3 +81,19 @@ class CreateBrand(APIView):
 
         return Response(self.serializer_class(brand).data)
 
+class GetCompanyWithCode(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request, format=None):
+        print(request.data)
+        if "company_code" in request.data:
+            if CompanyCode.get_company_by_code(request.data["company_code"]):
+                company = CompanyCode.get_company_by_code(request.data["company_code"])[1]
+                print(company, company.name)
+                return Response({
+                    'company_code': request.data['company_code'],
+                    'company_name':company.name,
+                    'company_id':company.id
+                })
+        raise Http404("No company with matching code found")

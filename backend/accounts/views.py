@@ -16,6 +16,7 @@ from rest_framework.authtoken.models import Token
 
 from .serializer import RegisterSerializer, UserSerializer
 from companies.serializer import BrandSerializer, RetailerSerializer
+from companies.models import CompanyCode
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
 
@@ -70,16 +71,24 @@ class RegistrationNewCompanyView(APIView):
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data, context={'request': request})
-        print(request.data['teamType'], request.data['teamType'] == 0)
-        company_serializer_class = RetailerSerializer if int(request.data['teamType']) == 0 else BrandSerializer
-        company_serializer = company_serializer_class(data=request.data, context={'request': request})
-        print(company_serializer.is_valid())
-        print(company_serializer.errors)
-        company_serializer.is_valid(raise_exception=True)
+        
+        if 'company_code' in request.data:
+            if CompanyCode.get_company_by_code(request.data["company_code"]):
+                company = CompanyCode.get_company_by_code(request.data["company_code"])[1]
+            else:  
+                raise Http404("No company with matching code found")
+        else:
+            company_serializer_class = RetailerSerializer if int(request.data['teamType']) == 0 else BrandSerializer
+            company_serializer = company_serializer_class(data=request.data, context={'request': request})
+
+            company_serializer.is_valid(raise_exception=True)
         serializer.is_valid(raise_exception=True)
 
         user = serializer.create()
-        company = company_serializer.create()
+                
+        if not 'company_code' in request.data:
+            company = company_serializer.create()
+
         user.company = company
         user.save()
         token, created = Token.objects.get_or_create(user=user)

@@ -36,7 +36,7 @@ export default function RegisterCompanyScreen({ route, navigation }) {
           <Subheading style={{textAlign:'center'}}>We're so happy you are here</Subheading>
           <Dropdown headerText={'I am a...'} choices ={teamChoices}>
           </Dropdown>
-          <Link style={{textAlign:'center', marginTop:12}}>Join an exisiting team</Link>
+          <Link onPress={() =>  navigation.navigate('RegisterGetCompany')} style={{textAlign:'center', marginTop:12}}>Join an exisiting team</Link>
         </View>
         <View style={[styles.row,{marginBottom:12}]}>
           <Text>Already have an account? </Text>
