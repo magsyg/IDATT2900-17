@@ -97,3 +97,18 @@ class GetCompanyWithCode(APIView):
                     'company_id':company.id
                 })
         raise Http404("No company with matching code found")
+
+
+class GetUserCompany(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request, format=None):
+        company = request.user.company.get_correct_model()
+        if not company:
+            return Http404("User is not a part of any company")
+        if type(Company) == Brand:
+            return Response(BrandSerializer(company).data)
+        else:
+            return Response(RetailerSerializer(company).data)

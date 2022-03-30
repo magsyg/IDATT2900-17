@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
+from accounts.serializer import UserSerializer
 from .models import Brand, Company, Retailer
 
 
 
 
 class CompanySerializer(serializers.ModelSerializer):
-
+    members = UserSerializer(read_only=True, many=True)
     class Meta:
         model = Company
         fields = ('id', 'name', 'members')

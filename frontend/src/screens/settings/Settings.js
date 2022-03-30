@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import SettingsSelectScreen  from './SettingsSelectScreen';
 import SettingsProfileScreen  from './SettingsProfileScreen';
+import SettingsTeamScreen  from './SettingsTeamScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -11,6 +12,7 @@ export default function Settings({ navigation }) {
       <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: { display: 'none' } }}>
         <Tab.Screen name="SettingsSelect" component={SettingsSelectScreen} />
         <Tab.Screen name="SettingsProfileScreen" component={SettingsProfileScreen} />
+        <Tab.Screen name="SettingsTeamScreen" component={SettingsTeamScreen} />
       </Tab.Navigator>
     );
 }

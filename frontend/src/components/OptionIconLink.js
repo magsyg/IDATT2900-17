@@ -1,15 +1,14 @@
 import React from 'react'
 import { StyleSheet, View, TouchableOpacity} from 'react-native'
 import { Text } from 'react-native-paper'
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { theme } from '../core/theme'
 
-export default function OptionIconLink({onPress, children}) {
+export default function OptionIconLink({onPress, text, children}) {
     return (
         <View>
             <TouchableOpacity style={styles.row} onPress={onPress}>
-                <Text style={styles.text}>{children}</Text>
-                <Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}></Icon>
+                <Text style={styles.text}>{text}</Text>
+                {children}
             </TouchableOpacity>
             <View style={styles.hr}/>
         </View>
