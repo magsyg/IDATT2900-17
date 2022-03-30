@@ -69,6 +69,16 @@ class User(AbstractBaseUser):
     def __str__(self):              # __unicode__ on Python 2
         return self.email
 
+    def country_code(self):
+        if self.phone_number:
+            return self.phone_number.country_code
+        return None
+
+    def national_number(self):
+        if self.phone_number:
+            return self.phone_number.national_number
+        return None
+
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always

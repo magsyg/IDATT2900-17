@@ -4,7 +4,7 @@ export const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors, //TODO get correct colors
-    text: '#000000',
+    text: '#0f0f0f',
     primary: '#2d2d2d',
     secondary: '#89ADEC',
     grey: '#c8c8c8',

@@ -38,6 +38,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    country_code = serializers.ReadOnlyField()
+    national_number = serializers.ReadOnlyField()
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'country_code', 'national_number')
