@@ -64,6 +64,16 @@ class RegistrationView(APIView):
             'email': user.email
         })
 
+class UpdateProfileView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def put(self, request, format=None):
+        serializer = self.serializer_class(request.user, data=request.data, context={'request': request}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 class RegistrationNewCompanyView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]

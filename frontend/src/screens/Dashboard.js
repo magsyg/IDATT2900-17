@@ -21,6 +21,7 @@ export default function Dashboard({ navigation }) {
   const [user, setUser] = useState({ first_name:"" })
 
   useEffect(() => {
+    console.log("fetching")
     axios.get().then((response) => {
       console.log(response.data)
     })
@@ -43,6 +44,7 @@ export default function Dashboard({ navigation }) {
       }
       console.log("-----axios----")
     });
+    console.log("")
   }, []);
   
   // showCalendar = true displays the Calendar, showCalendar = false displays the Agenda

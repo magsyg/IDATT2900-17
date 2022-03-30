@@ -17,4 +17,6 @@ urlpatterns = [
     path('api-token-auth/', view=views.CustomAuthToken.as_view()),
     path('register/', view=views.RegistrationView.as_view()),
     path('register/newcompany', view=views.RegistrationNewCompanyView.as_view()),
+
+    path('profile/update/', view=views.UpdateProfileView.as_view()),
 ]

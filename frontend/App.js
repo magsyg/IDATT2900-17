@@ -9,7 +9,8 @@ import {
   LoginScreen,
   ResetPasswordScreen,
   Dashboard,
-  Register
+  Register,
+  Settings
 } from './src/screens';
 
 const Stack = createStackNavigator()
@@ -18,7 +19,7 @@ export default class App extends Component {
   UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 3000;
-    axios.defaults.headers.common.Authorization = `Token 0292b9a675c10eb85fc5848bd2749a0074fc1ecb`; //TEST TOKEN
+    axios.defaults.headers.common.Authorization = `Token 3597ea704cd8bab66e321d8274ec827a6f3be807`; //TEST TOKEN
   }
 
   render() {
@@ -26,7 +27,7 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Login"
+            initialRouteName="Settings"
             screenOptions={{
               headerShown: false,
             }}
@@ -34,6 +35,7 @@ export default class App extends Component {
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen
               name="ResetPasswordScreen"
               component={ResetPasswordScreen}
