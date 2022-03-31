@@ -26,7 +26,7 @@ class Retailer(Company):
 
 
 class CompanyCode(models.Model):
-    company = models.ForeignKey(Company, blank=False, null=False, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, related_name="codes", blank=False, null=False, on_delete=models.CASCADE)
     code = models.CharField(max_length=8)
 
     def save(self, *args, **kwargs):

@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width:'100%'
   },
   link: {
     fontWeight: 'bold',

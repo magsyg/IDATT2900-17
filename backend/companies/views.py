@@ -1,8 +1,9 @@
 # imports
 from email import message
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse, Http404
 
 from rest_framework.views import APIView
@@ -11,7 +12,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
 from .models import Brand, Company, Retailer, CompanyCode
-from .serializer import BrandSerializer, RetailerSerializer
+from .serializer import BrandSerializer, RetailerSerializer, correct_serializer
+
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
 
@@ -105,10 +107,57 @@ class GetUserCompany(APIView):
 
 
     def get(self, request, format=None):
-        company = request.user.company.get_correct_model()
+        company = request.user.company
         if not company:
             return Http404("User is not a part of any company")
-        if type(Company) == Brand:
-            return Response(BrandSerializer(company).data)
-        else:
-            return Response(RetailerSerializer(company).data)
+        serializer = correct_serializer(company)
+        return Response(serializer.data)
+
+
+class CompanyCodesView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        company = request.user.company
+        if not company:
+            raise Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        return Response({
+            'name': company.name,
+            'codes': [code.code for code in company.codes.all()]
+        })
+
+    def post(self, request, format=None):
+        company = request.user.company
+        if not company:
+            return Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        CompanyCode.objects.create(company=company)
+
+        return Response({
+            'name': company.name,
+            'codes': [code.code for code in company.codes.all()]
+        })
+
+    def delete(self, request, format=None):
+        print("delete!!!!")
+        company = request.user.company
+        if not company:
+            raise Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        print("delete!!!!")
+        print(request.data)
+        if 'code' not in request.data:
+            raise Http404("Code not sent")
+        print("delete!!!!")
+        code = get_object_or_404(CompanyCode, code=request.data['code'])
+        print("delete!!!!")
+        if code not in company.codes.all():
+            raise PermissionDenied("Can not delete this code")
+        code.delete()
+
+        return Response({
+            'name': company.name,
+            'codes': [code.code for code in company.codes.all()]
+        })

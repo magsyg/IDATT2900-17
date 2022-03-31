@@ -16,5 +16,6 @@ urlpatterns = [
     path('brand/create/', view=company_views.CreateBrand.as_view(), name="create_brand"),
     path('retailer/<int:pk>/', view=company_views.RetailerDetail.as_view(), name="retailer"),
     path('retailer/create/', view=company_views.CreateRetailer.as_view(), name="create_retailer"),
+    path('company/codes/', view=company_views.CompanyCodesView.as_view(), name="get_company_codes"),
     path('code/', view=company_views.GetCompanyWithCode.as_view(), name="get_company_with_code"),
 ]

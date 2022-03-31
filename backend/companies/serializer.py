@@ -46,4 +46,10 @@ class RetailerSerializer(CompanySerializer):
         }
 
 
-    
+
+def correct_serializer(company):
+    company = company.get_correct_model()
+    if type(Company) == Brand:
+        return BrandSerializer(company)
+    else:
+        return RetailerSerializer(company)
