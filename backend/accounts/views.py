@@ -95,12 +95,16 @@ class RegistrationNewCompanyView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.create()
-                
+        
         if not 'company_code' in request.data:
             company = company_serializer.create()
 
         user.company = company
         user.save()
+
+        if 'company_code' in request.data: # Delete code after successful registration
+            CompanyCode.objects.get(code=request.data["company_code"], company=company).delete()
+
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({
