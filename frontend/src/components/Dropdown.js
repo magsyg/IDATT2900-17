@@ -41,7 +41,6 @@ export default function Dropdown({choices, headerText, props}) {
 const styles = StyleSheet.create({
     title:{
         fontSize: 18,
-        color: theme.colors.grey,
         fontStyle: 'italic',
     },
     row:{
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
         paddingLeft:25,
         paddingRight:18,
         alignItems:'center',
-        borderBottomColor: theme.colors.grey,
+        borderBottomColor: theme.colors.text,
         borderBottomWidth: 1,
     },
     parentHr:{

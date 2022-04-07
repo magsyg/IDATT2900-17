@@ -64,6 +64,16 @@ class RegistrationView(APIView):
             'email': user.email
         })
 
+class UpdateProfileView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def put(self, request, format=None):
+        serializer = self.serializer_class(request.user, data=request.data, context={'request': request}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 class RegistrationNewCompanyView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
@@ -85,12 +95,16 @@ class RegistrationNewCompanyView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.create()
-                
+        
         if not 'company_code' in request.data:
             company = company_serializer.create()
 
         user.company = company
         user.save()
+
+        if 'company_code' in request.data: # Delete code after successful registration
+            CompanyCode.objects.get(code=request.data["company_code"], company=company).delete()
+
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({

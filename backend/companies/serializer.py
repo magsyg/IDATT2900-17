@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
+from accounts.serializer import UserSerializer
 from .models import Brand, Company, Retailer
 
 
 
 
 class CompanySerializer(serializers.ModelSerializer):
-
+    members = UserSerializer(read_only=True, many=True)
     class Meta:
         model = Company
         fields = ('id', 'name', 'members')
@@ -45,4 +46,10 @@ class RetailerSerializer(CompanySerializer):
         }
 
 
-    
+
+def correct_serializer(company):
+    company = company.get_correct_model()
+    if type(Company) == Brand:
+        return BrandSerializer(company)
+    else:
+        return RetailerSerializer(company)
