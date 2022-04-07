@@ -14,10 +14,14 @@ import { placeholder } from '../core/placeholders'
 import { theme } from '../core/theme'
 import CalendarFull from '../components/calendar/Calendar.js'
 import AgendaScreen from '../components/calendar/Agenda.js'
+import HoveringBar from '../components/HoveringBar.js'
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()
-
+  const user = ({
+    first_name: 'boop'
+  }) 
+/*
   const [user, setUser] = useState({ first_name:"" })
 
   useEffect(() => {
@@ -44,7 +48,7 @@ export default function Dashboard({ navigation }) {
       console.log("-----axios----")
     });
   }, []);
-  
+  */
   // showCalendar = true displays the Calendar, showCalendar = false displays the Agenda
   let showCalendar = true;
   const changeCalendar = () => {
@@ -149,6 +153,7 @@ export default function Dashboard({ navigation }) {
         <Button mode="contained" style = {styles.button}  onPress={changeCalendar}/>
         { showCalendar ? <CalendarFull /> : <AgendaScreen /> }
       </View>
+      <HoveringBar />
     </Background>
   )
 }
