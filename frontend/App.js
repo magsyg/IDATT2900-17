@@ -11,7 +11,7 @@ import {
   Dashboard,
   Register,
   Settings,
-  Calendar
+  Calendar,
   Company
 
 } from './src/screens';
@@ -31,7 +31,7 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Company"
+            initialRouteName="Appointment"
             screenOptions={{
               headerShown: false,
             }}

@@ -27,12 +27,11 @@ class ParticipatingBrandSerializer(serializers.ModelSerializer):
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    participatingbrand_set = ParticipatingBrandSerializer(read_only=True, many=True)
-    retailer = HostRetailerSerializer(read_only=True)
-
+    brands = ParticipatingBrandSerializer(read_only=True, many=True, source='participatingbrand_set')
+    retailer = HostRetailerSerializer(read_only=True) 
     class Meta:
         model = Appointment
-        fields = ('id', 'name', 'appointment_type', 'date','time','other_information', 'retailer','participatingbrand_set')
+        fields = ('id', 'name', 'appointment_type', 'date','time','other_information', 'retailer','brands')
 
  
 class AppointmentCreateSerializer(serializers.ModelSerializer):
@@ -96,6 +95,7 @@ class AppointmentCreateSerializer(serializers.Serializer):
         appointment = Appointment.objects.create(
             name=self.validated_data['appointment']['name'],
             retailer=host_retailer,
+            appointment_type=self.validated_data['appointment_type'],
             time=self.validated_data['appointment']['time'],
             date=self.validated_data['appointment']['date'],
             other_information=self.validated_data['appointment']['other_information'],
