@@ -14,7 +14,7 @@ from rest_framework.authentication import TokenAuthentication
 
 from .models import Brand, Company, Retailer, CompanyCode
 from .serializer import BrandSerializer, RetailerSerializer, correct_serializer
-
+from accounts.serializer import UserSerializer
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
 
@@ -111,8 +111,13 @@ class GetUserCompany(APIView):
         company = request.user.company
         if not company:
             return Http404("User is not a part of any company")
-        serializer = correct_serializer(company)
-        return Response(serializer.data)
+        company_serializer = correct_serializer(company)
+        user_serializer = UserSerializer(request.user)
+
+        return Response({
+            'company':company_serializer.data,
+            'user':user_serializer.data
+        })
 
 
 class CompanyCodesView(APIView):

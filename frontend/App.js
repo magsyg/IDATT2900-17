@@ -12,6 +12,8 @@ import {
   Register,
   Settings,
   Calendar
+  Company
+
 } from './src/screens';
 import Appointment from './src/screens/appointments/Appointment';
 
@@ -29,7 +31,7 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Dashboard"
+            initialRouteName="Company"
             screenOptions={{
               headerShown: false,
             }}
@@ -39,6 +41,7 @@ export default class App extends Component {
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen name="Calendar" component={Calendar} />
             <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="Company" component={Company} />
             <Stack.Screen name="Appointment" component={Appointment} />
             <Stack.Screen
               name="ResetPasswordScreen"

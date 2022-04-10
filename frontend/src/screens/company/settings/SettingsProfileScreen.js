@@ -3,14 +3,14 @@ import axios from 'axios'
 import filter from 'lodash.filter';
 import { View, StyleSheet, Modal, TouchableOpacity, Text, FlatList } from 'react-native'
 import { Avatar, Subheading, IconButton, Searchbar } from 'react-native-paper'
-import Background from '../../components/Background'
-import TextInput from '../../components/TextInput'
-import OptionTextLink from '../../components/OptionTextLink'
-import Header from '../../components/Header'
-import BackButton from '../../components/BackButton'
-import Button from '../../components/Button'
-import { theme } from '../../core/theme'
-import { countryCodes } from '../../core/countrycodes'
+import Background from '../../../components/Background'
+import TextInput from '../../../components/TextInput'
+import OptionTextLink from '../../../components/OptionTextLink'
+import Header from '../../../components/Header'
+import BackButton from '../../../components/BackButton'
+import Button from '../../../components/Button'
+import { theme } from '../../../core/theme'
+import { countryCodes } from '../../../core/countrycodes'
 
 export default function SettingsProfileScreen({ route, navigation }) {
   const [email, setEmail] = React.useState('ms@gmail.com');
@@ -144,7 +144,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
           <View style={styles.row}>
             <Avatar.Image 
                   size={96} 
-                  source={require('../../assets/default_profile.png')}  
+                  source={require('../../../assets/default_profile.png')}  
             />
           </View>
           <View style={[styles.row, {margin:4}]}>
