@@ -10,7 +10,10 @@ import {
   ResetPasswordScreen,
   Dashboard,
   Register,
+  Settings,
+  Calendar
   Company
+
 } from './src/screens';
 import Appointment from './src/screens/appointments/Appointment';
 
@@ -36,6 +39,8 @@ export default class App extends Component {
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen name="Calendar" component={Calendar} />
+            <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Company" component={Company} />
             <Stack.Screen name="Appointment" component={Appointment} />
             <Stack.Screen

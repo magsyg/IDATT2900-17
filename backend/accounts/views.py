@@ -43,7 +43,19 @@ class CurrentUserView(APIView):
 
     def get(self, request):
         serializer = UserSerializer(request.user)
-        return Response(serializer.data)
+        return Response({
+            'user':serializer.data,
+        })
+
+class CalendarUserView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response({
+            'user':serializer.data,
+        })
 
 
 class RegistrationView(APIView):
