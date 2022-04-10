@@ -19,8 +19,8 @@ import Dropdown from '../../../components/Dropdown'
 import PickerDropdown from '../../../components/PickerDropdown'
 
 export default function AppointmentCreateScreen({ route, navigation }) {
-  const { ap_type, passed_team } = route.params;
-  const [availability, setAvailability] = useState({dates: []})
+  const { ap_type, passed_team } = route.params; // passes params from previous
+  const [availability, setAvailability] = useState({dates: []}) //TODO add availbility
   const [team, setTeam] = useState({added: [], unadded:[]})
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
   
@@ -48,15 +48,44 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     hideTime();
   };
   
+  // Brand
   const [brands, setBrands] = useState({value:[], error:''});
+
+  //Brand management
   const [selectedBrand, setSelectedBrand] = useState({});
   const [mainContact, setMainContact] = useState({value:{}, errors:''});
 
+  // Brand search
   const [brandVisible, setBrandVisible] = useState(false);
   const [brandSearchResults, setBrandSearchResults] = useState([]);
   const [searchBrandText, setSearchBrandText] = React.useState('');
   const showBrandModal = () => setBrandVisible(true);
   const hideBrandModal = () => setBrandVisible(false);
+
+  const onChangeBrandSearch = text => {
+    const formattedQuery = text.toLowerCase();
+    
+    axios.get(`companies/brands?name=${text}`).then((response) => {
+      setBrandSearchResults(response.data);
+      console.log(response.data);
+    })  .catch(function (error) {
+      console.log("-----axios----")
+      if (error.response) {
+        // Request made and server responded
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+      console.log("-----axios----")
+    });
+    setSearchBrandText(text)
+  };
 
   const selectMainContact = (id) => {
     var result = selectedBrand.members.find(obj => {
@@ -65,6 +94,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     if (typeof result !== "undefined") setMainContact({value:result, errors:''});    
   }
   
+  // Selected brand management
   const addBrand = () => {
     if (Object.keys(mainContact.value).length != 0) {
       let brand = {'id': selectedBrand.id, 'name':selectedBrand.name, 'main_contact':{'id':mainContact.value.id, 'name':mainContact.value.first_name+" "+mainContact.value.last_name}}
@@ -100,46 +130,16 @@ export default function AppointmentCreateScreen({ route, navigation }) {
       console.log("-----axios----")
     });
   }
-
+  // Brand management from main form
   const removeBrand = id => {
     setBrands({value:brands.value.filter(ar => ar.id !== id), error:''});
   }
-
+  
   const selectBrand = (item) => {
     setSelectedBrand(item);
-    
   }
 
-  const onChangeBrandSearch = text => {
-    const formattedQuery = text.toLowerCase();
-    
-    axios.get(`companies/brands?name=${text}`).then((response) => {
-      setBrandSearchResults(response.data);
-      console.log(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-    setSearchBrandText(text)
-  };
-
-
-  const appointment_types = {
-    'TS':'Trade Show'
-  }
-
+  // Methods for managing team
   const [teamVisible, setTeamVisible] = useState(false);
   const showTeamModal = () => setTeamVisible(true);
   const hideTeamModal = () => setTeamVisible(false);
@@ -164,6 +164,10 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     setTeam({added:added, unadded:unadded})
   }
 
+  const appointment_types = {
+    'TS':'Trade Show'
+  }
+  // On load of screen, fetch selected items. 
   useEffect(() => {
     setTeam(passed_team); // fetch passed params of team
     axios.get('/appointments/create/').then((response) => {
@@ -204,9 +208,8 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     });
   }, []);
 
+  // create appointment post
   const createAppointment = () => {
-    console.log(ap_type);
-    console.log(typeof ap_type)
     const payload = {
       'brands': brands.value.map(item => ({'brand':item.id, 'main_contact':item.main_contact.id})),
       'retailer': {'retailer': meta.company.id, 'organizer': meta.user.id},
