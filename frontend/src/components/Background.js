@@ -1,16 +1,18 @@
 import React from 'react'
-import {ScrollView, StyleSheet, KeyboardAvoidingView } from 'react-native'
+import {ScrollView, View, StyleSheet, KeyboardAvoidingView } from 'react-native'
 import { theme } from '../core/theme'
+import HoveringBar from './HoveringBar'
 
 export default function Background({ children }) {
   return (
-    <ScrollView
-      style={styles.background}
-    >
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        {children}
-      </KeyboardAvoidingView>
-    </ScrollView>
+    <View style={styles.background}>
+        <ScrollView style={{marginBottom:32}}>
+          <KeyboardAvoidingView style={styles.container} behavior="padding">
+            {children}
+          </KeyboardAvoidingView>
+        </ScrollView>
+     <HoveringBar/>
+    </View>
   )
 }
 

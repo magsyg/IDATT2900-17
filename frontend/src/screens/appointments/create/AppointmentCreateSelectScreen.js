@@ -10,6 +10,7 @@ import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import { currentDate } from '../../../utils/date_management';
 import Availabilty from '../../../components/Availability'
+import HoveringBar from '../../../components/HoveringBar'
 
 export default function AppointmentCreateSelectScreen({ route, navigation }) {
   
@@ -175,7 +176,6 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
       <Availabilty data={availability}/>
       </View>
   </View>
-
 </Background>
   )
 }

@@ -155,7 +155,6 @@ export default function Dashboard({ navigation }) {
         <Button mode="contained" style = {styles.button}  onPress={changeCalendar}/>
         { showCalendar ? <CalendarFull /> : <AgendaScreen /> }
       </View>
-      <HoveringBar />
     </Background>
   )
 }

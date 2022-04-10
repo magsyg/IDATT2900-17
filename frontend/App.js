@@ -28,7 +28,7 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Appointment"
+            initialRouteName="Dashboard"
             screenOptions={{
               headerShown: false,
             }}

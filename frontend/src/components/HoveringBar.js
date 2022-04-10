@@ -1,7 +1,9 @@
+import React from 'react'
 import FloatingActionBar from 'react-native-floating-action-bar'
+import {useNavigation} from '@react-navigation/native';
 
-export default function Hoveringbar({ navigation }) {
-
+export default function HoveringBar({}) {
+  const navigation = useNavigation();
   const items=[
     {
       icon: 'group',
@@ -14,7 +16,7 @@ export default function Hoveringbar({ navigation }) {
     {
       icon: 'plus-circle',
       id: 2,
-      name: 'ArrangementMenu',
+      name: 'Appointment',
       color: 'rgb(130, 130, 130)',
       activeColor: 'rgb(3, 137, 253)',
       activeBackgroundColor: 'rgb(224, 243, 255)',
@@ -36,11 +38,11 @@ export default function Hoveringbar({ navigation }) {
       activeBackgroundColor: 'rgb(224, 243, 255)',
     },
   ]
-
+  
   return (
     <FloatingActionBar
       items={items}
-      offset={50}
+      offset={10}
       onPress={ index => {
         switch (index) {
           case 0:
@@ -48,15 +50,15 @@ export default function Hoveringbar({ navigation }) {
             console.log('Navigate to Team')
             break;
           case 1:
-            //navigation.navigate('ArrangementMenu')
+            navigation.navigate('Appointment')
             console.log('Navigate to ArrangementMenu')
             break;
           case 2:
-            //navigation.navigate('Square')
+
             console.log('Navigate to Square')
             break;
           case 3:
-            //navigation.navigate('Dashboard')
+            navigation.navigate('Dashboard')
             console.log('Navigate to Dashboard')
             break;
         }
