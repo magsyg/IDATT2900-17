@@ -54,7 +54,7 @@ export default function HoveringBar({}) {
             console.log('Navigate to ArrangementMenu')
             break;
           case 2:
-
+            navigation.navigate('Calendar')
             console.log('Navigate to Square')
             break;
           case 3:
