@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse, Http404
 
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -161,3 +162,19 @@ class CompanyCodesView(APIView):
             'name': company.name,
             'codes': [code.code for code in company.codes.all()]
         })
+
+class SearchBrandView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = BrandSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Brand.objects.all()
+        name = self.request.query_params.get('name')
+        if name is not None and len(name) != 0:
+            queryset = queryset.filter(name__icontains=name)
+        return queryset

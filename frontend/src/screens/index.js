@@ -1,5 +1,6 @@
 export { default as LoginScreen } from './LoginScreen'
 export { default as ResetPasswordScreen } from './ResetPasswordScreen'
 export { default as Dashboard } from './Dashboard'
+export { default as Appointment } from './appointments/Appointment'
 export { default as Register } from './register/Register'
 export { default as Settings } from './settings/Settings'

@@ -1,16 +1,16 @@
 import React from 'react'
-import {View, StyleSheet, KeyboardAvoidingView } from 'react-native'
+import {ScrollView, StyleSheet, KeyboardAvoidingView } from 'react-native'
 import { theme } from '../core/theme'
 
 export default function Background({ children }) {
   return (
-    <View
+    <ScrollView
       style={styles.background}
     >
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         {children}
       </KeyboardAvoidingView>
-    </View>
+    </ScrollView>
   )
 }
 

@@ -12,6 +12,7 @@ import {
   Register,
   Settings
 } from './src/screens';
+import Appointment from './src/screens/appointments/Appointment';
 
 const Stack = createStackNavigator()
 
@@ -19,7 +20,7 @@ export default class App extends Component {
   UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 3000;
-    axios.defaults.headers.common.Authorization = `Token 3597ea704cd8bab66e321d8274ec827a6f3be807`; //TEST TOKEN
+    axios.defaults.headers.common.Authorization = `Token 97d3776b2813a35f4e002e727100f997b5e751e7`; //TEST TOKEN
   }
 
   render() {
@@ -27,7 +28,7 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Settings"
+            initialRouteName="Appointment"
             screenOptions={{
               headerShown: false,
             }}
@@ -36,6 +37,7 @@ export default class App extends Component {
             <Stack.Screen name="Register" component={Register} />
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="Appointment" component={Appointment} />
             <Stack.Screen
               name="ResetPasswordScreen"
               component={ResetPasswordScreen}

@@ -35,7 +35,8 @@ ALLOWED_HOSTS = ['*']
 PROJECT_APPS = [
     'main',
     'accounts',
-    'companies'
+    'companies',
+    'appointments'
 ]
 # Application definition
 INSTALLED_APPS = [
