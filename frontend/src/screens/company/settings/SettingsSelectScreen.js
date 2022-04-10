@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Subheading } from 'react-native-paper'
-import Background from '../../components/Background'
+import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Header from '../../components/Header'
-import OptionIconLink from '../../components/OptionIconLink'
-import BackButton from '../../components/BackButton'
-import { theme } from '../../core/theme'
+import Header from '../../../components/Header'
+import OptionIconLink from '../../../components/OptionIconLink'
+import BackButton from '../../../components/BackButton'
+import { theme } from '../../../core/theme'
 
 export default function SettingsSelectScreen({ route, navigation }) {
 
