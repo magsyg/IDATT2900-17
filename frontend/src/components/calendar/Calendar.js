@@ -3,7 +3,8 @@ import { StyleSheet, ScrollView } from 'react-native';
 import { Calendar, CalendarProps } from 'react-native-calendars';
 import testIDs from './testIDSs.js';
 
-const INITIAL_DATE = '2022-02-22';
+const today = new Date()
+const INITIAL_DATE = today.toString()
 
 const CalendarsScreen = () => {
 
