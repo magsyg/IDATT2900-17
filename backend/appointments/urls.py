@@ -12,5 +12,4 @@ app_name = 'appointments'  # Necessary for url naming. eg {% url 'appointments:c
 
 urlpatterns = [
     path('create/', view=views.AppointmentCreateView.as_view(), name="create"),
-
 ]

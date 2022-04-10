@@ -24,7 +24,7 @@ class Appointment(models.Model):
     time = models.TimeField(null=False, blank=False, verbose_name='Time')
     #TODO add address
 
-    other_information = models.TextField(null=False, blank=False, max_length=200, verbose_name='Other information')
+    other_information = models.TextField(null=True, blank=True, max_length=200, verbose_name='Other information')
 
 
     """

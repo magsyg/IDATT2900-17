@@ -3,12 +3,12 @@ import { StyleSheet, View} from 'react-native'
 import { Text } from 'react-native-paper'
 import { theme } from '../core/theme'
 
-export default function HeaderLine({children}) {
+export default function HeaderLine({lineStyle, containerStyle, textStyle, children}) {
 
-    return (<View style={styles.header}>
-        <View style={styles.line} />
+    return (<View style={[styles.header, containerStyle]}>
+        <View style={[styles.line, lineStyle]} />
             <View>
-                <Text style={styles.text}>{children}</Text>
+                <Text style={[styles.text, textStyle]}>{children}</Text>
             </View>
         <View style={styles.line} />
     </View>)

@@ -20,7 +20,7 @@ export default class App extends Component {
   UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 3000;
-    axios.defaults.headers.common.Authorization = `Token 3597ea704cd8bab66e321d8274ec827a6f3be807`; //TEST TOKEN
+    axios.defaults.headers.common.Authorization = `Token 97d3776b2813a35f4e002e727100f997b5e751e7`; //TEST TOKEN
   }
 
   render() {

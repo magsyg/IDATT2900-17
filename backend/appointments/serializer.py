@@ -30,7 +30,6 @@ class AppointmentSerializer(serializers.ModelSerializer):
     participatingbrand_set = ParticipatingBrandSerializer(read_only=True, many=True)
     retailer = HostRetailerSerializer(read_only=True)
 
-
     class Meta:
         model = Appointment
         fields = ('id', 'name', 'appointment_type', 'date','time','other_information', 'retailer','participatingbrand_set')
@@ -41,6 +40,7 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = ('id', 'name', 'appointment_type', 'date','time','other_information')
 
+
 class HostRetailerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -49,6 +49,14 @@ class HostRetailerCreateSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'retailer_participants': {'required':False}
         }
+    def validate(self, attrs):
+        if attrs['organizer'] not in attrs['retailer'].members.all():
+            raise serializers.ValidationError({"organizer": "Organizer not part of this company"})
+        if 'retailer_participants' in attrs.keys():
+            for participant in attrs['retailer_participants']: 
+                if participant not in attrs['retailer'].members.all():
+                    raise serializers.ValidationError({"retailer_participants": f"{participant.get_full_name()} not part of this company"})
+        return attrs
 
 class ParticipatingBrandCreateSerializer(serializers.ModelSerializer):
 
@@ -59,9 +67,17 @@ class ParticipatingBrandCreateSerializer(serializers.ModelSerializer):
             'brand_participants': {'required':False}
         }
 
+    def validate(self, attrs):
+        if attrs['main_contact'] not in attrs['brand'].members.all():
+            raise serializers.ValidationError({"main_contact": "Main contact not part of this company"})
+        if 'brand_participants' in attrs.keys():
+            for participant in attrs['brand_participants']: 
+                if participant not in attrs['brand'].members.all():
+                    raise serializers.ValidationError({"brand_participants": f"{participant.get_full_name()} not part of this company"})
+        return attrs
 
 class AppointmentCreateSerializer(serializers.Serializer):
-    brands = ParticipatingBrandCreateSerializer(read_only=False, many=True)
+    brands = ParticipatingBrandCreateSerializer(read_only=False, many=True, allow_empty=False)
     retailer = HostRetailerCreateSerializer(read_only=False)
     appointment = AppointmentCreateSerializer(read_only=False)
 

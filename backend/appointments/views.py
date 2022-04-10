@@ -11,13 +11,24 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
 from .serializer import AppointmentCreateSerializer, HostRetailerSerializer
+from companies.serializer import correct_serializer
+from accounts.serializer import UserSerializer
 User = get_user_model()
 
 # Create your views here.
 class AppointmentCreateView(APIView):
-    authentication_classes = []
-    permission_classes = [AllowAny]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = AppointmentCreateSerializer
+
+    def get(self, request, format=None):
+        company_serializer = correct_serializer(request.user.company)
+        user_serializer = UserSerializer(request.user)
+
+        return Response({
+            'company':company_serializer.data,
+            'user':user_serializer.data
+        })
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data, context={'request': request})
