@@ -15,7 +15,6 @@ import Availabilty from '../../../components/Availability'
 import TextInput from '../../../components/TextInput'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import HeaderLine from '../../../components/HeaderLine'
-import Dropdown from '../../../components/Dropdown'
 import PickerDropdown from '../../../components/PickerDropdown'
 
 export default function AppointmentCreateScreen({ route, navigation }) {
@@ -94,20 +93,6 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     if (typeof result !== "undefined") setMainContact({value:result, errors:''});    
   }
   
-  // Selected brand management
-  const addBrand = () => {
-    if (Object.keys(mainContact.value).length != 0) {
-      let brand = {'id': selectedBrand.id, 'name':selectedBrand.name, 'main_contact':{'id':mainContact.value.id, 'name':mainContact.value.first_name+" "+mainContact.value.last_name}}
-      let current_brands = brands.value.filter(ar => ar.id !== brand.id);
-      current_brands.push(brand);
-      setBrands({value:current_brands, error:''});
-      setSelectedBrand({});
-      setMainContact({value:{}, errors:''});
-      hideBrandModal();
-    } else {
-      setMainContact({errors:'Must set a main contact'})
-    }
-  }
 
   const editBrand = id => {
     showBrandModal();
@@ -353,7 +338,11 @@ return (
       }
   </Modal>
   <View style= {styles.column}>
-      <BackHeader goBack={navigation.goBack} text={appointment_types[ap_type]}/>
+      <BackHeader goBack={navigation.goBack}>
+          <Text style={{color:theme.colors.grey}}>
+          {appointment_types[ap_type]}
+          </Text>
+      </BackHeader>
       <View style={[styles.column, {flex:0, marginVertical:16}]}>
         <ScrollView horizontal={true} contentContainerStyle={{justifyContent:'flex-start'}}>
         <View style={{margin:2}}>

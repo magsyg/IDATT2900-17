@@ -6,3 +6,11 @@ export const currentDate = () => {
     ];
     return monthNames[date.getMonth()] + " " + date.getDate();
 }
+
+export const transformNiceDate = dateString => {
+    const date = new Date(dateString);
+    const weekDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
+    return weekDayNames[date.getDay()]+" / "+date.getDate().toString() + " / " + (1+date.getMonth()).toString() 
+  }

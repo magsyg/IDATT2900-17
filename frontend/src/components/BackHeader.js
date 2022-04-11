@@ -5,15 +5,13 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { theme } from '../core/theme'
 
-export default function BackHeader({ text, goBack }) {
+export default function BackHeader({ goBack , children}) {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goBack}>
         <Icon size={32} name='keyboard-backspace' color={theme.colors.grey}></Icon>
       </TouchableOpacity>
-      <Text style={{color:theme.colors.grey}}>
-        {text}
-      </Text>
+      {children}
     </View>
   )
 }

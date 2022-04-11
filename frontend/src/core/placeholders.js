@@ -26,6 +26,11 @@ export const placeholder = {
             "time": "0900-0930",
             "type": "SR"
         }
-    ]
+    ],
 
+    user : {
+        id: -1,
+        first_name: "User",
+        last_name: ""
+    }
 }
