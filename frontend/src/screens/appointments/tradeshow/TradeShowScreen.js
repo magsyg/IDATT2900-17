@@ -11,6 +11,7 @@ import OptionIconLink from '../../../components/OptionIconLink';
 import Link from '../../../components/Link';
 import { transformNiceDate } from '../../../utils/date_management';
 import HeaderWithSub from '../../../components/HeaderWithSub';
+import AddBrands from '../../../components/AddBrand';
 
 
 export default function TradeShowScreen({ route, navigation }) {
@@ -70,6 +71,36 @@ export default function TradeShowScreen({ route, navigation }) {
   const showBrand = (brand) => {
     navigation.navigate('TradeShowBrand', {'brand_id':brand.brand.id, 'tradeshow_id':meta.appointment.id});
   }
+
+  const inviteBrand = (brand) => {
+    const payload = {
+      'appointment': meta.appointment.id,
+      'brand': brand.id,
+      'main_contact': brand.main_contact.id
+
+    }
+    console.log(brand);
+    console.log(payload)
+    axios.post('/appointments/brand/invite/', payload).then((response) => {
+      navigation.navigate('TradeShowBrand', {'brand_id':brand.id, 'tradeshow_id':meta.appointment.id});
+    })  .catch(function (error) {
+      console.log("-----axios----")
+      if (error.response) {
+        // Request made and server responded
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+      console.log("-----axios----")
+    });
+  }
+
 
   return (
     <Background>
@@ -147,6 +178,7 @@ export default function TradeShowScreen({ route, navigation }) {
               <OptionIconLink key={index} text={item.brand.name} onPress={() => showBrand(item)}><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
             }
           />
+          <AddBrands completeAction={inviteBrand}/>
         </View>
        
         <View style={{marginTop:32}}>

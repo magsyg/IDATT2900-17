@@ -13,9 +13,10 @@ from rest_framework.authentication import TokenAuthentication
 
 from .models import Appointment, ParticipatingBrand
 from companies.models import Brand
-from .serializer import AppointmentCreateSerializer, SimpleAppointmentSerializer, AppointmentSerializer, HostRetailerSerializer, ParticipatingBrandSerializer
+from .serializer import AppointmentCreateSerializer, ParticipatingBrandCreateSerializer, SimpleAppointmentSerializer, AppointmentSerializer, HostRetailerSerializer, ParticipatingBrandSerializer
 from companies.serializer import correct_serializer
 from accounts.serializer import UserSerializer
+
 User = get_user_model()
 
 # Create your views here.
@@ -90,14 +91,12 @@ class TradeShowBrandView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, tradeshow_id, brand_id, format=None):
-        print(brand_id, "Brand")
         brand = get_object_or_404(Brand, id=brand_id)
-        print(tradeshow_id, "tradeshow")
         tradeshow = get_object_or_404(Appointment, id=tradeshow_id)
-        print("is tradeshow")
+        if request.user not in tradeshow.retailer.retailer.members.all():
+            raise PermissionDenied('You cant invite to an event you are not a part of')
         if tradeshow.appointment_type != Appointment.AppointmentType.TRADESHOW:
             return Http404('No tradeshow with this ID')
-        print("is a part")
         if brand not in tradeshow.brands.all():
             return Http404('Brand not a part of this tradeshow')
 
@@ -109,4 +108,23 @@ class TradeShowBrandView(APIView):
             'user':user_serializer.data,
             'brand': ParticipatingBrandSerializer(brand).data,
             'appointment': SimpleAppointmentSerializer(tradeshow).data
+        })
+
+class AppointmentBrandInvite(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ParticipatingBrandCreateSerializer
+
+    def post(self, request, format=None):
+        appointment = get_object_or_404(Appointment, id=request.data['appointment'])
+        if request.user not in appointment.retailer.retailer.members.all():
+            raise PermissionDenied('You cant invite to an event you are not a part of')
+        brand = get_object_or_404(Brand, id=request.data['brand'])
+        if brand in appointment.brands.all():
+            return Response('Brand already participating')
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        brand = serializer.create()
+        return Response({
+            'brand': ParticipatingBrandSerializer(brand).data
         })

@@ -49,9 +49,11 @@ class HostRetailerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HostRetailer
-        fields = ('id', 'retailer', 'retailer_participants', 'organizer')  
+        fields = ('id', 'retailer', 'retailer_participants', 'organizer', 'appointment')  
         extra_kwargs = {
-            'retailer_participants': {'required':False}
+            'retailer_participants': {'required':False},
+            'appointment': {'required':False},
+
         }
     def validate(self, attrs):
         if attrs['organizer'] not in attrs['retailer'].members.all():
@@ -66,9 +68,10 @@ class ParticipatingBrandCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ParticipatingBrand
-        fields = ('id', 'brand', 'brand_participants', 'main_contact')
+        fields = ('id', 'brand', 'brand_participants', 'main_contact', 'appointment')
         extra_kwargs = {
-            'brand_participants': {'required':False}
+            'brand_participants': {'required':False},
+            'appointment': {'required':False},
         }
 
     def validate(self, attrs):
@@ -79,6 +82,17 @@ class ParticipatingBrandCreateSerializer(serializers.ModelSerializer):
                 if participant not in attrs['brand'].members.all():
                     raise serializers.ValidationError({"brand_participants": f"{participant.get_full_name()} not part of this company"})
         return attrs
+    
+    def create(self):
+        print(self.validated_data)
+        brand = ParticipatingBrand.objects.create(
+                brand=self.validated_data['brand'],
+                main_contact=self.validated_data['main_contact'],
+                appointment=self.validated_data['appointment'],
+            )
+        if 'brand_participants' in self.validated_data:
+           brand.brand_participants.set(self.validated_data['brand_participants'])
+        return brand
 
 class AppointmentCreateSerializer(serializers.Serializer):
     brands = ParticipatingBrandCreateSerializer(read_only=False, many=True, allow_empty=False)
@@ -111,6 +125,6 @@ class AppointmentCreateSerializer(serializers.Serializer):
                 main_contact=brand['main_contact'],
                 appointment=appointment,
             )
-            if 'brand_participants' in self.validated_data['retailer']:
-                p_brand.brand_participants.set(self.validated_data['retailer']['brand_participants'])
+            if 'brand_participants' in brand:
+                p_brand.brand_participants.set(brand['brand_participants'])
         return AppointmentSerializer(appointment)
