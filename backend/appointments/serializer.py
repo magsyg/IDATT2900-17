@@ -49,11 +49,9 @@ class HostRetailerCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HostRetailer
-        fields = ('id', 'retailer', 'retailer_participants', 'organizer', 'appointment')  
+        fields = ('id', 'retailer', 'retailer_participants', 'organizer')  
         extra_kwargs = {
             'retailer_participants': {'required':False},
-            'appointment': {'required':False},
-
         }
     def validate(self, attrs):
         if attrs['organizer'] not in attrs['retailer'].members.all():
@@ -75,6 +73,8 @@ class ParticipatingBrandCreateSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
+        if 'main_contact' not in attrs:
+            raise serializers.ValidationError({"main_contact": "Main contact must be set"})
         if attrs['main_contact'] not in attrs['brand'].members.all():
             raise serializers.ValidationError({"main_contact": "Main contact not part of this company"})
         if 'brand_participants' in attrs.keys():
@@ -114,7 +114,7 @@ class AppointmentCreateSerializer(serializers.Serializer):
         appointment = Appointment.objects.create(
             name=self.validated_data['appointment']['name'],
             retailer=host_retailer,
-            appointment_type=self.validated_data['appointment_type'],
+            appointment_type=self.validated_data['appointment']['appointment_type'],
             time=self.validated_data['appointment']['time'],
             date=self.validated_data['appointment']['date'],
             other_information=self.validated_data['appointment']['other_information'],

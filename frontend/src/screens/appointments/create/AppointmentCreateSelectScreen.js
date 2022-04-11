@@ -50,6 +50,19 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
           ap_type: val, 
         })
         break;
+      case 'OT': 
+        navigation.navigate('AppointmentCreateForm', {
+          passed_team: team,
+          ap_type: val, 
+        })
+        break;
+      case 'SR': 
+        navigation.navigate('AppointmentCreateShowroomSearchScreen', {
+          passed_team: team,
+          ap_type: val, 
+        })
+        break;
+        
     }
   }
   useEffect(() => {
@@ -131,9 +144,9 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
           style={{backgroundColor:theme.colors.lightgrey, borderRadius:100}}
         />
       </View>
-      <View style={{flex:2}}>
+      <View style={{flex:2, marginTop:32}}>
         <View style={styles.row}>
-          <TouchableOpacity style={styles.box}>
+          <TouchableOpacity style={styles.box} onPress={() => next_page('SR')}>
               <Text style={styles.boxText}>Showroom</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.box} onPress={() => next_page('TS')}>
@@ -144,7 +157,7 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
           <TouchableOpacity style={styles.box}>
               <Text style={styles.boxText}>Runway</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.box}>
+          <TouchableOpacity style={styles.box} onPress={() => next_page('OT')}>
               <Text style={styles.boxText}>Other</Text>
           </TouchableOpacity>
         </View>
@@ -200,7 +213,8 @@ const styles = StyleSheet.create({
     borderRadius:16,
     flexDirection: 'column',
     justifyContent:'center',
-    margin:4
+    margin:4,
+    padding:32
   },
   boxText: {
     margin:'auto',
