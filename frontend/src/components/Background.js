@@ -6,7 +6,7 @@ import HoveringBar from './HoveringBar'
 export default function Background({ children }) {
   return (
     <View style={styles.background}>
-        <ScrollView style={{marginBottom:32}}>
+        <ScrollView>
           <KeyboardAvoidingView style={styles.container} behavior="padding">
             {children}
           </KeyboardAvoidingView>
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    marginBottom:96,
     width: '100%',
     maxWidth: 360,
     alignSelf: 'center',

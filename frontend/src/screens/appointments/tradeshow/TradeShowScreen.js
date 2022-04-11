@@ -10,6 +10,7 @@ import { theme } from '../../../core/theme'
 import OptionIconLink from '../../../components/OptionIconLink';
 import Link from '../../../components/Link';
 import { transformNiceDate } from '../../../utils/date_management';
+import HeaderWithSub from '../../../components/HeaderWithSub';
 
 
 export default function TradeShowScreen({ route, navigation }) {
@@ -66,6 +67,9 @@ export default function TradeShowScreen({ route, navigation }) {
     });
   }, []);
   
+  const showBrand = (brand) => {
+    navigation.navigate('TradeShowBrand', {'brand_id':brand.brand.id, 'tradeshow_id':meta.appointment.id});
+  }
 
   return (
     <Background>
@@ -97,10 +101,7 @@ export default function TradeShowScreen({ route, navigation }) {
         </View>
       </Modal>
       <View style={styles.column}>
-        <View style={{marginTop:16}}>
-          <Header style ={{textAlign:'center', paddingBottom:0}}>{meta.appointment.name}</Header>
-          <Subheading style={{textAlign:'center', color:theme.colors.grey }}>Trade Show</Subheading>
-        </View>
+        <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={'Trade Show'} />
         <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
           <Text>{meta.appointment.time.slice(0,5)}</Text>
           <Text>{transformNiceDate(meta.appointment.date)}</Text>
@@ -143,7 +144,7 @@ export default function TradeShowScreen({ route, navigation }) {
             numColumns={1}
             scrollEnabled={true}
             renderItem={({item, index}) => 
-              <OptionIconLink key={index} text={item.brand.name}><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
+              <OptionIconLink key={index} text={item.brand.name} onPress={() => showBrand(item)}><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
             }
           />
         </View>

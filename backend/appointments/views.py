@@ -11,8 +11,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
-from .models import Appointment
-from .serializer import AppointmentCreateSerializer, AppointmentSerializer, HostRetailerSerializer
+from .models import Appointment, ParticipatingBrand
+from companies.models import Brand
+from .serializer import AppointmentCreateSerializer, SimpleAppointmentSerializer, AppointmentSerializer, HostRetailerSerializer, ParticipatingBrandSerializer
 from companies.serializer import correct_serializer
 from accounts.serializer import UserSerializer
 User = get_user_model()
@@ -82,4 +83,30 @@ class AppointmentInviteRetailParticipantView(APIView):
             'company':company_serializer.data,
             'user':user_serializer.data,
             'appointment': AppointmentSerializer(appointment).data
+        })
+
+class TradeShowBrandView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, tradeshow_id, brand_id, format=None):
+        print(brand_id, "Brand")
+        brand = get_object_or_404(Brand, id=brand_id)
+        print(tradeshow_id, "tradeshow")
+        tradeshow = get_object_or_404(Appointment, id=tradeshow_id)
+        print("is tradeshow")
+        if tradeshow.appointment_type != Appointment.AppointmentType.TRADESHOW:
+            return Http404('No tradeshow with this ID')
+        print("is a part")
+        if brand not in tradeshow.brands.all():
+            return Http404('Brand not a part of this tradeshow')
+
+        company_serializer = correct_serializer(request.user.company)
+        user_serializer = UserSerializer(request.user)
+        brand = get_object_or_404(ParticipatingBrand, brand=brand, appointment=tradeshow)
+        return Response({
+            'company':company_serializer.data,
+            'user':user_serializer.data,
+            'brand': ParticipatingBrandSerializer(brand).data,
+            'appointment': SimpleAppointmentSerializer(tradeshow).data
         })

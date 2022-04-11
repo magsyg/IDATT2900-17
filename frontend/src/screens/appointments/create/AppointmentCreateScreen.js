@@ -353,7 +353,11 @@ return (
       }
   </Modal>
   <View style= {styles.column}>
-      <BackHeader goBack={navigation.goBack} text={appointment_types[ap_type]}/>
+      <BackHeader goBack={navigation.goBack}>
+          <Text style={{color:theme.colors.grey}}>
+          {appointment_types[ap_type]}
+          </Text>
+      </BackHeader>
       <View style={[styles.column, {flex:0, marginVertical:16}]}>
         <ScrollView horizontal={true} contentContainerStyle={{justifyContent:'flex-start'}}>
         <View style={{margin:2}}>
