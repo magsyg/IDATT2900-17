@@ -16,9 +16,10 @@ import TextInput from '../../../components/TextInput'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import HeaderLine from '../../../components/HeaderLine'
 import PickerDropdown from '../../../components/PickerDropdown'
+import AddBrands from '../../../components/AddBrand'
 
 export default function AppointmentCreateScreen({ route, navigation }) {
-  const { ap_type, passed_team } = route.params; // passes params from previous
+  const { ap_type, passed_team, brand_id } = route.params; // passes params from previous
   const [availability, setAvailability] = useState({dates: []}) //TODO add availbility
   const [team, setTeam] = useState({added: [], unadded:[]})
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
@@ -47,47 +48,14 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     hideTime();
   };
   
-  // Brand
+  // Brands
   const [brands, setBrands] = useState({value:[], error:''});
 
-  //Brand management
-  const [selectedBrand, setSelectedBrand] = useState({});
+  // For Showroom only
   const [mainContact, setMainContact] = useState({value:{}, errors:''});
 
-  // Brand search
-  const [brandVisible, setBrandVisible] = useState(false);
-  const [brandSearchResults, setBrandSearchResults] = useState([]);
-  const [searchBrandText, setSearchBrandText] = React.useState('');
-  const showBrandModal = () => setBrandVisible(true);
-  const hideBrandModal = () => setBrandVisible(false);
-
-  const onChangeBrandSearch = text => {
-    const formattedQuery = text.toLowerCase();
-    
-    axios.get(`companies/brands?name=${text}`).then((response) => {
-      setBrandSearchResults(response.data);
-      console.log(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-    setSearchBrandText(text)
-  };
-
   const selectMainContact = (id) => {
-    var result = selectedBrand.members.find(obj => {
+    var result = brands.value[0].members.find(obj => {
       return obj.id === id
     })
     if (typeof result !== "undefined") setMainContact({value:result, errors:''});    
@@ -115,14 +83,16 @@ export default function AppointmentCreateScreen({ route, navigation }) {
       console.log("-----axios----")
     });
   }
+  const addBrand = (item) => {
+    let current_brands = brands.value.filter(ar => ar.id !== item.id)
+    current_brands.push(item);
+    setBrands({value:current_brands, error:''});
+  }
   // Brand management from main form
   const removeBrand = id => {
     setBrands({value:brands.value.filter(ar => ar.id !== id), error:''});
   }
   
-  const selectBrand = (item) => {
-    setSelectedBrand(item);
-  }
 
   // Methods for managing team
   const [teamVisible, setTeamVisible] = useState(false);
@@ -140,7 +110,6 @@ export default function AppointmentCreateScreen({ route, navigation }) {
       let unadded = meta.company.members.filter(ar => !added.find(rm => (rm.id === ar.id))).filter(ar => ar.id !== meta.user.id);
       setTeam({added:added, unadded:unadded})
       console.log(team);
-
   }
   const removeTeam = teamMember => {
     let added = team.added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== meta.user.id && ar.id !== teamMember.id));
@@ -150,11 +119,35 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   }
 
   const appointment_types = {
-    'TS':'Trade Show'
+    'TS':'Trade Show',
+    'SR': 'Showroom',
+    'OT': 'Other Appointment'
   }
   // On load of screen, fetch selected items. 
   useEffect(() => {
+    clearFields();
     setTeam(passed_team); // fetch passed params of team
+
+    if(ap_type==='SR') {
+      axios.get(`companies/brand/${brand_id}/`).then((response) => {
+        setBrands({value:[response.data], error:''})
+      }).catch(function (error) {
+        console.log("-----axios----")
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log("-----axios----")
+      });
+    }
     axios.get('/appointments/create/').then((response) => {
       setMeta(response.data);
     })  .catch(function (error) {
@@ -191,12 +184,11 @@ export default function AppointmentCreateScreen({ route, navigation }) {
       }
       console.log("-----axios----")
     });
-  }, []);
+  }, [ap_type, brand_id]);
 
   // create appointment post
   const createAppointment = () => {
     const payload = {
-      'brands': brands.value.map(item => ({'brand':item.id, 'main_contact':item.main_contact.id})),
       'retailer': {'retailer': meta.company.id, 'organizer': meta.user.id},
       'appointment': {
         'appointment_type': ap_type,
@@ -206,11 +198,20 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         'other_information':otherInfo.value,
       }
     }
+    if (ap_type==='SR') {
+      payload['brands'] = [{'brand':brands.value[0].id, 'main_contact':mainContact.value.id}];
+    } else {
+      payload['brands'] = brands.value.map(item => ({'brand':item.id, 'main_contact':item.main_contact.id}));
+    }
     // Checks if there is an team for this appointment
     if (team.added.length > 0) payload['retailer']['retailer_participants'] =  team.added.map(x => x.id);
 
     axios.post('/appointments/create/', payload).then((response) => {
-      navigation.navigate('AppointmentCreateSelect'); //TODO Replace this with the appointment
+      clearFields();
+      console.log(response);
+      if (ap_type==='TS') {
+        navigation.navigate('TradeShow');
+      } //TODO Replace this with the appointment
     })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -236,6 +237,9 @@ export default function AppointmentCreateScreen({ route, navigation }) {
           if (error.response.data.brands.hasOwnProperty("non_field_errors")) {
             setBrands({value:brands.value, error:error.response.data.brands.non_field_errors[0]})
           }
+          if (error.response.data.brands[0].hasOwnProperty("main_contact")) {
+            setMainContact({value:mainContact.value, error:error.response.data.brands[0].main_contact[0]})
+          }
         }
         console.log(error.response.status);
         console.log(error.response.headers);
@@ -248,6 +252,15 @@ export default function AppointmentCreateScreen({ route, navigation }) {
       }
       console.log("-----axios----")
     });
+  }
+
+  const clearFields = () => {
+    setName({ value: '', error: '' });
+    setOtherInfo({ value: '', error: '' });
+    setDate(new Date());
+    setTime(new Date());
+    setBrands({value:[], error:''});
+    setMainContact({value:{}, errors:''});
   }
 
 return (
@@ -278,64 +291,6 @@ return (
         />
       </View>
     </View>
-  </Modal>
-  <Modal visible={brandVisible} onDismiss={hideBrandModal}>
-      {Object.keys(selectedBrand).length === 0  ?
-        <View style= {styles.column}>
-          <View style={[styles.row, {flex:0,justifyContent:'space-between',marginHorizontal: 8, marginVertical:18}]}>
-            <Searchbar placeholder="Search"       
-                onChangeText={onChangeBrandSearch}
-                value={searchBrandText}
-                style={{backgroundColor:theme.colors.grey, flex:1, borderRadius:100}}
-              />
-            <IconButton icon="close" size={30} color={theme.colors.grey} onPress={hideBrandModal}></IconButton>
-          </View>
-          <View style={{flex:1}}>
-            <FlatList
-              data={brandSearchResults}
-              numColumns={1}
-              scrollEnabled={true}
-              renderItem={({item, index}) => 
-                  <TouchableOpacity onPress={() => selectBrand(item)} key={index} style={[styles.teamRow, {justifyContent:'flex-start'}]}>
-                    <Avatar.Image 
-                      size={40} 
-                      source={require('../../../assets/default_profile.png')}  
-                    />
-                    <Subheading style={{marginLeft:16}}>{item.name}</Subheading>
-                  </TouchableOpacity>
-              }
-            />
-          </View>
-        </View>
-      :
-      <View style= {styles.column}>
-        <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
-          <IconButton icon="close" size={30} color={theme.colors.grey} onPress={hideBrandModal}></IconButton>
-        </View>
-        <View style={{flex:0}}>
-          <Header style={{color:theme.colors.primary, textAlign:'center'}}>Add Brand</Header>
-        </View>
-        <View style={{flex:1, padding:32}}>
-          <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}} onPress={() => selectBrand({})}>
-            <TextInput
-              label="Brand"
-              returnKeyType="next"
-              value={selectedBrand.name}
-              disabled={true}
-            />
-          </TouchableOpacity>
-          <PickerDropdown 
-            selectMethod={selectMainContact}
-            data = {
-              selectedBrand.members.map(item => ({label:item.first_name + " "+ item.last_name, value:item.id}))
-            }
-            label="Main Contact"
-            errors={mainContact.errors}
-          />
-          <Button icon="plus" style={{marginTop:16}} color={theme.colors.grey} mode="outlined" onPress={addBrand}>Add Brand</Button>
-        </View>
-      </View>
-      }
   </Modal>
   <View style= {styles.column}>
       <BackHeader goBack={navigation.goBack}>
@@ -376,6 +331,27 @@ return (
           error={!!name.error}
           errorText={name.error}
         />
+        {(ap_type === 'SR' && brands.value.length > 0) &&
+        <View>
+            <View style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}}>
+              <TextInput
+                label="Brand"
+                returnKeyType="next"
+                value={brands.value[0].name}
+                disabled={true}
+              
+              />
+          </View>
+          <PickerDropdown 
+            selectMethod={selectMainContact}
+            data = {
+              brands.value[0].members.map(item => ({label:item.first_name + " "+ item.last_name, value:item.id}))
+            }
+            label="Main Contact"
+            errors={mainContact.error}
+          />
+        </View>
+        }
         <View>
           <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}} onPress={showDate}>
             <TextInput
@@ -393,6 +369,7 @@ return (
             onCancel={hideDate}
           />
         </View>
+        
         <View>
           <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}} onPress={showTime}>
             <TextInput
@@ -409,6 +386,7 @@ return (
             onCancel={hideTime}
           />
         </View>
+        {ap_type !== 'SR' &&
         <View>
           <HeaderLine containerStyle={{marginVertical:8}} textStyle={{fontSize:16, paddingHorizontal:8}}>
             Brands        
@@ -419,7 +397,7 @@ return (
                   <View style={styles.teamRow}>
                     <TouchableOpacity onPress={() => editBrand(item.id)}>
                       <Text>{item.name}</Text>
-                      <Text>Contact {item.main_contact.name}</Text>
+                      <Text>Contact {(item.hasOwnProperty('main_contact')) && item.main_contact.name}</Text>
                     </TouchableOpacity>
                     <IconButton onPress={() => removeBrand(item.id)} icon='close'/>
                   </View>
@@ -429,8 +407,9 @@ return (
             {brands.error.length > 0 &&
               <Text style={{color:theme.colors.danger, textAlign:'center', marginBottom:16}}>{brands.error}</Text>
             }
-          <Button icon="plus"  color={theme.colors.grey} mode="outlined" onPress={showBrandModal}>Add Brand</Button>
+          <AddBrands completeAction={addBrand} />
         </View>
+        }
         <TextInput
           label="Other Info"
           returnKeyType="next"

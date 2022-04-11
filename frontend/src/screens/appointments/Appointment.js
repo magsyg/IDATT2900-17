@@ -9,8 +9,8 @@ const Tab = createBottomTabNavigator();
 export default function Appointment({ navigation }) {
     return (
       <Tab.Navigator screenOptions={{ headerShown: false, tabBarStyle: { display: 'none' } }}>
-        <Tab.Screen name="TradeShow" component={TradeShow} />
         <Tab.Screen name="AppointmentCreate" component={AppointmentCreate} />
+        <Tab.Screen name="TradeShow" component={TradeShow} />
       </Tab.Navigator>
     );
 }
