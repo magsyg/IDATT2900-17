@@ -25,7 +25,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   const [team, setTeam] = useState([])
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
   
-
+  
   // Form values
   // Simple form
   const [name, setName] = useState({ value: '', error: '' }) 
