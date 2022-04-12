@@ -111,7 +111,7 @@ export default function AppointmentCalendarScreen({ route, navigation }) {
         </TouchableOpacity>
         <Calendar 
           onDayPress={day => {selectDay(day.dateString)}}
-          />
+        />
         <AppointmentsList mode='pretty' data={appointments}/>
       </View>
     </Background>

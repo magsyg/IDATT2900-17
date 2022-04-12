@@ -58,7 +58,7 @@ export default function ShowroomScreen({ route, navigation }) {
         console.log("-----axios----")
       });
     }
-  }, [isFocused]);
+  }, [appointment_id]);
 
   const inviteTeamRetailer = item => {
     const payload = {'user_id':item.id}

@@ -58,22 +58,6 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
     }
   }
   useEffect(() => {
-    /**
-    let d = new Date();
-    let date_list = [];
-    for (let i = 0; i < 10; i++) {
-      date_list.push({
-        date: d,
-        time_list:[
-          '09:00',
-          '10:00',
-          '14:00',
-        ]
-      })
-      d.setDate(d.getDate+1);
-    }
-    setAvailability(date_list);
-    */
     axios.get('/appointments/create/').then((response) => {
       setMeta(response.data);
     })  .catch(function (error) {

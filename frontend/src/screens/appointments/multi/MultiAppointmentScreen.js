@@ -13,12 +13,13 @@ import { transformNiceDate } from '../../../utils/date_management';
 import HeaderWithSub from '../../../components/HeaderWithSub';
 import AddBrands from '../../../components/AddBrand';
 import TeamSelect from '../../../components/TeamSelect';
+import AppointmentInfo from '../../../components/AppointmentInfo';
 
 
 export default function AppointmentScreen({ route, navigation }) {
   const {appointment_id} = route.params
   const [meta, setMeta] = useState({'user': {}, 'company':{'members':[]}, 'appointment':{'id':-1,'retailer':{
-    'retailer_participants':[]},'time':'09:00', 'date':'2022-04-10', 'appointment_type':'TS','brands':[], 'other_information':'lorem ipsum'}})
+    'retailer_participants':[]},'start_time':'09:00','end_time':'10:00', 'date':'2022-04-10', 'appointment_type':'TS','brands':[], 'other_information':'lorem ipsum'}})
 
   const ap_types = {
     'TS':"Trade Show",
@@ -69,7 +70,7 @@ export default function AppointmentScreen({ route, navigation }) {
       }
       console.log("-----axios----")
     });
-  }, []);
+  }, [appointment_id]);
   
   const showBrand = (brand) => {
     navigation.navigate('TradeShowBrand', {'brand_id':brand.brand.id, 'appointment_id':meta.appointment.id});
@@ -106,14 +107,8 @@ export default function AppointmentScreen({ route, navigation }) {
     <Background>
       <View style={styles.column}>
         <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={ap_types[meta.appointment.appointment_type]+ ' appointment'} />
-        <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
-          <Text>{meta.appointment.time.slice(0,5)}</Text>
-          <Text>{transformNiceDate(meta.appointment.date)}</Text>
-        </View>
-        <View style={{marginTop:16}}>
-          <Button style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined">Address</Button>
-          <Button  style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined"> Pass </Button>
-        </View>
+        <AppointmentInfo appointment={meta.appointment}/>
+        
         <TeamSelect 
           containerStyle={{marginVertical:16}} 
           company={meta.company} 
