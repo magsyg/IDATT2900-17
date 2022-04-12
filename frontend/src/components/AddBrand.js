@@ -125,7 +125,7 @@ export default function AddBrands({completeAction}) {
         </View>
       </View>
       }
-  </Modal>
+      </Modal>
       <Button icon="plus" color={theme.colors.grey} mode="outlined" onPress={showBrandModal}>Add Brand</Button>
     </View>
 }

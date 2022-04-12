@@ -17,11 +17,12 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import HeaderLine from '../../../components/HeaderLine'
 import PickerDropdown from '../../../components/PickerDropdown'
 import AddBrands from '../../../components/AddBrand'
+import TeamSelect from '../../../components/TeamSelect'
 
 export default function AppointmentCreateScreen({ route, navigation }) {
   const { ap_type, passed_team, brand_id } = route.params; // passes params from previous
   const [availability, setAvailability] = useState({dates: []}) //TODO add availbility
-  const [team, setTeam] = useState({added: [], unadded:[]})
+  const [team, setTeam] = useState([])
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
   
 
@@ -95,29 +96,19 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   
 
   // Methods for managing team
-  const [teamVisible, setTeamVisible] = useState(false);
-  const showTeamModal = () => setTeamVisible(true);
-  const hideTeamModal = () => setTeamVisible(false);
-
   const manageTeam = teamMember => {
-      console.log(meta.user.id);
-      var added = team.added;
-      if (teamMember.id != -1) {
-        team.added.push(teamMember)
-        added = team.added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== meta.user.id);
-      }
-
-      let unadded = meta.company.members.filter(ar => !added.find(rm => (rm.id === ar.id))).filter(ar => ar.id !== meta.user.id);
-      setTeam({added:added, unadded:unadded})
-      console.log(team);
+    var added = team;
+    if (teamMember.id != -1) {
+      added.push(teamMember)
+      added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== meta.user.id);
+    }
+    setTeam(added)
   }
+
   const removeTeam = teamMember => {
-    let added = team.added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== meta.user.id && ar.id !== teamMember.id));
-    let unadded = meta.company.members.filter(ar => !added.find(rm => (rm.id === ar.id || ar.id === meta.user.id)))
-
-    setTeam({added:added, unadded:unadded})
+    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== meta.user.id && ar.id !== teamMember.id));
+    setTeam(added)
   }
-
   const appointment_types = {
     'TS':'Trade Show',
     'SR': 'Showroom',
@@ -204,7 +195,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
       payload['brands'] = brands.value.map(item => ({'brand':item.id, 'main_contact':item.main_contact.id}));
     }
     // Checks if there is an team for this appointment
-    if (team.added.length > 0) payload['retailer']['retailer_participants'] =  team.added.map(x => x.id);
+    if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
 
     axios.post('/appointments/create/', payload).then((response) => {
       clearFields();
@@ -265,63 +256,22 @@ export default function AppointmentCreateScreen({ route, navigation }) {
 
 return (
 <Background>
-<Modal visible={teamVisible} onDismiss={hideTeamModal}>
-    <View style= {styles.column}>
-      <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
-        <IconButton icon="close" size={30} color={theme.colors.grey} onPress={hideTeamModal}></IconButton>
-      </View>
-      <View style={{flex:0}}>
-        <Header style={{color:theme.colors.primary, textAlign:'center'}}>ADD TEAM MEMBERS</Header>
-      </View>
-      <View style={{flex:1, paddingHorizontal:32}}>
-        <FlatList
-          data={team.unadded}
-          numColumns={1}
-          scrollEnabled={true}
-          renderItem={({item, index}) => 
-            <View key={index} style={styles.teamRow}>
-                <Avatar.Image 
-                  size={40} 
-                  source={require('../../../assets/default_profile.png')}  
-                />
-                <Subheading>{item.first_name} {item.last_name}</Subheading>
-                <IconButton icon='plus' onPress={() => manageTeam(item)} color={theme.colors.grey}/>
-            </View>
-          }
-        />
-      </View>
-    </View>
-  </Modal>
   <View style= {styles.column}>
       <BackHeader goBack={navigation.goBack}>
           <Text style={{color:theme.colors.grey}}>
           {appointment_types[ap_type]}
           </Text>
       </BackHeader>
-      <View style={[styles.column, {flex:0, marginVertical:16}]}>
-        <ScrollView horizontal={true} contentContainerStyle={{justifyContent:'flex-start'}}>
-        <View style={{margin:2}}>
-             <Avatar.Image 
-                    size={48} 
-                    source={require('../../../assets/default_profile.png')}  
-            />
-          </View>
-          {
-          team.added.map((item, index) => {
-              return(
-                <TouchableOpacity key={index} style={{margin:2}} onPress={() => removeTeam(item)}>
-                  <Avatar.Image 
-                    size={48} 
-                    source={require('../../../assets/default_profile.png')}  
-                  />
-                </TouchableOpacity>
-              );     
-            })
-          }
-        <IconButton icon='plus' onPress={showTeamModal} color={theme.colors.grey}/>
-        </ScrollView>
-        <Availabilty/>
-      </View>
+        <TeamSelect 
+          containerStyle={{marginVertical:16}}
+          company={meta.company} 
+          selectedUsers={team} 
+          main_user={meta.user}
+          addMethod={manageTeam}
+          removeMethod={removeTeam}
+          start={true}
+        />
+      <Availabilty/>
       <View style={{flex:2}}>
         <TextInput
           label="Title"

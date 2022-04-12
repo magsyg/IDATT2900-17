@@ -72,18 +72,15 @@ class AppointmentInviteRetailParticipantView(APIView):
         if user not in appointment.retailer.retailer.members.all():
             raise PermissionDenied('You cant invite an outside member to this event')
 
+        print(len(AppointmentSerializer(appointment).data['retailer']['retailer_participants']))
         if user != appointment.retailer.organizer:
             appointment.retailer.retailer_participants.add(user)
             
-        
-        company_serializer = correct_serializer(request.user.company)
-        user_serializer = UserSerializer(request.user)
-        appointment = Appointment.objects.filter(appointment_type=Appointment.AppointmentType.TRADESHOW).first()
+        retailer_participants = AppointmentSerializer(appointment).data['retailer']['retailer_participants']
+        print(len(retailer_participants))
 
         return Response({
-            'company':company_serializer.data,
-            'user':user_serializer.data,
-            'appointment': AppointmentSerializer(appointment).data
+            'retailer_participants':retailer_participants
         })
 
 class TradeShowBrandView(APIView):
@@ -127,4 +124,27 @@ class AppointmentBrandInvite(APIView):
         brand = serializer.create()
         return Response({
             'brand': ParticipatingBrandSerializer(brand).data
+        })
+
+
+class ShowroomView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        showroom_id = Appointment.objects.filter(appointment_type=Appointment.AppointmentType.SHOWROOM).first().id #TODO REMOVE
+        showroom = get_object_or_404(Appointment, id=showroom_id)
+        if request.user not in showroom.retailer.retailer.members.all():
+            raise PermissionDenied('You cant invite to an event you are not a part of')
+        if showroom.appointment_type != Appointment.AppointmentType.SHOWROOM:
+            return Http404('No showroom with this ID')
+
+        company_serializer = correct_serializer(request.user.company)
+        user_serializer = UserSerializer(request.user)
+        brand = get_object_or_404(ParticipatingBrand, brand=showroom.brands.first(), appointment=showroom)
+        return Response({
+            'company':company_serializer.data,
+            'user':user_serializer.data,
+            'brand': ParticipatingBrandSerializer(brand).data,
+            'appointment': AppointmentSerializer(showroom).data
         })

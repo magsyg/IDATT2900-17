@@ -12,22 +12,19 @@ import Link from '../../../components/Link';
 import { transformNiceDate } from '../../../utils/date_management';
 import HeaderWithSub from '../../../components/HeaderWithSub';
 import AddBrands from '../../../components/AddBrand';
+import TeamSelect from '../../../components/TeamSelect';
 
 
 export default function TradeShowScreen({ route, navigation }) {
   const [meta, setMeta] = useState({'user': {}, 'company':{'members':[]}, 'appointment':{'id':-1,'retailer':{
     'retailer_participants':[]},'time':'09:00', 'date':'2022-04-10', 'brands':[], 'other_information':'lorem ipsum'}})
 
-  // team
-  const [teamVisible, setTeamVisible] = useState(false);
-  const showTeamModal = () => setTeamVisible(true);
-  const hideTeamModal = () => setTeamVisible(false);
-
-  const inviteTeamRetailer = id => {
-    const payload = {'user_id':id}
+  const inviteTeamRetailer = item => {
+    const payload = {'user_id':item.id}
     axios.post(`/appointments/${meta.appointment.id}/retailer/invite/`, payload).then((response) => {
-      setMeta(response.data);
-      console.log(response.data);
+      let temp_meta = meta
+      temp_meta.appointment.retailer.retailer_participants = response.data.retailer_participants
+      setMeta(temp_meta);
     })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -104,33 +101,6 @@ export default function TradeShowScreen({ route, navigation }) {
 
   return (
     <Background>
-      <Modal visible={teamVisible} onDismiss={hideTeamModal}>
-        <View style= {styles.column}>
-          <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
-            <IconButton icon="close" size={30} color={theme.colors.grey} onPress={hideTeamModal}></IconButton>
-          </View>
-          <View style={{flex:0}}>
-            <Header style={{color:theme.colors.primary, textAlign:'center'}}>ADD TEAM MEMBERS</Header>
-          </View>
-          <View style={{flex:1, paddingHorizontal:32}}>
-            <FlatList
-              data={meta.company.members.filter(ar => !meta.appointment.retailer.retailer_participants.find(rm => (rm.id === ar.id))).filter(ar => ar.id !== meta.appointment.retailer.organizer.id)}
-              numColumns={1}
-              scrollEnabled={true}
-              renderItem={({item, index}) => 
-                <View key={index} style={styles.teamRow}>
-                    <Avatar.Image 
-                      size={40} 
-                      source={require('../../../assets/default_profile.png')}  
-                    />
-                    <Subheading>{item.first_name} {item.last_name}</Subheading>
-                    <IconButton icon='plus' onPress={() => inviteTeamRetailer(item.id)} color={theme.colors.grey}/>
-                </View>
-              }
-            />
-          </View>
-        </View>
-      </Modal>
       <View style={styles.column}>
         <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={'Trade Show'} />
         <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
@@ -141,30 +111,14 @@ export default function TradeShowScreen({ route, navigation }) {
           <Button style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined">Address</Button>
           <Button  style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined"> Pass </Button>
         </View>
-        <View style={{marginTop:16}}>
-        <ScrollView horizontal={true} contentContainerStyle={{flex: 1,justifyContent:'flex-end'}}>
-          <IconButton icon='plus' onPress={showTeamModal} color={theme.colors.grey}/>
-          <View style={{margin:2}}>
-              <Avatar.Image 
-                      size={48} 
-                      source={require('../../../assets/default_profile.png')}  
-              />
-            </View>
-            {
-            meta.appointment.retailer.retailer_participants.map((item, index) => {
-                return(
-                  <TouchableOpacity key={index} style={{margin:2}}>
-                    <Avatar.Image 
-                      size={48} 
-                      source={require('../../../assets/default_profile.png')}  
-                    />
-                  </TouchableOpacity>
-                );     
-              })
-            }
-          
-          </ScrollView>
-        </View>
+        <TeamSelect 
+          containerStyle={{marginVertical:16}} 
+          company={meta.company} 
+          selectedUsers={meta.appointment.retailer.retailer_participants} 
+          main_user={meta.appointment.retailer.organizer}
+          addMethod={inviteTeamRetailer}
+         />
+
         <View style={{marginTop:16}}>
           <View style={[styles.row, {justifyContent:'space-between'}]}>
             <Header>Brands</Header>
