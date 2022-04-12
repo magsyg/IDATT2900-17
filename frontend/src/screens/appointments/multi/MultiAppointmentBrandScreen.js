@@ -18,8 +18,8 @@ import Button from '../../../components/Button';
 import OutlinedButton from '../../../components/OutlinedButton';
 
 
-export default function TradeShowBrandScreen({ route, navigation }) {
-  const {tradeshow_id, brand_id} = route.params
+export default function MultiAppointmentBrandScreen({ route, navigation }) {
+  const {appointment_id, brand_id} = route.params
   const brand ={'name':'name'}
   const [meta, setMeta] = useState({'user': {}, 
     'company':{'members':[]}, 
@@ -30,7 +30,7 @@ export default function TradeShowBrandScreen({ route, navigation }) {
   useEffect(() => {
     // Trigger only on enter
     if (isFocused) {
-      axios.get(`/appointments/tradeshow/${tradeshow_id}/brand/${brand_id}`).then((response) => {
+      axios.get(`/appointments/${appointment_id}/brand/${brand_id}`).then((response) => {
         setMeta(response.data);
         console.log("found appointments")
       })  .catch(function (error) {

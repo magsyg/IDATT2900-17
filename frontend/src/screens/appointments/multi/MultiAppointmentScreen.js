@@ -15,7 +15,8 @@ import AddBrands from '../../../components/AddBrand';
 import TeamSelect from '../../../components/TeamSelect';
 
 
-export default function TradeShowScreen({ route, navigation }) {
+export default function AppointmentScreen({ route, navigation }) {
+  const {appointment_id} = route.params
   const [meta, setMeta] = useState({'user': {}, 'company':{'members':[]}, 'appointment':{'id':-1,'retailer':{
     'retailer_participants':[]},'time':'09:00', 'date':'2022-04-10', 'brands':[], 'other_information':'lorem ipsum'}})
 
@@ -44,7 +45,7 @@ export default function TradeShowScreen({ route, navigation }) {
   }
 
   useEffect(() => {
-    axios.get('/appointments/get/').then((response) => {
+    axios.get(`/appointments/${appointment_id}`).then((response) => {
       setMeta(response.data);
       console.log(response.data);
     })  .catch(function (error) {
@@ -66,7 +67,7 @@ export default function TradeShowScreen({ route, navigation }) {
   }, []);
   
   const showBrand = (brand) => {
-    navigation.navigate('TradeShowBrand', {'brand_id':brand.brand.id, 'tradeshow_id':meta.appointment.id});
+    navigation.navigate('TradeShowBrand', {'brand_id':brand.brand.id, 'appointment_id':meta.appointment.id});
   }
 
   const inviteBrand = (brand) => {
@@ -76,8 +77,6 @@ export default function TradeShowScreen({ route, navigation }) {
       'main_contact': brand.main_contact.id
 
     }
-    console.log(brand);
-    console.log(payload)
     axios.post('/appointments/brand/invite/', payload).then((response) => {
       navigation.navigate('TradeShowBrand', {'brand_id':brand.id, 'tradeshow_id':meta.appointment.id});
     })  .catch(function (error) {
@@ -97,7 +96,6 @@ export default function TradeShowScreen({ route, navigation }) {
       console.log("-----axios----")
     });
   }
-
 
   return (
     <Background>
