@@ -1,5 +1,7 @@
-from tabnanny import verbose
+import datetime
 from django.db import models
+from django.utils import timezone
+from django.db.models import Q
 from companies.models import Retailer, Brand
 from django.contrib.auth import get_user_model
 
@@ -48,6 +50,18 @@ class Appointment(models.Model):
         - brand
         - address
     """
+    @staticmethod
+    def get_user_appointments(user: User, date: datetime = timezone.now(), month: bool = False):
+        # TODO add params for upcomming, and specific dates
+        participating_appointments = Appointment.objects.filter(
+            Q(retailer__organizer=user)|
+            Q(retailer__retailer_participants=user))
+        
+        # Filtering by date:
+        participating_appointments = participating_appointments.filter(date__year=date.year, date__month=date.month)
+        if not month:
+            participating_appointments = participating_appointments.filter(date__day=date.day)
+        return participating_appointments.distinct().order_by('date','time')
 
 class HostRetailer(models.Model):
     retailer = models.ForeignKey(Retailer, blank=False, null=False, on_delete=models.CASCADE)

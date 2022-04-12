@@ -1,5 +1,6 @@
 # imports
 from logging import raiseExceptions
+from django.utils import timezone
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, get_user_model, logout
@@ -41,6 +42,20 @@ class AppointmentCreateView(APIView):
 
 
         return Response(appointment.data)
+
+class AppointmentUserListView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SimpleAppointmentSerializer
+
+    def get(self, request, format=None):
+        date = self.request.query_params.get('date')
+        date = timezone.datetime.strptime(date,'%Y-%m-%d') if date else timezone.now()
+
+        appointments = Appointment.get_user_appointments(user=request.user, date = date)
+
+        return Response(self.serializer_class(appointments,many=True).data)
+
 
 
 class AppointmentView(APIView):
