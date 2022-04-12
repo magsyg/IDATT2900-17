@@ -22,7 +22,7 @@ import AddBrands from '../../../components/AddBrand';
 
 
 export default function ShowroomScreen({ route, navigation }) {
-  //const {showroom_id} = route.params
+  const {appointment_id} = route.params
   
   const [meta, setMeta] = useState({
     'user': {}, 
@@ -40,7 +40,7 @@ export default function ShowroomScreen({ route, navigation }) {
   useEffect(() => {
     // Trigger only on enter
     if (isFocused) {
-      axios.get(`/appointments/showroom/`).then((response) => {
+      axios.get(`/appointments/showroom/${appointment_id}`).then((response) => {
         setMeta(response.data);
         console.log(response.data.company.members);
         console.log("found appointments")

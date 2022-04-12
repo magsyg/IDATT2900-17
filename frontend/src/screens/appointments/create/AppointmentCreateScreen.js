@@ -199,20 +199,25 @@ export default function AppointmentCreateScreen({ route, navigation }) {
 
     axios.post('/appointments/create/', payload).then((response) => {
       clearFields();
-      console.log(response);
-      if (ap_type==='TS') {
-        navigation.navigate('TradeShow');
-      } //TODO Replace this with the appointment
+      if (response.data.appointment_type!=='SR') {
+        navigation.navigate('MultiAppointment',{ 
+          screen: 'MultiAppointmentScreen',
+          params:{appointment_id:response.data.id}
+        });
+      } else {
+        navigation.navigate('Showroom',{ 
+          screen: 'ShowroomScreen',
+          params:{appointment_id:response.data.id}
+        });
+      }
     })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
         if (error.response.data.hasOwnProperty("appointment")) {
-          console.log("has appointment error")
           if(error.response.data.appointment.hasOwnProperty("name")) {
             setName({error: error.response.data.appointment.name[0]})
-            console.log()
           }
           if(error.response.data.appointment.hasOwnProperty("time")) {
             setTime({error: error.response.data.appointment.time[0]})

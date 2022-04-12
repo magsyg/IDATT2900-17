@@ -47,11 +47,12 @@ class AppointmentView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
+    def get(self, request, pk, format=None):
         company_serializer = correct_serializer(request.user.company)
         user_serializer = UserSerializer(request.user)
-        appointment = Appointment.objects.filter(appointment_type=Appointment.AppointmentType.TRADESHOW).first()
-
+        appointment = get_object_or_404(Appointment, id=pk)
+        if request.user not in appointment.retailer.retailer.members.all(): #TODO add for brands
+            raise PermissionDenied('You cant view this event')
         return Response({
             'company':company_serializer.data,
             'user':user_serializer.data,
@@ -87,9 +88,9 @@ class TradeShowBrandView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, tradeshow_id, brand_id, format=None):
+    def get(self, request, pk, brand_id, format=None):
         brand = get_object_or_404(Brand, id=brand_id)
-        tradeshow = get_object_or_404(Appointment, id=tradeshow_id)
+        tradeshow = get_object_or_404(Appointment, id=pk)
         if request.user not in tradeshow.retailer.retailer.members.all():
             raise PermissionDenied('You cant invite to an event you are not a part of')
         if tradeshow.appointment_type != Appointment.AppointmentType.TRADESHOW:
@@ -131,11 +132,10 @@ class ShowroomView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        showroom_id = Appointment.objects.filter(appointment_type=Appointment.AppointmentType.SHOWROOM).first().id #TODO REMOVE
-        showroom = get_object_or_404(Appointment, id=showroom_id)
+    def get(self, request, pk, format=None):
+        showroom = get_object_or_404(Appointment, id=pk)
         if request.user not in showroom.retailer.retailer.members.all():
-            raise PermissionDenied('You cant invite to an event you are not a part of')
+            raise PermissionDenied('You dont have permission to view this showroom')
         if showroom.appointment_type != Appointment.AppointmentType.SHOWROOM:
             return Http404('No showroom with this ID')
 
