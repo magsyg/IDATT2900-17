@@ -23,9 +23,13 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
   const brand ={'name':'name'}
   const [meta, setMeta] = useState({'user': {}, 
     'company':{'members':[]}, 
-    'appointment':{'name':'Tradeshow Name','id':-1},
+    'appointment':{'name':'Tradeshow Name', 'appointment_type':'TS','id':-1},
     'brand':{'brand':{'name':'Brand Name'},'main_contact':{}}})
 
+  const ap_types = {
+    'TS':"Trade Show",
+    'OT': "Other"
+  }
   const isFocused = useIsFocused(); //method for determining if the screen is entered
   useEffect(() => {
     // Trigger only on enter

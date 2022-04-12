@@ -18,7 +18,12 @@ import TeamSelect from '../../../components/TeamSelect';
 export default function AppointmentScreen({ route, navigation }) {
   const {appointment_id} = route.params
   const [meta, setMeta] = useState({'user': {}, 'company':{'members':[]}, 'appointment':{'id':-1,'retailer':{
-    'retailer_participants':[]},'time':'09:00', 'date':'2022-04-10', 'brands':[], 'other_information':'lorem ipsum'}})
+    'retailer_participants':[]},'time':'09:00', 'date':'2022-04-10', 'appointment_type':'TS','brands':[], 'other_information':'lorem ipsum'}})
+
+  const ap_types = {
+    'TS':"Trade Show",
+    'OT': "Other"
+  }
 
   const inviteTeamRetailer = item => {
     const payload = {'user_id':item.id}
@@ -100,7 +105,7 @@ export default function AppointmentScreen({ route, navigation }) {
   return (
     <Background>
       <View style={styles.column}>
-        <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={'Trade Show'} />
+        <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={ap_types[meta.appointment.appointment_type]+ ' appointment'} />
         <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
           <Text>{meta.appointment.time.slice(0,5)}</Text>
           <Text>{transformNiceDate(meta.appointment.date)}</Text>
