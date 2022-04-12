@@ -31,18 +31,18 @@ class AppointmentSerializer(serializers.ModelSerializer):
     retailer = HostRetailerSerializer(read_only=True) 
     class Meta:
         model = Appointment
-        fields = ('id', 'name', 'appointment_type', 'date','time','other_information', 'retailer','brands')
+        fields = ('id', 'name', 'appointment_type', 'date','start_time','end_time','other_information', 'retailer','brands')
 
  
 class SimpleAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ('id', 'name', 'appointment_type', 'date','time','other_information')
+        fields = ('id', 'name', 'appointment_type', 'date','start_time','end_time','other_information')
 
 class AppointmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ('id', 'name', 'appointment_type', 'date','time','other_information')
+        fields = ('id', 'name', 'appointment_type', 'date','start_time','end_time','other_information')
 
 
 class HostRetailerCreateSerializer(serializers.ModelSerializer):
@@ -115,7 +115,8 @@ class AppointmentCreateSerializer(serializers.Serializer):
             name=self.validated_data['appointment']['name'],
             retailer=host_retailer,
             appointment_type=self.validated_data['appointment']['appointment_type'],
-            time=self.validated_data['appointment']['time'],
+            start_time=self.validated_data['appointment']['start_time'],
+            end_time=self.validated_data['appointment']['end_time'],
             date=self.validated_data['appointment']['date'],
             other_information=self.validated_data['appointment']['other_information'],
             )

@@ -37,7 +37,7 @@ export default function AppointmentsList({ data, mode }) {
   function BasicRow(props) {
     return (
       <View key={props.index} style={[styles.row]}>
-        <Text style={[styles.col]}>{props.item.time.slice(0,5)} - {props.item.time.slice(0,5)}</Text>
+        <Text style={[styles.col]}>{props.item.start_time.slice(0,5)} - {props.item.end_time.slice(0,5)}</Text>
         <TouchableOpacity style={[styles.row,  {flex:3}]} onPress={() => goToAppointment(props.item)}>
           <Text style={{flex:1, textAlign:'center'}}>{props.item.name}</Text>
           <Text style={{color:theme.colors.grey}}>{props.item.appointment_type}</Text>
@@ -50,7 +50,7 @@ export default function AppointmentsList({ data, mode }) {
     return (
       <View key={props.index} style={[styles.row]}>
         <Icon size={16} name='circle' color={appointment_colors[props.item.appointment_type]}></Icon>
-        <Text style={{flex:1, textAlign:'center'}}>{props.item.time.slice(0,5)} - {props.item.time.slice(0,5)}</Text>
+        <Text style={{flex:1, textAlign:'center'}}>{props.item.start_time.slice(0,5)} - {props.item.end_time.slice(0,5)}</Text>
 
         <OutlinedTouch style={{flex:1, padding:0}} onPress={() => goToAppointment(props.item)}>
           <Text style={{flex:1, textAlign:'center'}}>{props.item.name}</Text>

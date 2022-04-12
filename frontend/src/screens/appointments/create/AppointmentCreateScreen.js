@@ -2,18 +2,16 @@ import React, { useState, useEffect, useReducer } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Picker } from 'react-native'
 import { Text, Subheading, Searchbar, Avatar, IconButton, Button } from 'react-native-paper'
-import Background from '../../../components/Background'
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Header from '../../../components/Header'
-import OptionIconLink from '../../../components/OptionIconLink'
-import BackButton from '../../../components/BackButton'
+import Background from '../../../components/Background'
 
 import { theme } from '../../../core/theme'
 import { currentDate } from '../../../utils/date_management';
 import BackHeader from '../../../components/BackHeader'
 import Availabilty from '../../../components/Availability'
 import TextInput from '../../../components/TextInput'
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import HeaderLine from '../../../components/HeaderLine'
 import PickerDropdown from '../../../components/PickerDropdown'
 import AddBrands from '../../../components/AddBrand'
@@ -25,7 +23,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   const [team, setTeam] = useState([])
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
   
-  
+
   // Form values
   // Simple form
   const [name, setName] = useState({ value: '', error: '' }) 
@@ -40,13 +38,22 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     hideDate();
   };
   // TIME
-  const [time, setTime] = useState(new Date());
-  const [timeVisible, setTimeVisible] = useState(false);
-  const showTime = () => {setTimeVisible(true);};
-  const hideTime = () => {setTimeVisible(false);};
-  const handleTime = (time) => {
-    setTime(time);
-    hideTime();
+  const [startTime, setStartTime] = useState(new Date());
+  const [startTimeVisible, setStartTimeVisible] = useState(false);
+  const showStartTime = () => {setStartTimeVisible(true);};
+  const hideStartTime = () => {setStartTimeVisible(false);};
+  const handleStartTime = (time) => {
+    setStartTime(time);
+    hideStartTime();
+  };
+
+  const [endTime, setEndTime] = useState(new Date());
+  const [endTimeVisible, setEndTimeVisible] = useState(false);
+  const showEndTime = () => {setEndTimeVisible(true);};
+  const hideEndTime = () => {setEndTimeVisible(false);};
+  const handleEndTime = (time) => {
+    setEndTime(time);
+    hideEndTime();
   };
   
   // Brands
@@ -94,7 +101,6 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     setBrands({value:brands.value.filter(ar => ar.id !== id), error:''});
   }
   
-
   // Methods for managing team
   const manageTeam = teamMember => {
     var added = team;
@@ -185,7 +191,8 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         'appointment_type': ap_type,
         'name':name.value, 
         'date':date.toISOString().substring(0, 10),
-        'time':time.toTimeString().slice(0,5),
+        'start_time':startTime.toTimeString().slice(0,5),
+        'end_time':endTime.toTimeString().slice(0,5),
         'other_information':otherInfo.value,
       }
     }
@@ -219,8 +226,11 @@ export default function AppointmentCreateScreen({ route, navigation }) {
           if(error.response.data.appointment.hasOwnProperty("name")) {
             setName({error: error.response.data.appointment.name[0]})
           }
-          if(error.response.data.appointment.hasOwnProperty("time")) {
-            setTime({error: error.response.data.appointment.time[0]})
+          if(error.response.data.appointment.hasOwnProperty("start_time")) {
+            setStartTime({error: error.response.data.appointment.start_time[0]})
+          }
+          if(error.response.data.appointment.hasOwnProperty("end_time")) {
+            setEndTime({error: error.response.data.appointment.end_time[0]})
           }
           if(error.response.data.appointment.hasOwnProperty("date")) {
             setDate({error: error.response.data.appointment.date[0]})
@@ -254,7 +264,8 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     setName({ value: '', error: '' });
     setOtherInfo({ value: '', error: '' });
     setDate(new Date());
-    setTime(new Date());
+    setStartTime(new Date());
+    setEndTime(new Date());
     setBrands({value:[], error:''});
     setMainContact({value:{}, errors:''});
   }
@@ -325,20 +336,34 @@ return (
           />
         </View>
         
-        <View>
-          <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}} onPress={showTime}>
+        <View style={styles.row}>
+          <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1, flex:1}} onPress={showStartTime}>
             <TextInput
-              label="Time"
+              label="Start Time"
               returnKeyType="next"
-              value={time.toTimeString().slice(0,5)}
+              value={startTime.toTimeString().slice(0,5)}
               disabled={true}
             />
           </TouchableOpacity>
           <DateTimePickerModal
-            isVisible={timeVisible}
+            isVisible={startTimeVisible}
             mode="time"
-            onConfirm={handleTime}
-            onCancel={hideTime}
+            onConfirm={handleStartTime}
+            onCancel={hideStartTime}
+          />
+          <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1,flex:1}} onPress={showEndTime}>
+            <TextInput
+              label="End Time"
+              returnKeyType="next"
+              value={endTime.toTimeString().slice(0,5)}
+              disabled={true}
+            />
+          </TouchableOpacity>
+          <DateTimePickerModal
+            isVisible={endTimeVisible}
+            mode="time"
+            onConfirm={handleEndTime}
+            onCancel={hideEndTime}
           />
         </View>
         {ap_type !== 'SR' &&

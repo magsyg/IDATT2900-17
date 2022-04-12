@@ -17,13 +17,14 @@ class Appointment(models.Model):
     appointment_type = models.CharField(max_length=2, choices=AppointmentType.choices, default=AppointmentType.OTHER, blank=False, null=False, verbose_name="Appointment Type")
 
     # participants
-    retailer = models.ForeignKey('appointments.HostRetailer', related_name='hosted_appointments', null=False, on_delete=models.CASCADE,
+    retailer = models.ForeignKey('appointments.HostRetailer', related_name='hosted_appointment', null=False, on_delete=models.CASCADE,
     verbose_name='Retailer')
     brands = models.ManyToManyField(Brand, through='appointments.ParticipatingBrand', related_name='participated_appointments', verbose_name='Brands')
     
     # scheduling information
     date = models.DateField(null=False, blank=False, verbose_name='Date')
-    time = models.TimeField(null=False, blank=False, verbose_name='Time')
+    start_time = models.TimeField(null=False, blank=False, verbose_name='Start time')
+    end_time = models.TimeField(null=False, blank=False, verbose_name='End time')
     #TODO add address
 
     other_information = models.TextField(null=True, blank=True, max_length=200, verbose_name='Other information')
@@ -61,7 +62,7 @@ class Appointment(models.Model):
         participating_appointments = participating_appointments.filter(date__year=date.year, date__month=date.month)
         if not month:
             participating_appointments = participating_appointments.filter(date__day=date.day)
-        return participating_appointments.distinct().order_by('date','time')
+        return participating_appointments.distinct().order_by('date','start_time')
 
 class HostRetailer(models.Model):
     retailer = models.ForeignKey(Retailer, blank=False, null=False, on_delete=models.CASCADE)

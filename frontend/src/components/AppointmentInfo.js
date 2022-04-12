@@ -9,7 +9,7 @@ export default function AppointmentInfo({containerStyle, appointment}) {
   return (
     <View style={containerStyle}>
         <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
-          <Text>{appointment.time.slice(0,5)}</Text>
+          <Text>{appointment.start_time.slice(0,5)} - {appointment.end_time.slice(0,5)}</Text>
           <Text>{transformNiceDate(appointment.date)}</Text>
         </View>
         <View style={{marginTop:16}}>
