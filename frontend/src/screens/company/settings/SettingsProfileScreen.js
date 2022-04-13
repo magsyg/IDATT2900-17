@@ -45,7 +45,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
     if (name.toLowerCase().includes(query) || dial_code.includes(query)) {
       return true;
     }
-  
+
     return false;
   };
 

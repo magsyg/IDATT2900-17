@@ -43,7 +43,7 @@ class AppointmentCreateView(APIView):
 
         return Response(appointment.data)
 
-class AppointmentUserListView(APIView):
+class AppointmentCurrentUserListView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = SimpleAppointmentSerializer
@@ -53,6 +53,23 @@ class AppointmentUserListView(APIView):
         date = timezone.datetime.strptime(date,'%Y-%m-%d') if date else timezone.now()
 
         appointments = Appointment.get_user_appointments(user=request.user, date = date)
+
+        return Response(self.serializer_class(appointments,many=True).data)
+
+class AppointmentUserListView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SimpleAppointmentSerializer
+
+    def get(self, request, user_id, format=None):
+        profile_user = get_object_or_404(User, id=user_id)
+        if not profile_user in request.user.company.members.all(): # Have to be a member of company to view calendar
+            raise PermissionDenied('You cant view this users appointments')
+
+        date = self.request.query_params.get('date')
+        date = timezone.datetime.strptime(date,'%Y-%m-%d') if date else timezone.now()
+
+        appointments = Appointment.get_user_appointments(user=profile_user, date = date)
 
         return Response(self.serializer_class(appointments,many=True).data)
 

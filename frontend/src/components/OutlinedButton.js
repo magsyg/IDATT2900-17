@@ -20,6 +20,7 @@ export default function OutlinedButton({style, labelStyle, ...props }) {
 const styles = StyleSheet.create({
   buttonText: {
     color:theme.colors.primary, 
+    textAlign:'center',
     fontSize:11
   },
   buttonStyle: {

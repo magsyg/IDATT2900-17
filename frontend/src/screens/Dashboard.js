@@ -100,7 +100,7 @@ export default function Dashboard({ navigation }) {
                 <Link>All</Link>
               </View>
           </View>
-          <AppointmentsList data={appointments}/>
+          <AppointmentsList data={appointments} />
         </View>         
         <Button mode="contained" style = {styles.button}  onPress={changeCalendar}/>
         { showCalendar ? <CalendarFull /> : <AgendaScreen /> }
