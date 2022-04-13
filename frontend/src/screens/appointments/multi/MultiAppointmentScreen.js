@@ -73,7 +73,7 @@ export default function AppointmentScreen({ route, navigation }) {
   }, [appointment_id]);
   
   const showBrand = (brand) => {
-    navigation.navigate('TradeShowBrand', {'brand_id':brand.brand.id, 'appointment_id':meta.appointment.id});
+    navigation.navigate('MultiAppointmentBrand', {'brand_id':brand.brand.id, 'appointment_id':meta.appointment.id});
   }
 
   const inviteBrand = (brand) => {
@@ -84,7 +84,7 @@ export default function AppointmentScreen({ route, navigation }) {
 
     }
     axios.post('/appointments/brand/invite/', payload).then((response) => {
-      navigation.navigate('TradeShowBrand', {'brand_id':brand.id, 'tradeshow_id':meta.appointment.id});
+      navigation.navigate('MultiAppointmentBrand', {'brand_id':brand.id, 'tradeshow_id':meta.appointment.id});
     })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {

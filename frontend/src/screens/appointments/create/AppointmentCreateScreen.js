@@ -18,7 +18,7 @@ import AddBrands from '../../../components/AddBrand'
 import TeamSelect from '../../../components/TeamSelect'
 
 export default function AppointmentCreateScreen({ route, navigation }) {
-  const { ap_type, passed_team, brand_id } = route.params; // passes params from previous
+  const { ap_type, passed_team, brand_id, passed_date, passed_time } = route.params; // passes params from previous
   const [availability, setAvailability] = useState({dates: []}) //TODO add availbility
   const [team, setTeam] = useState([])
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
@@ -56,6 +56,14 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     hideEndTime();
   };
   
+  // Time via availability
+  const handleAvailability = (selectedDate, selectedTime) => {
+    setDate(new Date(selectedDate));
+    let userTimezoneOffset = date.getTimezoneOffset() * 60000;
+    let time  = new Date(selectedDate+"T"+selectedTime)
+    setStartTime(new Date(time.getTime() + userTimezoneOffset));
+  }
+
   // Brands
   const [brands, setBrands] = useState({value:[], error:''});
 
@@ -124,7 +132,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   useEffect(() => {
     clearFields();
     setTeam(passed_team); // fetch passed params of team
-
+    if (passed_date.length > 0 && passed_time.length > 0) handleAvailability(passed_date,passed_time);
     if(ap_type==='SR') {
       axios.get(`companies/brand/${brand_id}/`).then((response) => {
         setBrands({value:[response.data], error:''})
@@ -183,6 +191,9 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     });
   }, [ap_type, brand_id]);
 
+  useEffect(() => {
+    if (passed_date.length > 0 && passed_time.length > 0) handleAvailability(passed_date,passed_time);
+  }, [passed_time, passed_date]);
   // create appointment post
   const createAppointment = () => {
     const payload = {
@@ -287,7 +298,7 @@ return (
           removeMethod={removeTeam}
           start={true}
         />
-      <Availabilty/>
+      <Availabilty users={team} selectMethod={handleAvailability} date={date} time={startTime}/>
       <View style={{flex:2}}>
         <TextInput
           label="Title"

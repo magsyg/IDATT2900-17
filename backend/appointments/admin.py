@@ -18,7 +18,7 @@ class AppointmentModelAdmin(admin.ModelAdmin):
 
 @admin.register(HostRetailer)
 class HostRetailerModelAdmin(admin.ModelAdmin):
-    list_display = ['retailer', 'organizer','hosted_appointment']
+    list_display = ['retailer', 'organizer']
     # list_filter = []
     search_fields = ['retailer','organizer','hosted_appointment']
     ordering = ['id']

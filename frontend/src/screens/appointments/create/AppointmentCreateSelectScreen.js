@@ -14,11 +14,16 @@ import HoveringBar from '../../../components/HoveringBar'
 import TeamSelect from '../../../components/TeamSelect'
 
 export default function AppointmentCreateSelectScreen({ route, navigation }) {
-  
-  const [availability, setAvailability] = useState({dates: []})
   const [team, setTeam] = useState([])
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
 
+  const [time, setTime] = useState("");
+  const [date, setDate] = useState("");
+
+  const handleAvailability = (selectedDate, selectedTime) => {
+    setTime(selectedTime);
+    setDate(selectedDate);
+  }
   const manageTeam = teamMember => {
       var added = team;
       if (teamMember.id != -1) {
@@ -35,24 +40,21 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
 
 
   const next_page = (val) => {
+    const passed_data = {
+      passed_team: team,
+      ap_type: val, 
+      passed_time: time,
+      passed_date: date,
+    }
     switch(val) {
       case 'TS': 
-        navigation.navigate('AppointmentCreateForm', {
-          passed_team: team,
-          ap_type: val, 
-        })
+        navigation.navigate('AppointmentCreateForm', passed_data)
         break;
       case 'OT': 
-        navigation.navigate('AppointmentCreateForm', {
-          passed_team: team,
-          ap_type: val, 
-        })
+        navigation.navigate('AppointmentCreateForm', passed_data)
         break;
       case 'SR': 
-        navigation.navigate('AppointmentCreateShowroomSearchScreen', {
-          passed_team: team,
-          ap_type: val, 
-        })
+        navigation.navigate('AppointmentCreateShowroomSearchScreen', passed_data)
         break;
         
     }
@@ -120,8 +122,8 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
           removeMethod={removeTeam}
           start={true}
       />
-      <View style={{flex:3}}>
-      <Availabilty data={availability}/>
+        <View style={{flex:3}}>
+        <Availabilty users={team} selectMethod={handleAvailability} date={date} time={time}/>
       </View>
   </View>
 </Background>

@@ -56,7 +56,23 @@ class AppointmentUserListView(APIView):
 
         return Response(self.serializer_class(appointments,many=True).data)
 
+class AvailabilityView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request, format=None):
+        users = User.objects.filter(id=request.user.id)
+        availability = Appointment.get_available_times(users)
+        return Response(availability)
+
+    def post(self, request, format=None):
+        user_ids = [request.user.id]
+        print(user_ids)
+        if 'users' in request.data:
+            user_ids.extend(request.data['users'])
+        users = User.objects.filter(id__in=user_ids)
+        availability = Appointment.get_available_times(users)
+        return Response(availability)
 
 class AppointmentView(APIView):
     authentication_classes = [TokenAuthentication]
