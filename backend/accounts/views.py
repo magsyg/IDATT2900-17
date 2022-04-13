@@ -2,9 +2,11 @@
 from email import message
 from logging import raiseExceptions
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.http import JsonResponse, HttpResponse, Http404
+from django.core.exceptions import PermissionDenied
+
 
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
@@ -16,6 +18,8 @@ from rest_framework.authtoken.models import Token
 
 from .serializer import RegisterSerializer, UserSerializer
 from companies.serializer import BrandSerializer, RetailerSerializer
+from appointments.serializer import SimpleAppointmentSerializer
+from appointments.models import Appointment
 from companies.models import CompanyCode
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
@@ -124,3 +128,13 @@ class RegistrationNewCompanyView(APIView):
             'user_id': user.pk,
             'email': user.email
         })
+
+class ProfileView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id:int, format=None):
+        profile_user = get_object_or_404(User, id=user_id)
+        profile = UserSerializer(profile_user)
+
+        return Response(profile.data)

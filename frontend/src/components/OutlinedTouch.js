@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
-import { Button as PaperButton } from 'react-native-paper'
+import { Text } from 'react-native-paper'
 import { theme } from '../core/theme'
 
-export default function OutlinedTouch({onPress, children }) {
+export default function OutlinedTouch({style, labelStyle, onPress, children }) {
   return (
-    <TouchableOpacity style={[styles.buttonStyle]}onPress={onPress}>
-      {children}
+    <TouchableOpacity style={[styles.buttonStyle, style]} onPress={onPress}>
+      <Text style={[styles.buttonText, labelStyle]}>{children}</Text>
     </TouchableOpacity>
   )
 }
@@ -14,7 +14,9 @@ export default function OutlinedTouch({onPress, children }) {
 const styles = StyleSheet.create({
   buttonText: {
     color:theme.colors.primary, 
-    fontSize:11
+    fontSize:14,
+    flex:1, 
+    textAlign:'center'
   },
   buttonStyle: {
     borderRadius:25, 

@@ -26,6 +26,9 @@ export default function CompanyContactsScreen({ route, navigation }) {
     {'name': 'Lorem Ipsum'},
   ] //TODO add brand functionality
 
+  const goToProfile = id => {
+    navigation.navigate('ProfileScreen', {profile_id:id});
+  }
   useEffect(() => {
     axios.get('/companies/user/company/').then((response) => {
       setMeta(response.data);
@@ -67,7 +70,7 @@ export default function CompanyContactsScreen({ route, navigation }) {
             meta.company.members.map((item, index) => {
                 if (item.id !== meta.user.id) {
                   return(
-                    <TouchableOpacity key={index} style={{margin:6}}>
+                    <TouchableOpacity key={index} style={{margin:6}} onPress={() => goToProfile(item.id)}>
                       <Avatar.Image 
                         size={56} 
                         source={require('../../assets/default_profile.png')}  
