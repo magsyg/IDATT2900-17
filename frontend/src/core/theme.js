@@ -11,5 +11,6 @@ export const theme = {
     lightgrey: '#efefef',
     danger: '#ff3232',
     error: '#f13a59',
+    white: '#f0f0f0'
   },
 }

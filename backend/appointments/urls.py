@@ -12,6 +12,7 @@ app_name = 'appointments'  # Necessary for url naming. eg {% url 'appointments:c
 
 urlpatterns = [
     path('create/', view=views.AppointmentCreateView.as_view(), name="create"),
+    path('availability/', view=views.AvailabilityView.as_view(), name="availability"),
     path('user/', view=views.AppointmentUserListView.as_view(), name="user_list"),
     path('<int:pk>/retailer/invite/', view=views.AppointmentInviteRetailParticipantView.as_view(), name="invite_retailer_participant"),
     
@@ -21,4 +22,6 @@ urlpatterns = [
     path('brand/invite/', view=views.AppointmentBrandInvite.as_view(), name="invite_brand"),
     # Showroom
     path('showroom/<int:pk>/', view=views.ShowroomView.as_view(), name="showroom"),
+
+    
 ]

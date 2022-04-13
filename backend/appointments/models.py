@@ -2,6 +2,8 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from django.db.models import Q
+from django.db.models.query import QuerySet
+
 from companies.models import Retailer, Brand
 from django.contrib.auth import get_user_model
 
@@ -63,6 +65,47 @@ class Appointment(models.Model):
         if not month:
             participating_appointments = participating_appointments.filter(date__day=date.day)
         return participating_appointments.distinct().order_by('date','start_time')
+
+    @staticmethod
+    def get_available_times(users: QuerySet, date: datetime = timezone.now(), days: int = 16):
+        availability = list()
+        work_hours = Appointment.get_workhours()
+        for i in range(days):
+            users_work_hours = work_hours.copy()
+            for user in users:
+                for appointment in Appointment.get_user_appointments(user=user,date=date):
+                    for hour in work_hours:
+                        print(appointment.end_time, hour, appointment.start_time, appointment.end_time > hour  >= appointment.start_time)
+                        if hour in users_work_hours and appointment.end_time > hour  >= appointment.start_time:
+                            users_work_hours.remove(hour)
+
+            if date.date() == timezone.now().date(): # Method for not displayin passed times
+                for ii in range(len(users_work_hours)):
+                    if timezone.now().time() < users_work_hours[ii]: 
+                        users_work_hours = users_work_hours[ii:]
+                        break
+            availability.append(
+                {
+                'date':date.date(),
+                'hours':users_work_hours
+                }
+            )
+            date+=timezone.timedelta(days=1)
+        return availability
+                        
+
+
+
+            
+    @staticmethod 
+    def get_workhours():
+        #TODO Move this to some kind of utils file
+        time = timezone.now().replace(hour=9, minute=0, second=0, microsecond=0) # Use timezone, because this is timezone aware, may be dumb
+        workhours = list()
+        while time <= timezone.now().replace(hour=17, minute=0, second=0, microsecond=0):
+            workhours.append(time.time())
+            time += timezone.timedelta(minutes=30)
+        return workhours
 
 class HostRetailer(models.Model):
     retailer = models.ForeignKey(Retailer, blank=False, null=False, on_delete=models.CASCADE)

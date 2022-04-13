@@ -14,3 +14,11 @@ export const transformNiceDate = dateString => {
 
     return weekDayNames[date.getDay()]+" / "+date.getDate().toString() + " / " + (1+date.getMonth()).toString() 
   }
+
+export const transformNiceShortDate = dateString => {
+    const date = new Date(dateString);
+    const weekDayNames = ["Su", "M", "Tu", "W", "Th", "F", "Sa"];
+
+
+    return weekDayNames[date.getDay()]+ "/" + (1+date.getMonth()).toString()  +"/"+date.getDate().toString()
+}
