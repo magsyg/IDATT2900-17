@@ -70,8 +70,12 @@ export default function CompanyMemberScreen({ route, navigation }) {
         </View>
         <Header style={{textAlign:'center'}}>{profile.first_name} {profile.last_name}</Header>
 
-        <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6,fontSize:14}}>{profile.email}</OutlinedTouch>
-        <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}}>{profile.phone_number}</OutlinedTouch>
+        <OutlinedTouch style={{marginTop:12}}>
+          <Text style={styles.outlinedTouchText}>
+            {profile.email}
+          </Text>
+          </OutlinedTouch>
+        <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}}><Text style={styles.outlinedTouchText}>{profile.phone_number}</Text></OutlinedTouch>
 
         <View style={{margin:16, marginTop:32}}>
           <AppointmentsList data={appointments} mode='pretty'/>
@@ -101,5 +105,12 @@ const styles = StyleSheet.create({
   border: {
     borderWidth:1,
     borderColor:theme.colors.primary
+  },
+  outlinedTouchText: {
+    margin:6,
+    color:theme.colors.primary, 
+    fontSize:14,
+    flex:1, 
+    textAlign:'center'
   }
 })

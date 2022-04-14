@@ -1,9 +1,10 @@
 # imports
 import random
-from time import timezone
+
 from django_seed import Seed
 from faker import Faker
 
+from django.utils import timezone
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.contrib.auth import models as auth_models
@@ -43,31 +44,35 @@ class Command(BaseCommand):
 
     def populate(self): 
         fake = Faker()
-        seeder = Seed.seeder()
-        seeder.faker.seed_instance()
-
-        seeder.add_entity(User, 30)
-
-        seeder.add_entity(companies_models.Retailer, 8, {
-            'name': lambda x: seeder.faker.word(),
-        })
-
-        seeder.add_entity(companies_models.Brand, 8, {
-            'name': lambda x: seeder.faker.word(),
-        })
-        
-        companies = companies_models.Company.objects.all()
-
-        seeder.execute()
-
-        for user in User.objects.all():
-            user.company = random.choice(list(companies))
-            user.save()
-
+    
         retailers = companies_models.Retailer.objects.all()
-        for brand in companies_models.Brand.objects.all():
-            brand.retailers.set(random.choices(list(retailers), k=4))
+        brands = companies_models.Brand.objects.all()
 
+        time_list = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','14:00','15:00','16:00','17:00']
+        for i in range(100):
+            random_retailer = random.choice(list(retailers))
+            host_retailer = appointments_models.HostRetailer.objects.create(
+                retailer = random_retailer,
+                organizer = random.choice(list(random_retailer.members.all()))
+            )
+            time_id = random.choice(range(len(time_list)-1))
+            random_day = random.choice(range(8))
+            print(appointments_models.Appointment.AppointmentType.values)
+            appointment = appointments_models.Appointment.objects.create(
+                name=fake.word(),
+                retailer=host_retailer,
+                appointment_type=random.choice(appointments_models.Appointment.AppointmentType.values),
+                start_time=time_list[time_id],
+                end_time=time_list[time_id+1],
+                date=(timezone.now()+timezone.timedelta(days=random_day)).date(),
+                other_information=fake.text(),
+            )
+            random_brand = random.choice(list(brands))
+            appointments_models.ParticipatingBrand.objects.create(
+                brand=random_brand,
+                main_contact=random.choice(list(random_brand.members.all())),
+                appointment=appointment,
+            )
 
     def handle(self, *args, **options):
 

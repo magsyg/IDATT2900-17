@@ -11,23 +11,16 @@ import { theme } from '../../core/theme'
 import PillLink from '../../components/Link';
 
 export default function CompanyContactsScreen({ route, navigation }) {
-  const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
-  const brandsPlaceHolder = [
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-    {'name': 'Lorem Ipsum'},
-  ] //TODO add brand functionality
+  const [meta, setMeta] = useState({company:{id:-1, members:[], contacts:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
 
   const goToProfile = id => {
     navigation.navigate('ProfileScreen', {profile_id:id});
+  }
+  const goToContact = id => {
+    navigation.navigate('Brand',{ 
+      screen: 'ContactBrand',
+      params:{brand_id:id}
+    });
   }
   useEffect(() => {
     axios.get('/companies/user/company/').then((response) => {
@@ -59,7 +52,7 @@ export default function CompanyContactsScreen({ route, navigation }) {
         </View>
         <View style={{marginTop:16}}>
           <Header>MY TEAM</Header>
-          <ScrollView horizontal={true} contentContainerStyle={{justifyContent:'flex-start'}}>
+          <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{justifyContent:'flex-start'}}>
             <View style={{margin:6}}>
               <Avatar.Image 
                   size={56} 
@@ -88,11 +81,11 @@ export default function CompanyContactsScreen({ route, navigation }) {
             <PillLink>Scan QR Code</PillLink>
           </View>
           <FlatList
-            data={brandsPlaceHolder}
+            data={meta.company.contacts}
             numColumns={1}
             scrollEnabled={true}
             renderItem={({item, index}) => 
-              <OptionIconLink text={item.name}><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
+              <OptionIconLink onPress={()=>goToContact(item.id)}text={item.name}><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
             }
           />
       

@@ -32,7 +32,7 @@ export default function ShowroomScreen({ route, navigation }) {
         'organizer':{'id':-1},
         'retailer_participants':[]
       },
-      'name':'Tradeshow Name','id':-1, 'time':'09:00', 'date':'2022-10-10',
+      'name':'Tradeshow Name','id':-1, 'start_time':'09:00','end_time':'09:00', 'date':'2022-10-10',
     },
     'brand':{'brand':{'name':'Brand Name'},'main_contact':{}}})
 
@@ -114,7 +114,7 @@ export default function ShowroomScreen({ route, navigation }) {
         </View>
         <View style={[styles.row, {marginTop:32}]}>
           <IconButton size={32} icon='plus' color={theme.colors.grey}/>
-          <ScrollView horizontal={true} contentContainerStyle={{flex: 1}}>
+          <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1}}>
             <View style={styles.imageBoxPlaceholder}/>
             <View style={styles.imageBoxPlaceholder}/>
             <View style={styles.imageBoxPlaceholder}/>

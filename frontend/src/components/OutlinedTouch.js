@@ -6,7 +6,7 @@ import { theme } from '../core/theme'
 export default function OutlinedTouch({style, labelStyle, onPress, children }) {
   return (
     <TouchableOpacity style={[styles.buttonStyle, style]} onPress={onPress}>
-      <Text style={[styles.buttonText, labelStyle]}>{children}</Text>
+      {children}
     </TouchableOpacity>
   )
 }

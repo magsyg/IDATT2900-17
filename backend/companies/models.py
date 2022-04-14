@@ -1,8 +1,11 @@
+from dataclasses import fields
 from django.db import models
 from django.utils.crypto import get_random_string
 
 class Company(models.Model):
-    # description = models.CharField(max_length=30, blank=False, null=False, verbose_name="Description")
+    bio = models.TextField(max_length=200, blank=True, null=True, verbose_name="Bio")
+    homepage = models.URLField(blank=True, null=True, verbose_name="Homepage")
+
     def get_correct_model(self):
         """Returns the extended model if any, either Brand or Retailer"""
         for sub in Company.__subclasses__():
@@ -16,14 +19,15 @@ class Company(models.Model):
 
     def __str__(self):
         return f'{self.get_correct_model().name} - {self.get_model_name()}'
+
 class Brand(Company):
     name = models.CharField(max_length=30, unique=True, blank=False, null=False, verbose_name="Name")
-    products = models.CharField(max_length=30, blank=True, verbose_name="Name") #TODO add products
+    #products = models.CharField(max_length=30, blank=True, verbose_name="Name") #TODO add products
+
 
 class Retailer(Company):
     name = models.CharField(max_length=30, unique=True, blank=False, null=False, verbose_name="Name")
-    brands = models.ManyToManyField('companies.Brand', null=True, related_name="retailers", blank=True, verbose_name="Partners")
-
+    brands = models.ManyToManyField(Brand, through='companies.BrandRetailerRelation', related_name='retailers', null=True, blank=True, verbose_name='Brands')
 
 class CompanyCode(models.Model):
     company = models.ForeignKey(Company, related_name="codes", blank=False, null=False, on_delete=models.CASCADE)
@@ -51,3 +55,10 @@ class CompanyCode(models.Model):
         if codes:
             return (codes.first().id, codes.first().company.get_correct_model())
         return None
+
+
+class BrandRetailerRelation(models.Model):
+    brand = models.ForeignKey(Brand, related_name="retailer_relation", blank=False, null=False, on_delete=models.CASCADE)
+    retailer = models.ForeignKey(Retailer, related_name="brand_relation", blank=False, null=False, on_delete=models.CASCADE)
+    
+    # Should have contact person for each company

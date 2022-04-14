@@ -141,10 +141,10 @@ class TradeShowBrandView(APIView):
         tradeshow = get_object_or_404(Appointment, id=pk)
         if request.user not in tradeshow.retailer.retailer.members.all():
             raise PermissionDenied('You cant invite to an event you are not a part of')
-        if tradeshow.appointment_type != Appointment.AppointmentType.TRADESHOW:
-            return Http404('No tradeshow with this ID')
+        if tradeshow.appointment_type not in [Appointment.AppointmentType.TRADESHOW,Appointment.AppointmentType.OTHER]:
+            raise Http404('No tradeshow with this ID')
         if brand not in tradeshow.brands.all():
-            return Http404('Brand not a part of this tradeshow')
+            raise Http404('Brand not a part of this tradeshow')
 
         company_serializer = correct_serializer(request.user.company)
         user_serializer = UserSerializer(request.user)

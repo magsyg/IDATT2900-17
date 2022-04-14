@@ -75,7 +75,7 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
         </View>
         <View style={[styles.row, {marginTop:32}]}>
           <IconButton size={32} icon='plus' color={theme.colors.grey}/>
-          <ScrollView horizontal={true} contentContainerStyle={{flex: 1}}>
+          <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1}}>
             <View style={styles.imageBoxPlaceholder}/>
             <View style={styles.imageBoxPlaceholder}/>
             <View style={styles.imageBoxPlaceholder}/>

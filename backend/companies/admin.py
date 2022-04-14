@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 
 
-from .models import Brand, Retailer, CompanyCode
+from .models import Brand, BrandRetailerRelation, Retailer, CompanyCode
 
 User = get_user_model()
 # Register your models here.
@@ -33,3 +33,10 @@ class CompanyCodeModelAdmin(admin.ModelAdmin):
     search_fields = ['name','code']
     ordering = ['id','company']
 
+
+@admin.register(BrandRetailerRelation)
+class BrandRetailerRelationAdmin(admin.ModelAdmin):
+    list_display = ['brand','retailer']
+
+    search_fields = ['brand','retailer']
+    ordering = ['id', 'brand','retailer']

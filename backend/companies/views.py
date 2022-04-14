@@ -13,7 +13,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
 from .models import Brand, Company, Retailer, CompanyCode
-from .serializer import BrandSerializer, RetailerSerializer, correct_serializer
+from appointments.models import Appointment
+from .serializer import BrandSerializer, RetailerSerializer,SimpleBrandSerializer, correct_serializer
+from appointments.serializer import SimpleAppointmentSerializer
 from accounts.serializer import UserSerializer
 User = get_user_model()
 # End: imports -----------------------------------------------------------------
@@ -116,7 +118,7 @@ class GetUserCompany(APIView):
 
         return Response({
             'company':company_serializer.data,
-            'user':user_serializer.data
+            'user':user_serializer.data,
         })
 
 
@@ -140,10 +142,12 @@ class CompanyCodesView(APIView):
             return Http404("User is not a part of any company")
         company = company.get_correct_model()
         CompanyCode.objects.create(company=company)
+        contacts = list()
 
         return Response({
             'name': company.name,
-            'codes': [code.code for code in company.codes.all()]
+            'codes': [code.code for code in company.codes.all()],
+            'contacts': contacts
         })
 
     def delete(self, request, format=None):
@@ -183,3 +187,25 @@ class SearchBrandView(generics.ListAPIView):
         if name is not None and len(name) != 0:
             queryset = queryset.filter(name__icontains=name)
         return queryset
+
+
+class BrandProfile(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Brand.objects.get(pk=pk)
+        except Brand.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        brand = self.get_object(pk)
+        serializer = SimpleBrandSerializer(brand) # Does not return the contacts of that company
+
+        appointments = Appointment.objects.filter(retailer__retailer=request.user.company, brands=brand)
+        appointments = SimpleAppointmentSerializer(appointments, many=True)
+        return Response({
+            'brand':serializer.data,
+            'appointments':appointments.data    
+        })
