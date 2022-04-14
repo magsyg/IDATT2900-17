@@ -53,6 +53,10 @@ class Appointment(models.Model):
         - brand
         - address
     """
+
+    def __str__(self):
+        return f'{self.appointment_type} {self.name}'
+
     @staticmethod
     def get_user_appointments(user: User, date: datetime = timezone.now(), month: bool = False):
         # TODO add params for upcomming, and specific dates
@@ -67,7 +71,7 @@ class Appointment(models.Model):
         return participating_appointments.distinct().order_by('date','start_time')
 
     @staticmethod
-    def get_available_times(users: QuerySet, date: datetime = timezone.now(), days: int = 16):
+    def get_available_times(users: QuerySet, date: datetime = timezone.now(), days: int = 4):
         availability = list()
         work_hours = Appointment.get_workhours()
         for i in range(days):
@@ -75,7 +79,6 @@ class Appointment(models.Model):
             for user in users:
                 for appointment in Appointment.get_user_appointments(user=user,date=date):
                     for hour in work_hours:
-                        print(appointment.end_time, hour, appointment.start_time, appointment.end_time > hour  >= appointment.start_time)
                         if hour in users_work_hours and appointment.end_time > hour  >= appointment.start_time:
                             users_work_hours.remove(hour)
 
@@ -119,6 +122,8 @@ class HostRetailer(models.Model):
         #TODO add method for not adding participants that are not of retailer
         super().save(*args, **kwargs)
     
+    def __str__(self):
+        return f'{self.hosted_appointment} {self.retailer.name}'
 class ParticipatingBrand(models.Model):
     appointment = models.ForeignKey(Appointment, blank=False, null=False, on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, blank=False, null=False, on_delete=models.CASCADE)
@@ -131,3 +136,6 @@ class ParticipatingBrand(models.Model):
     def save(self, *args, **kwargs):
         #TODO add method for not adding participants that are not of brand
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.appointment} {self.brand.name}'

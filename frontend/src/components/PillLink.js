@@ -2,10 +2,10 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, Text } from 'react-native'
 import { theme } from '../core/theme'
 
-export default function PillLink({onPress, mode, children}) {
+export default function PillLink({onPress, style, labelStyle, mode, children}) {
   return (
-    <TouchableOpacity style={[styles.button, mode === 'highlight' && {backgroundColor:theme.colors.secondary}]} onPress={onPress}>
-      <Text style={[styles.text, mode === 'highlight' && {color:theme.colors.white}]}>{children}</Text>
+    <TouchableOpacity style={[styles.button, style, mode === 'highlight' && {backgroundColor:theme.colors.secondary}]} onPress={onPress}>
+      <Text style={[styles.text, labelStyle, mode === 'highlight' && {color:theme.colors.white}]}>{children}</Text>
     </TouchableOpacity>
   )
 }

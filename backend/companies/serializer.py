@@ -10,7 +10,7 @@ class CompanySerializer(serializers.ModelSerializer):
     members = UserSerializer(read_only=True, many=True)
     class Meta:
         model = Company
-        fields = ('id', 'name', 'members')
+        fields = ('id', 'name', 'members', 'bio', 'homepage')
         extra_kwargs = {
             'name': {'required': True},
             'members': {'required':False}
@@ -27,25 +27,27 @@ class CompanySerializer(serializers.ModelSerializer):
         )
         return company
 
-class BrandSerializer(CompanySerializer):
+class SimpleBrandSerializer(CompanySerializer):
     class Meta:
         model = Brand
-        fields = ('id', 'name', 'members')
-        extra_kwargs = {
-            'name': {'required': True},
-            'members': {'required:':False}
-        }
+        fields = '__all__'
 
-class RetailerSerializer(CompanySerializer):
+class SimpleRetailerSerializer(CompanySerializer):
     class Meta:
         model = Retailer
-        fields = ('id', 'name', 'members')
-        extra_kwargs = {
-            'name': {'required': True},
-            'members': {'required':False}
-        }
+        exclude = ('brands',)
 
+class BrandSerializer(CompanySerializer):
+    contacts = SimpleRetailerSerializer(read_only=True, many=True, source='retailers')
+    class Meta:
+        model = Brand
+        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts')
 
+class RetailerSerializer(CompanySerializer):
+    contacts = SimpleBrandSerializer(read_only=True, many=True, source='brands')
+    class Meta:
+        model = Retailer
+        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts')
 
 def correct_serializer(company):
     company = company.get_correct_model()
@@ -53,3 +55,10 @@ def correct_serializer(company):
         return BrandSerializer(company)
     else:
         return RetailerSerializer(company)
+
+def correct_simple_serializer(company):
+    company = company.get_correct_model()
+    if type(Company) == Brand:
+        return SimpleBrandSerializer(company)
+    else:
+        return SimpleRetailerSerializer(company)

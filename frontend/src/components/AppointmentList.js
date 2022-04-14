@@ -53,7 +53,7 @@ export default function AppointmentsList({ data, mode }) {
         <Text style={{flex:1, textAlign:'center'}}>{props.item.start_time.slice(0,5)} - {props.item.end_time.slice(0,5)}</Text>
 
         <OutlinedTouch style={{flex:1, padding:0}} onPress={() => goToAppointment(props.item)}>
-          {props.item.name}
+          <Text style={styles.buttonText}>{props.item.name}</Text>
         </OutlinedTouch>
       </View>
     )
@@ -94,5 +94,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-  text : {}
+  text : {},
+  buttonText: {
+    color:theme.colors.primary, 
+    fontSize:14,
+    flex:1, 
+    textAlign:'center'
+  },
 })

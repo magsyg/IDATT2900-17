@@ -10,6 +10,7 @@ django-cors-headers = "*"
 django-phonenumber-field = {extras = ["phonenumbers"], version = "*"}
 django-seed = "*"
 psycopg2-binary = "*"
+faker = "*"
 
 [dev-packages]
 

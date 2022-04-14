@@ -63,7 +63,7 @@ export default function TeamSelect({start, containerStyle, company, selectedUser
           </View>
         </View>
       </Modal>
-      <ScrollView horizontal={true} contentContainerStyle={[{flex: 1}, start ? styles.start : styles.end, containerStyle]}>
+      <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={[{flex: 1}, start ? styles.start : styles.end, containerStyle]}>
         {!start && 
         <IconButton icon='plus' onPress={showTeamModal} color={theme.colors.grey}/>
         }
