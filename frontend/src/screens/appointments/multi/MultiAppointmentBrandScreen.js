@@ -21,11 +21,12 @@ import Note from '../../../components/Note';
 
 export default function MultiAppointmentBrandScreen({ route, navigation }) {
   const {appointment_id, brand_id} = route.params
-  const brand ={'name':'name'}
+  const [brand, setBrand] =useState({'name':'Brand Name','main_contact':{}})
   const [meta, setMeta] = useState({'user': {}, 
     'company':{'members':[]}, 
     'appointment':{'name':'Tradeshow Name', 'appointment_type':'TS','id':-1},
-    'brand':{'brand':{'name':'Brand Name'},'main_contact':{}}})
+    'brand':{'main_contact':{}}
+})
 
   const ap_types = {
     'TS':"Trade Show",
@@ -37,6 +38,7 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
     if (isFocused) {
       axios.get(`/appointments/${appointment_id}/brand/${brand_id}`).then((response) => {
         setMeta(response.data);
+        setBrand(response.data.brand.brand);
         console.log("found appointments")
       })  .catch(function (error) {
         console.log("-----axios----")
@@ -66,7 +68,7 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
             />
           </BackHeader>
         </View>
-        <HeaderWithSub header={meta.brand.brand.name} subheader={meta.appointment.name} />
+        <HeaderWithSub header={brand.name} subheader={meta.appointment.name} />
         <View style={{marginTop:32}}>
           <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
         </View>

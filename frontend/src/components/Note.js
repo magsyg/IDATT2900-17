@@ -17,6 +17,7 @@ export default function Note({containerStyle, company}) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
+    console.log(Object.keys(company));
     setModalVisible(false);
     axios.get(`/companies/${company.id}/notes/`).then((response) => {
       setNotes(response.data);
@@ -25,8 +26,6 @@ export default function Note({containerStyle, company}) {
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
       } else if (error.request) {
         // The request was made but no response was received
         console.log(error.request);
@@ -48,11 +47,10 @@ export default function Note({containerStyle, company}) {
       setNewNote('');
     }).catch(function (error) {
       console.log("-----axios----")
+      console.log(company.id);
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
       } else if (error.request) {
         // The request was made but no response was received
         console.log(error.request);
@@ -89,6 +87,7 @@ export default function Note({containerStyle, company}) {
         <Header2>MAKE A NOTE</Header2>
         <IconButton size={32} icon='plus' color={theme.colors.grey} onPress={showModal}/>
       </View>
+    
       <FlatList 
         data={notes}
         scrollEnabled={true}
