@@ -15,7 +15,7 @@ from rest_framework.authentication import TokenAuthentication
 from .models import Appointment, ParticipatingBrand
 from companies.models import Brand
 from .serializer import AppointmentCreateSerializer, ParticipatingBrandCreateSerializer, SimpleAppointmentSerializer, AppointmentSerializer, HostRetailerSerializer, ParticipatingBrandSerializer
-from companies.serializer import correct_serializer
+from companies.serializer import correct_company_serializer
 from accounts.serializer import UserSerializer
 
 User = get_user_model()
@@ -27,7 +27,7 @@ class AppointmentCreateView(APIView):
     serializer_class = AppointmentCreateSerializer
 
     def get(self, request, format=None):
-        company_serializer = correct_serializer(request.user.company)
+        company_serializer = correct_company_serializer(request.user.company)
         user_serializer = UserSerializer(request.user)
 
         return Response({
@@ -96,7 +96,7 @@ class AppointmentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, format=None):
-        company_serializer = correct_serializer(request.user.company)
+        company_serializer = correct_company_serializer(request.user.company)
         user_serializer = UserSerializer(request.user)
         appointment = get_object_or_404(Appointment, id=pk)
         if request.user not in appointment.retailer.retailer.members.all(): #TODO add for brands
@@ -146,7 +146,7 @@ class TradeShowBrandView(APIView):
         if brand not in tradeshow.brands.all():
             raise Http404('Brand not a part of this tradeshow')
 
-        company_serializer = correct_serializer(request.user.company)
+        company_serializer = correct_company_serializer(request.user.company)
         user_serializer = UserSerializer(request.user)
         brand = get_object_or_404(ParticipatingBrand, brand=brand, appointment=tradeshow)
         return Response({
@@ -187,7 +187,7 @@ class ShowroomView(APIView):
         if showroom.appointment_type != Appointment.AppointmentType.SHOWROOM:
             return Http404('No showroom with this ID')
 
-        company_serializer = correct_serializer(request.user.company)
+        company_serializer = correct_company_serializer(request.user.company)
         user_serializer = UserSerializer(request.user)
         brand = get_object_or_404(ParticipatingBrand, brand=showroom.brands.first(), appointment=showroom)
         return Response({

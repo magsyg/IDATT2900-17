@@ -49,14 +49,14 @@ class RetailerSerializer(CompanySerializer):
         model = Retailer
         fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts')
 
-def correct_serializer(company):
+def correct_company_serializer(company):
     company = company.get_correct_model()
     if type(Company) == Brand:
         return BrandSerializer(company)
     else:
         return RetailerSerializer(company)
 
-def correct_simple_serializer(company):
+def correct_simple_company_serializer(company):
     company = company.get_correct_model()
     if type(Company) == Brand:
         return SimpleBrandSerializer(company)

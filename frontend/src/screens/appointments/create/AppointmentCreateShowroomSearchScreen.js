@@ -12,44 +12,42 @@ import { currentDate } from '../../../utils/date_management';
 import Availabilty from '../../../components/Availability'
 import HoveringBar from '../../../components/HoveringBar'
 import BackHeader from '../../../components/BackHeader'
+import BrandSearch from '../../../components/BrandSearch'
+import OutlinedButton from '../../../components/OutlinedButton'
 
 export default function AppointmentCreateShowroomSearchScreen({ route, navigation }) {
-  const { ap_type, passed_team } = route.params;
+  const { passed_team } = route.params;
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
 
-  // Search
-  const [brandSearchResults, setBrandSearchResults] = useState([]);
-  const [searchBrandText, setSearchBrandText] = React.useState('');
-  const onChangeBrandSearch = text => {
-    const formattedQuery = text.toLowerCase();
-    
-    axios.get(`companies/brands?name=${text}`).then((response) => {
-      setBrandSearchResults(response.data);
-      console.log(response.data);
-    }).catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
+  const selectBrand = brand => {
+    if (meta.company.contacts.map(x => x.id).includes(brand.id)) {
+      navigation.navigate('Company',{ 
+        screen: 'Brand',
+        params: {
+          screen: 'ScheduleContactBrand',
+          params:{brand_id:brand.id, passed_team:passed_team}
+        }});
+    } else {
+      navigation.navigate('Company',{ 
+        screen: 'Brand',
+        params: {
+          screen: 'NewContactBrand',
+          params:{brand_id:brand.id, passed_team:passed_team}
+        }});
+    }
+  }
+  const goToForm = () => {
+    navigation.navigate('AppointmentCreateForm',
+      {
+        passed_team:passed_team,
+        ap_type:'SR'
       }
-      console.log("-----axios----")
-    });
-    setSearchBrandText(text)
-  };
-
+    );
+  }
   useEffect(() => {
-    axios.get('companies/brands').then((response) => {
-      setBrandSearchResults(response.data);
-      console.log(response.data);
-    }).catch(function (error) {
+    axios.get('/accounts/current_user/').then((response) => {
+      setMeta(response.data);
+    })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
         // Request made and server responded
@@ -66,43 +64,13 @@ export default function AppointmentCreateShowroomSearchScreen({ route, navigatio
       console.log("-----axios----")
     });
   }, []);
-
-  const selectBrand = brand => {
-    navigation.navigate('AppointmentCreateForm', {
-      passed_team: passed_team,
-      ap_type: ap_type, 
-      brand_id: brand.id,
-    })
-  }
   return (
-<Background>
-  <View style= {styles.column}>
-      <BackHeader goBack={navigation.goBack}>        
-        <Searchbar 
-        placeholder="Search"
-        style={{backgroundColor:theme.colors.grey, marginHorizontal:32,borderRadius:100}}
-        onChangeText={onChangeBrandSearch}
-        value={searchBrandText}
-        />
-      </BackHeader>
-      <View style={{marginTop:16}}>
-        <FlatList
-              data={brandSearchResults}
-              numColumns={1}
-              scrollEnabled={true}
-              renderItem={({item, index}) => 
-                  <TouchableOpacity onPress={() => selectBrand(item)} key={index} style={[styles.brandRow, {justifyContent:'flex-start'}]}>
-                    <Avatar.Image 
-                      size={40} 
-                      source={require('../../../assets/default_profile.png')}  
-                    />
-                    <Subheading style={{marginLeft:16}}>{item.name}</Subheading>
-                  </TouchableOpacity>
-              }
-          />
+  <Background>
+    <View style= {styles.column}>
+      <BrandSearch exitMethod={navigation.goBack} selectMethod={selectBrand}/>
+      <OutlinedButton onPress={goToForm}>Create Showroom Appointment</OutlinedButton>
     </View>
-  </View>
-</Background>
+  </Background>
   )
 }
 

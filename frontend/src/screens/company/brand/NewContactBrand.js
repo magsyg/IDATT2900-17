@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import { Text, Subheading, Avatar, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -18,18 +18,17 @@ import OutlinedTouch from '../../../components/OutlinedTouch'
 import Paragraph from '../../../components/Paragraph'
 import PillLink from '../../../components/PillLink'
 import Button from '../../../components/Button'
-import TeamSelect from '../../../components/TeamSelect'
 import HeaderWithSub from '../../../components/HeaderWithSub'
-import Availabilty from '../../../components/Availability'
-import DurationModal from '../../../components/DurationModal'
-import Contact from '../../../components/Contact'
+import Note from '../../../components/Note'
+import TeamSelect from '../../../components/TeamSelect'
 
-export default function ScheduleContactBrandScreen({ route, navigation }) {
-  const {brand_id} = route.params
-  const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
-
+export default function NewContactBrandScreen({ route, navigation }) {
+  
+  // Should probably be moved
+  const {brand_id, passed_team } = route.params
+  const [meta, setMeta] = useState({'company':{"members":[]}})
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
-  const [appointments, setAppointments] = useState([]);
+  const [successModal, setSuccessmodal] = useState(false);
 
   // TEAM
   const [team, setTeam] = useState([])
@@ -46,21 +45,22 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     setTeam(added)
   }
 
-  // TIME
-  const [date, setDate] = useState(new Date());
-  const [startTime, setStartTime] = useState(new Date());
-  const handleAvailability = (selectedDate, selectedTime) => {
-    setDate(new Date(selectedDate));
-    let userTimezoneOffset = date.getTimezoneOffset() * 60000;
-    let time  = new Date(selectedDate+"T"+selectedTime)
-    setStartTime(new Date(time.getTime() + userTimezoneOffset));
+  // Return to create appointment
+  const toBrandSearch = () => {
+    navigation.navigate('Appointment',{ 
+      screen: 'AppointmentCreate',
+      params: {
+        screen: 'AppointmentCreateShowroomSearchScreen',
+        params: {
+          passed_team:team
+        }
+      }});
   }
-  
-  const [mainContact, setMainContact] = useState({})
   useEffect(() => {
+    setSuccessmodal(false);
     axios.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
-      setMainContact(response.data.brand.members[0])
+      setAppointments(response.data.appointments)
     }).catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -77,7 +77,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
       }
       console.log("-----axios----")
     });
-    axios.get('/appointments/create/').then((response) => {
+    axios.get('/accounts/current_user/').then((response) => {
       setMeta(response.data);
     })  .catch(function (error) {
       console.log("-----axios----")
@@ -97,36 +97,32 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     });
   }, [brand_id]);
 
-  const createAppointment = duration => {
-    console.log(startTime.toTimeString().slice(0,5));
-    console.log((new Date(startTime.getTime() + duration*60000)).toTimeString().slice(0,5));
+  useEffect(() => {
+    if (typeof passed_team !== 'undefined') setTeam(passed_team);
+  }, [passed_team]);
+
+
+  const requestAppointment = () => {
     const payload = {
       'retailer': {'retailer': meta.company.id, 'organizer': meta.user.id},
       'appointment': {
         'appointment_type': 'SR',
-        'name':'Showroom',  //TODO WHAT NAMES GOES HERE?
-        'date':date.toISOString().substring(0, 10),
-        'start_time':startTime.toTimeString().slice(0,5),
-        'end_time':(new Date(startTime.getTime() + duration*60000)).toTimeString().slice(0,5),
-        'other_information':''
+        'is_request':true,
+        'name':'Showroom Request',
+        'other_information':null,
+        'date':null,
+        'start_time':null,
+        'end_time':null
       },
       'brands': [{
         'brand': brand.id,
-        'main_contact':mainContact.id
       }]
     }
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
     
     axios.post('/appointments/create/', payload).then((response) => {
-      clearFields();
-      navigation.navigate('Appointment',{ 
-        screen: 'Showroom',
-        params: {
-          screen: 'ShowroomScreen',
-          params:{appointment_id:response.data.id}
-        },
-      });
+      setSuccessmodal(true);
     }).catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -142,41 +138,65 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
       console.log("-----axios----")
     });
   }
-  const clearFields = () => {
-    setDate(new Date());
-    setStartTime(new Date());
+
+  const nextScreen = () => {
+    setSuccessmodal(false);
+    navigation.navigate('Appointment',{screen:'AppointmentCreate', 
+      params:{screen:'AppointmentCreateShowroomSearchScreen', params:{passed_team:passed_team}}}); //TODO set this to a better
   }
-  const goBack = () => {
-    navigation.navigate('ContactBrand',{brand_id:brand.id});
-  }
-  
   return (
     <Background>
+      <Modal visible={successModal}>
+        <TouchableOpacity  style={{flex:1}} onPress={nextScreen}>
+          <View style={[styles.row, {margin:32,justifyContent:'flex-end'}]}> 
+            <Avatar.Image 
+                  size={64} 
+                  source={require('../../../assets/default_profile.png')}  
+            />
+          </View>
+        <View style={{padding:64}}>
+          <Header style={{textAlign:'center'}}>{brand.name}</Header>
+          <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
+            Showroom appointment has been requested. Check your notifications for updates.
+          </Paragraph>
+        </View>
+        </TouchableOpacity>
+      </Modal>
       <View style= {styles.column}>
         <View style={styles.row}> 
-          <BackHeader goBack={goBack}>  
+          <BackHeader goBack={toBrandSearch}>  
             <Avatar.Image 
                 size={64} 
                 source={require('../../../assets/default_profile.png')}  
             />
           </BackHeader>
         </View>
-        <HeaderWithSub header={brand.name} subheader={'Showroom Appointment'} />
-        <LocationInfo item={brand}/>
-        <TeamSelect 
-          containerStyle={{marginVertical:16}}
-          company={meta.company} 
-          selectedUsers={team} 
-          main_user={meta.user}
-          addMethod={manageTeam}
-          removeMethod={removeTeam}
-          start={true}
-        />
-        <Availabilty users={team} selectMethod={handleAvailability} date={date} time={startTime}/>
-        <Contact user={mainContact} />
+        <HeaderWithSub header={brand.name} subheader={'Showroom Appointment Request'}/>
+        <View style={{marginVertical:32, justifyContent:'flex-start'}}>
+          <Header2>Company Profile</Header2>
+          <Paragraph>{brand.bio}</Paragraph>
+          <PillLink>{brand.homepage}</PillLink>
+        </View>  
+        <View style={[styles.row, {marginTop:16}]}>
+          <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
+          <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
+        </View>
+        <View style={{marginVertical:16}}>
+          <TeamSelect 
+            containerStyle={{marginVertical:16}}
+            company={meta.company} 
+            selectedUsers={team} 
+            main_user={meta.user}
+            addMethod={manageTeam}
+            removeMethod={removeTeam}
+            start={true}
+          />
+        </View> 
+        <Note containerStyle={{marginVertical:16}}/>
+        <View>
+          <Button onPress={requestAppointment}>Request Appointment</Button>
+        </View>
       </View>
-
-      <DurationModal onFinish={createAppointment} containerStyle={{alignSelf:'flex-end'}}  />
     </Background>
   )
 }

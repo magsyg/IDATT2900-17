@@ -42,7 +42,8 @@ class SimpleAppointmentSerializer(serializers.ModelSerializer):
 class AppointmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ('id', 'name', 'appointment_type', 'date','start_time','end_time','other_information')
+        fields = ('id', 'name', 'appointment_type', 'date','start_time','end_time','other_information', 'is_request')
+
 
 
 class HostRetailerCreateSerializer(serializers.ModelSerializer):
@@ -73,10 +74,9 @@ class ParticipatingBrandCreateSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
-        if 'main_contact' not in attrs:
-            raise serializers.ValidationError({"main_contact": "Main contact must be set"})
-        if attrs['main_contact'] not in attrs['brand'].members.all():
-            raise serializers.ValidationError({"main_contact": "Main contact not part of this company"})
+        if 'main_contact' in attrs:
+            if attrs['main_contact'] not in attrs['brand'].members.all():
+                raise serializers.ValidationError({"main_contact": "Main contact not part of this company"})
         if 'brand_participants' in attrs.keys():
             for participant in attrs['brand_participants']: 
                 if participant not in attrs['brand'].members.all():
@@ -118,14 +118,16 @@ class AppointmentCreateSerializer(serializers.Serializer):
             start_time=self.validated_data['appointment']['start_time'],
             end_time=self.validated_data['appointment']['end_time'],
             date=self.validated_data['appointment']['date'],
+            is_request=self.validated_data['appointment']['is_request'],
             other_information=self.validated_data['appointment']['other_information'],
             )
         for brand in self.validated_data['brands']:
             p_brand = ParticipatingBrand.objects.create(
                 brand=brand['brand'],
-                main_contact=brand['main_contact'],
                 appointment=appointment,
             )
+            if 'main_contact' in brand:
+                p_brand.main_contact.set(brand['main_contact']),
             if 'brand_participants' in brand:
                 p_brand.brand_participants.set(brand['brand_participants'])
         return AppointmentSerializer(appointment)
