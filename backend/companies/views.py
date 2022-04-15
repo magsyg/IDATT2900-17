@@ -209,3 +209,21 @@ class BrandProfile(APIView):
             'brand':serializer.data,
             'appointments':appointments.data    
         })
+
+class BrandRequests(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Brand.objects.get(pk=pk)
+        except Brand.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        brand = self.get_object(pk)
+
+        appointments = Appointment.objects.filter(brands=brand, appointment_type=Appointment.AppointmentType.SHOWROOM, is_request=True)
+        return Response({
+            'requests': SimpleAppointmentSerializer(appointments, many=True)
+        })

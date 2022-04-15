@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.db.models import Q
 from django.db.models.query import QuerySet
+from django.core.exceptions import ValidationError
 
 from companies.models import Retailer, Brand
 from django.contrib.auth import get_user_model
@@ -15,7 +16,7 @@ class Appointment(models.Model):
         TRADESHOW = 'TS', 'Trade Show'
         OTHER = 'OT', 'Other'
 
-    name = models.CharField(null=False, blank=False, max_length=30, verbose_name='Name')
+    name = models.CharField(null=True, blank=True, max_length=30, verbose_name='Name')
     appointment_type = models.CharField(max_length=2, choices=AppointmentType.choices, default=AppointmentType.OTHER, blank=False, null=False, verbose_name="Appointment Type")
 
     # participants
@@ -24,14 +25,15 @@ class Appointment(models.Model):
     brands = models.ManyToManyField(Brand, through='appointments.ParticipatingBrand', related_name='participated_appointments', verbose_name='Brands')
     
     # scheduling information
-    date = models.DateField(null=False, blank=False, verbose_name='Date')
-    start_time = models.TimeField(null=False, blank=False, verbose_name='Start time')
-    end_time = models.TimeField(null=False, blank=False, verbose_name='End time')
+    date = models.DateField(null=True, blank=True, verbose_name='Date')
+    start_time = models.TimeField(null=True, blank=True, verbose_name='Start time')
+    end_time = models.TimeField(null=True, blank=True, verbose_name='End time')
     #TODO add address
 
     other_information = models.TextField(null=True, blank=True, max_length=200, verbose_name='Other information')
 
-
+    # If it is a request or not
+    is_request = models.BooleanField(default=False, verbose_name="Is request") 
     """
         Tradeshow
         -name
@@ -54,13 +56,29 @@ class Appointment(models.Model):
         - address
     """
 
+    
     def __str__(self):
         return f'{self.appointment_type} {self.name}'
+
+    def clean(self, *args, **kwargs):
+        super().clean(*args, **kwargs)
+        errors = {}
+        if not self.is_request:
+            if not self.date:
+                errors['date'] = 'date can not be null'
+            if not self.start_time:
+                errors['start_time'] = 'start_time can not be null'
+            if not self.end_time:
+                errors['end_time'] = 'end_time can not be null'
+            if not self.name:
+                errors['name'] = 'name can not be null'
+        if errors:
+            raise ValidationError(errors)
 
     @staticmethod
     def get_user_appointments(user: User, date: datetime = timezone.now(), month: bool = False):
         # TODO add params for upcomming, and specific dates
-        participating_appointments = Appointment.objects.filter(
+        participating_appointments = Appointment.objects.filter(is_request=False).filter(
             Q(retailer__organizer=user)|
             Q(retailer__retailer_participants=user))
         
@@ -95,11 +113,7 @@ class Appointment(models.Model):
             )
             date+=timezone.timedelta(days=1)
         return availability
-                        
-
-
-
-            
+                               
     @staticmethod 
     def get_workhours():
         #TODO Move this to some kind of utils file
@@ -110,6 +124,7 @@ class Appointment(models.Model):
             time += timezone.timedelta(minutes=30)
         return workhours
 
+    
 class HostRetailer(models.Model):
     retailer = models.ForeignKey(Retailer, blank=False, null=False, on_delete=models.CASCADE)
     retailer_participants = models.ManyToManyField(User, related_name="retailer_appointments")

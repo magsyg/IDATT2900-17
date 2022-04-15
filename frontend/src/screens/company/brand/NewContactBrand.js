@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import { Text, Subheading, Avatar, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -28,6 +28,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
   const {brand_id, passed_team } = route.params
   const [meta, setMeta] = useState({'company':{"members":[]}})
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
+  const [successModal, setSuccessmodal] = useState(false);
 
   // TEAM
   const [team, setTeam] = useState([])
@@ -56,6 +57,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
       }});
   }
   useEffect(() => {
+    setSuccessmodal(false);
     axios.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
       setAppointments(response.data.appointments)
@@ -98,8 +100,68 @@ export default function NewContactBrandScreen({ route, navigation }) {
   useEffect(() => {
     if (typeof passed_team !== 'undefined') setTeam(passed_team);
   }, [passed_team]);
+
+
+  const requestAppointment = () => {
+    const payload = {
+      'retailer': {'retailer': meta.company.id, 'organizer': meta.user.id},
+      'appointment': {
+        'appointment_type': 'SR',
+        'is_request':true,
+        'name':'Showroom Request',
+        'other_information':null,
+        'date':null,
+        'start_time':null,
+        'end_time':null
+      },
+      'brands': [{
+        'brand': brand.id,
+      }]
+    }
+    // Checks if there is an team for this appointment
+    if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
+    
+    axios.post('/appointments/create/', payload).then((response) => {
+      setSuccessmodal(true);
+    }).catch(function (error) {
+      console.log("-----axios----")
+      if (error.response) {
+        // Request made and server responded
+        console.log(error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+      console.log("-----axios----")
+    });
+  }
+
+  const nextScreen = () => {
+    setSuccessmodal(false);
+    navigation.navigate('Appointment',{screen:'AppointmentCreate', 
+      params:{screen:'AppointmentCreateShowroomSearchScreen', params:{passed_team:passed_team}}}); //TODO set this to a better
+  }
   return (
     <Background>
+      <Modal visible={successModal}>
+        <TouchableOpacity  style={{flex:1}} onPress={nextScreen}>
+          <View style={[styles.row, {margin:32,justifyContent:'flex-end'}]}> 
+            <Avatar.Image 
+                  size={64} 
+                  source={require('../../../assets/default_profile.png')}  
+            />
+          </View>
+        <View style={{padding:64}}>
+          <Header style={{textAlign:'center'}}>{brand.name}</Header>
+          <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
+            Showroom appointment has been requested. Check your notifications for updates.
+          </Paragraph>
+        </View>
+        </TouchableOpacity>
+      </Modal>
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={toBrandSearch}>  
@@ -132,7 +194,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
         </View> 
         <Note containerStyle={{marginVertical:16}}/>
         <View>
-          <Button>Request Appointment</Button>
+          <Button onPress={requestAppointment}>Request Appointment</Button>
         </View>
       </View>
     </Background>
