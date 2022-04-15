@@ -16,15 +16,17 @@ import BackHeader from '../../../components/BackHeader';
 import HeaderWithSub from '../../../components/HeaderWithSub';
 import Button from '../../../components/Button';
 import OutlinedButton from '../../../components/OutlinedButton';
+import Note from '../../../components/Note';
 
 
 export default function MultiAppointmentBrandScreen({ route, navigation }) {
   const {appointment_id, brand_id} = route.params
-  const brand ={'name':'name'}
+  const [brand, setBrand] =useState({'name':'Brand Name','main_contact':{}})
   const [meta, setMeta] = useState({'user': {}, 
     'company':{'members':[]}, 
     'appointment':{'name':'Tradeshow Name', 'appointment_type':'TS','id':-1},
-    'brand':{'brand':{'name':'Brand Name'},'main_contact':{}}})
+    'brand':{'main_contact':{}}
+})
 
   const ap_types = {
     'TS':"Trade Show",
@@ -36,6 +38,7 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
     if (isFocused) {
       axios.get(`/appointments/${appointment_id}/brand/${brand_id}`).then((response) => {
         setMeta(response.data);
+        setBrand(response.data.brand.brand);
         console.log("found appointments")
       })  .catch(function (error) {
         console.log("-----axios----")
@@ -65,7 +68,7 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
             />
           </BackHeader>
         </View>
-        <HeaderWithSub header={meta.brand.brand.name} subheader={meta.appointment.name} />
+        <HeaderWithSub header={brand.name} subheader={meta.appointment.name} />
         <View style={{marginTop:32}}>
           <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
         </View>
@@ -82,22 +85,7 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
             <View style={styles.imageBoxPlaceholder}/>
           </ScrollView>
         </View>
-        <View>
-          <View style={[styles.row, {justifyContent:'space-between'}]}>
-            <Header>Make a note?</Header>
-            <IconButton size={32} icon='plus' color={theme.colors.grey}/>
-          </View>
-          <Text style={{color:theme.colors.grey}}>
-            TODO ADD FUNCTIONIONALITY FOR THIS
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-
-
-          </Text>
-        </View> 
+        <Note company={brand}/>
       </View>
     </Background>
   )

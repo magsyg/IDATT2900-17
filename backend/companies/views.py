@@ -12,9 +12,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
-from .models import Brand, Company, Retailer, CompanyCode
+from .models import Brand, Company, Retailer, CompanyCode, Note
 from appointments.models import Appointment
-from .serializer import BrandSerializer, RetailerSerializer,SimpleBrandSerializer, correct_company_serializer
+from .serializer import BrandSerializer, RetailerSerializer,SimpleBrandSerializer, NoteSerializer, CreateNoteSerializer, correct_company_serializer
 from appointments.serializer import SimpleAppointmentSerializer
 from accounts.serializer import UserSerializer
 User = get_user_model()
@@ -227,3 +227,27 @@ class BrandRequests(APIView):
         return Response({
             'requests': SimpleAppointmentSerializer(appointments, many=True)
         })
+
+
+class CompanyNotes(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, format=None):
+        company = get_object_or_404(Company, id=pk)
+        notes = Note.objects.filter(company=company.id, creator__in=request.user.company.get_correct_model().members.all())
+        
+        return Response(NoteSerializer(notes, many=True).data)
+
+    def post(self, request, pk, format=None):
+        company = get_object_or_404(Company, id=pk)
+        request.data['creator'] = request.user.id
+        request.data['company'] = company.id
+
+        note = CreateNoteSerializer(data=request.data, context={'request': request})
+        note.is_valid(raise_exception=True)
+        note = note.create()
+
+        notes = Note.objects.filter(company=company.id, creator__in=request.user.company.get_correct_model().members.all())
+        
+        return Response(NoteSerializer(notes, many=True).data)

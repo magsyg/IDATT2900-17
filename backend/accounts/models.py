@@ -58,6 +58,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
 
+    @classmethod
     def get_full_name(self):
         # The user is identified by their email address
         return f'{self.first_name} {self.last_name}'

@@ -1,6 +1,11 @@
-from dataclasses import fields
+
 from django.db import models
+from django.utils import timezone
 from django.utils.crypto import get_random_string
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Company(models.Model):
     bio = models.TextField(max_length=200, blank=True, null=True, verbose_name="Bio")
@@ -55,6 +60,13 @@ class CompanyCode(models.Model):
         if codes:
             return (codes.first().id, codes.first().company.get_correct_model())
         return None
+
+class Note(models.Model):
+    creator = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE, verbose_name="Author")
+    timestamp = models.DateTimeField(default=timezone.now, null=False, blank=False, verbose_name="Timestamp")
+
+    company = models.ForeignKey(Company, blank=False, null=False, on_delete=models.CASCADE, verbose_name="Of company")
+    text = models.TextField(max_length=200, null=False, blank=False, verbose_name="Note")
 
 
 class BrandRetailerRelation(models.Model):

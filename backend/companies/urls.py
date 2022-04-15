@@ -28,4 +28,7 @@ urlpatterns = [
     # Codes
     path('company/codes/', view=company_views.CompanyCodesView.as_view(), name="get_company_codes"),
     path('code/', view=company_views.GetCompanyWithCode.as_view(), name="get_company_with_code"),
+
+    # Notes
+    path('<int:pk>/notes/', view=company_views.CompanyNotes.as_view(), name="company_notes"),
 ]

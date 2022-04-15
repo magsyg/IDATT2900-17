@@ -3,9 +3,7 @@ import axios from 'axios'
 import { StyleSheet, View, Modal, FlatList, TouchableOpacity} from 'react-native'
 import { Text, Button, Avatar, Searchbar, IconButton, Subheading} from 'react-native-paper'
 import { theme } from '../core/theme'
-import PickerDropdown from './PickerDropdown'
-import Header from './Header'
-import TextInput from './TextInput'
+
 
 export default function BrandSearch({selectMethod, exitMethod, mode}) {  
   const [brandSearchResults, setBrandSearchResults] = useState([]);
