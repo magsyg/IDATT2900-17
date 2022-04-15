@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from accounts.serializer import UserSerializer
-from .models import Brand, Company, Retailer
+from .models import Brand, Company, Retailer, Note
 
 
 
@@ -62,3 +62,29 @@ def correct_simple_company_serializer(company):
         return SimpleBrandSerializer(company)
     else:
         return SimpleRetailerSerializer(company)
+
+
+class NoteSerializer(serializers.ModelSerializer):  
+    creator = serializers.SerializerMethodField()
+    company = serializers.SerializerMethodField()
+    def get_creator(self, obj):
+        return '{} {}'.format(obj.creator.first_name, obj.creator.last_name) 
+    def get_company(self, obj):
+        return '{}'.format(obj.company.get_correct_model().name) 
+    class Meta:
+        model = Note
+        fields = ('text', 'timestamp', 'creator', 'company')
+
+
+class CreateNoteSerializer(serializers.ModelSerializer):  
+    class Meta:
+        model = Note
+        fields = ('text', 'creator', 'company')
+
+    def create(self):  
+        note = self.Meta.model.objects.create(
+            text=self.validated_data['text'],
+            creator=self.validated_data['creator'],
+            company=self.validated_data['company'],
+        )
+        return note

@@ -192,7 +192,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
             start={true}
           />
         </View> 
-        <Note containerStyle={{marginVertical:16}}/>
+        <Note containerStyle={{marginVertical:16}} company={brand}/>
         <View>
           <Button onPress={requestAppointment}>Request Appointment</Button>
         </View>

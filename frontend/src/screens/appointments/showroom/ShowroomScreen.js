@@ -19,6 +19,7 @@ import OutlinedButton from '../../../components/OutlinedButton';
 import AppointmentInfo from '../../../components/AppointmentInfo';
 import TeamSelect from '../../../components/TeamSelect';
 import AddBrands from '../../../components/AddBrand';
+import Note from '../../../components/Note';
 
 
 export default function ShowroomScreen({ route, navigation }) {
@@ -121,22 +122,7 @@ export default function ShowroomScreen({ route, navigation }) {
             <View style={styles.imageBoxPlaceholder}/>
           </ScrollView>
         </View>
-        <View>
-          <View style={[styles.row, {justifyContent:'space-between'}]}>
-            <Header>Make a note?</Header>
-            <IconButton size={32} icon='plus' color={theme.colors.grey}/>
-          </View>
-          <Text style={{color:theme.colors.grey}}>
-            TODO ADD FUNCTIONIONALITY FOR THIS
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-
-
-          </Text>
-        </View> 
+        <Note company={meta.company} />
       </View>
     </Background>
   )
