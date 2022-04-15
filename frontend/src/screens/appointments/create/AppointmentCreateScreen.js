@@ -18,7 +18,7 @@ import AddBrands from '../../../components/AddBrand'
 import TeamSelect from '../../../components/TeamSelect'
 
 export default function AppointmentCreateScreen({ route, navigation }) {
-  const { ap_type, passed_team, brand_id, passed_date, passed_time } = route.params; // passes params from previous
+  const { ap_type, passed_team, passed_date, passed_time } = route.params; // passes params from previous
   const [availability, setAvailability] = useState({dates: []}) //TODO add availbility
   const [team, setTeam] = useState([])
   const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
@@ -66,16 +66,6 @@ export default function AppointmentCreateScreen({ route, navigation }) {
 
   // Brands
   const [brands, setBrands] = useState({value:[], error:''});
-
-  // For Showroom only
-  const [mainContact, setMainContact] = useState({value:{}, errors:''});
-
-  const selectMainContact = (id) => {
-    var result = brands.value[0].members.find(obj => {
-      return obj.id === id
-    })
-    if (typeof result !== "undefined") setMainContact({value:result, errors:''});    
-  }
   
 
   const editBrand = id => {
@@ -100,7 +90,8 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     });
   }
   const addBrand = (item) => {
-    let current_brands = brands.value.filter(ar => ar.id !== item.id)
+    var current_brands = brands.value.filter(ar => ar.id !== item.id)
+    if(ap_type==='SR') current_brands = []
     current_brands.push(item);
     setBrands({value:current_brands, error:''});
   }
@@ -132,27 +123,6 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   useEffect(() => {
     clearFields();
     setTeam(passed_team); // fetch passed params of team
-    if (passed_date.length > 0 && passed_time.length > 0) handleAvailability(passed_date,passed_time);
-    if(ap_type==='SR') {
-      axios.get(`companies/brand/${brand_id}/`).then((response) => {
-        setBrands({value:[response.data], error:''})
-      }).catch(function (error) {
-        console.log("-----axios----")
-        if (error.response) {
-          // Request made and server responded
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.log(error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
-        }
-        console.log("-----axios----")
-      });
-    }
     axios.get('/appointments/create/').then((response) => {
       setMeta(response.data);
     })  .catch(function (error) {
@@ -189,10 +159,12 @@ export default function AppointmentCreateScreen({ route, navigation }) {
       }
       console.log("-----axios----")
     });
-  }, [ap_type, brand_id]);
+  }, [ap_type]);
 
   useEffect(() => {
-    if (passed_date.length > 0 && passed_time.length > 0) handleAvailability(passed_date,passed_time);
+    if (typeof passed_date !== undefined && passed_time !== undefined) {
+      if (passed_date.length > 0 && passed_time.length > 0) handleAvailability(passed_date,passed_time);
+    }
   }, [passed_time, passed_date]);
   // create appointment post
   const createAppointment = () => {
@@ -205,13 +177,10 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         'start_time':startTime.toTimeString().slice(0,5),
         'end_time':endTime.toTimeString().slice(0,5),
         'other_information':otherInfo.value,
-      }
+      },
+      'brands':brands.value.map(item => ({'brand':item.id, 'main_contact':item.main_contact.id}))
     }
-    if (ap_type==='SR') {
-      payload['brands'] = [{'brand':brands.value[0].id, 'main_contact':mainContact.value.id}];
-    } else {
-      payload['brands'] = brands.value.map(item => ({'brand':item.id, 'main_contact':item.main_contact.id}));
-    }
+
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
 
@@ -254,9 +223,6 @@ export default function AppointmentCreateScreen({ route, navigation }) {
           if (error.response.data.brands.hasOwnProperty("non_field_errors")) {
             setBrands({value:brands.value, error:error.response.data.brands.non_field_errors[0]})
           }
-          if (error.response.data.brands[0].hasOwnProperty("main_contact")) {
-            setMainContact({value:mainContact.value, error:error.response.data.brands[0].main_contact[0]})
-          }
         }
         console.log(error.response.status);
         console.log(error.response.headers);
@@ -278,7 +244,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     setStartTime(new Date());
     setEndTime(new Date());
     setBrands({value:[], error:''});
-    setMainContact({value:{}, errors:''});
+
   }
 
 return (
@@ -308,27 +274,6 @@ return (
           error={!!name.error}
           errorText={name.error}
         />
-        {(ap_type === 'SR' && brands.value.length > 0) &&
-        <View>
-            <View style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}}>
-              <TextInput
-                label="Brand"
-                returnKeyType="next"
-                value={brands.value[0].name}
-                disabled={true}
-              
-              />
-          </View>
-          <PickerDropdown 
-            selectMethod={selectMainContact}
-            data = {
-              brands.value[0].members.map(item => ({label:item.first_name + " "+ item.last_name, value:item.id}))
-            }
-            label="Main Contact"
-            errors={mainContact.error}
-          />
-        </View>
-        }
         <View>
           <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}} onPress={showDate}>
             <TextInput
@@ -377,10 +322,9 @@ return (
             onCancel={hideEndTime}
           />
         </View>
-        {ap_type !== 'SR' &&
         <View>
           <HeaderLine containerStyle={{marginVertical:8}} textStyle={{fontSize:16, paddingHorizontal:8}}>
-            Brands        
+            {ap_type !== 'SR' ? 'Brands':'Brand'}        
           </HeaderLine>
             {
             brands.value.map((item, index) => {
@@ -400,7 +344,6 @@ return (
             }
           <AddBrands completeAction={addBrand} />
         </View>
-        }
         <TextInput
           label="Other Info"
           returnKeyType="next"

@@ -24,6 +24,7 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
     setTime(selectedTime);
     setDate(selectedDate);
   }
+  
   const manageTeam = teamMember => {
       var added = team;
       if (teamMember.id != -1) {

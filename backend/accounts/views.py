@@ -17,7 +17,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
 from .serializer import RegisterSerializer, UserSerializer
-from companies.serializer import BrandSerializer, RetailerSerializer
+from companies.serializer import BrandSerializer, RetailerSerializer, correct_company_serializer
 from appointments.serializer import SimpleAppointmentSerializer
 from appointments.models import Appointment
 from companies.models import CompanyCode
@@ -49,6 +49,7 @@ class CurrentUserView(APIView):
         serializer = UserSerializer(request.user)
         return Response({
             'user':serializer.data,
+            'company':correct_company_serializer(request.user.company).data
         })
 
 class CalendarUserView(APIView):
@@ -90,6 +91,7 @@ class UpdateProfileView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
 class RegistrationNewCompanyView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]

@@ -13,6 +13,7 @@ export default function Company({ navigation }) {
         <Tab.Screen name="Brand" component={Brand} />
         <Tab.Screen name="ProfileScreen" component={CompanyMemberScreen}/>
         <Tab.Screen name="Settings" component={Settings} />
+      
       </Tab.Navigator>
     );
 }
