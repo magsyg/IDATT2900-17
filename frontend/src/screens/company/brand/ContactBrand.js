@@ -19,6 +19,7 @@ import Paragraph from '../../../components/Paragraph'
 import PillLink from '../../../components/PillLink'
 import Button from '../../../components/Button'
 import ProfilePicture from '../../../components/ProfilePicture'
+import CompanyLogo from '../../../components/CompanyLogo'
 
 export default function ContactBrandScreen({ route, navigation }) {
   const {brand_id} = route.params
@@ -76,9 +77,9 @@ export default function ContactBrandScreen({ route, navigation }) {
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
-            <Avatar.Image 
+            <CompanyLogo
                 size={64} 
-                source={require('../../../assets/default_profile.png')}  
+                company={brand}
             />
           </BackHeader>
         </View>
@@ -96,7 +97,6 @@ export default function ContactBrandScreen({ route, navigation }) {
         </View>
         <View style={{marginVertical:16}}>
           <Header2>BUYERS</Header2>
-
           <Avatar.Image 
                 size={48} 
                 source={require('../../../assets/default_profile.png')}  

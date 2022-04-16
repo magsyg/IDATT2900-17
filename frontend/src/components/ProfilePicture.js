@@ -1,15 +1,25 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 import { Avatar } from 'react-native-paper'
 
 
 export default function ProfilePicture({style, size, user}) {
-  useEffect(() => {console.log(axios.defaults.baseURL+user.profile_picture)},[user]);
+  const [imageURL, setImageUrl] = useState('')
+  useEffect(() => {
+    if ((typeof user !== 'undefined' && user.profile_picture)) {
+      if(user.profile_picture.charAt(0) === '/') {
+        setImageUrl(axios.defaults.baseURL+user.profile_picture)
+      } else {
+        setImageUrl(user.profile_picture)
+      }
+    }
+  
+  },[user]);
   return (
     <Avatar.Image 
       style={style}
       size={size} 
-      source={user.profile_picture ? {uri:axios.defaults.baseURL+user.profile_picture}: require('../assets/default_profile.png')}  
+      source={(typeof user !== 'undefined' && user.profile_picture) ? {uri:imageURL}: require('../assets/default_profile.png')}  
     />
   )
 }

@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import { StyleSheet, View, Modal, FlatList, TouchableOpacity} from 'react-native'
-import { Text, Button, Avatar, Searchbar, IconButton, Subheading} from 'react-native-paper'
+import { Text, Button, Searchbar, IconButton, Subheading} from 'react-native-paper'
 import { theme } from '../core/theme'
+import CompanyLogo from './CompanyLogo'
 
 
 export default function BrandSearch({selectMethod, exitMethod, mode}) {  
@@ -77,9 +78,9 @@ export default function BrandSearch({selectMethod, exitMethod, mode}) {
             scrollEnabled={true}
             renderItem={({item, index}) => 
                 <TouchableOpacity onPress={() => select(item)} key={index} style={[styles.brandRow, {justifyContent:'flex-start'}]}>
-                  <Avatar.Image 
+                  <CompanyLogo
                     size={40} 
-                    source={require('../assets/default_profile.png')}  
+                    company={item}
                   />
                   <Subheading style={{marginLeft:16}}>{item.name}</Subheading>
                 </TouchableOpacity>

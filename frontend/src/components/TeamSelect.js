@@ -34,7 +34,7 @@ export default function TeamSelect({start, containerStyle, company, selectedUser
   useEffect(() => {
     setSelected(selectedUsers);
   }, [selectedUsers]);
-  
+
   return <View>
       <Modal visible={teamVisible} onDismiss={hideTeamModal}>
         <View style= {styles.column}>
@@ -70,8 +70,8 @@ export default function TeamSelect({start, containerStyle, company, selectedUser
         }
         <View style={{margin:2}}>
             <ProfilePicture 
-              size={48} 
-              user={main_user}
+                size={48} 
+                user={main_user}
             />
           </View>
           {

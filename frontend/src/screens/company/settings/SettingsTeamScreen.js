@@ -10,6 +10,7 @@ import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import Paragraph from '../../../components/Paragraph'
 import ProfilePicture from '../../../components/ProfilePicture'
+import CompanyLogo from '../../../components/CompanyLogo'
 
 export default function SettingsTeamScreen({ route, navigation }) {
   const [user, setUser] = useState({name: 'User' })
@@ -67,9 +68,9 @@ export default function SettingsTeamScreen({ route, navigation }) {
             <Header>Manage Users</Header>
           </View>
           <View style={styles.row}>
-            <Avatar.Image 
-                  size={80} 
-                  source={require('../../../assets/default_profile.png')}  
+            <CompanyLogo
+                size={64} 
+                company={company}  
             />
           </View>
           <View style={[styles.row, {margin:4}]}>

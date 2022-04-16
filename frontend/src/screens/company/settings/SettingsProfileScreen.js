@@ -146,7 +146,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
           <View style={styles.row}>
             <ProfilePicture
               size={96} 
-              source={require('../../../assets/default_profile.png')}  
+              user={user}
             />
           </View>
           <View style={[styles.row, {margin:4}]}>

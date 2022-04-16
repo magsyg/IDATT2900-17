@@ -49,9 +49,13 @@ class Command(BaseCommand):
     def populate(self): 
 
         mod_path = Path(__file__).parent
-        relative_path ='../../../placeholders/profile_pictures'
-        placeholder_path = (mod_path / relative_path).resolve()
-        profile_pictures = os.listdir(placeholder_path)
+        relative_path_pp ='../../../placeholders/profile_pictures'
+        placeholder_pp_path = (mod_path / relative_path_pp).resolve()
+        profile_pictures = os.listdir(placeholder_pp_path)
+
+        relative_path_logo ='../../../placeholders/company_logos'
+        placeholder_logo_path = (mod_path / relative_path_logo).resolve()
+        logos = os.listdir(placeholder_logo_path)
 
         fake = Faker()
         seeder = Seed.seeder()
@@ -75,12 +79,17 @@ class Command(BaseCommand):
         retailers = companies_models.Retailer.objects.all()
         for brand in companies_models.Brand.objects.all():
             brand.retailers.set(random.choices(list(retailers), k=4))
+        for company in companies_models.Company.objects.all():
+            random_logo = random.choice(logos)
+            image_path = (placeholder_logo_path / random_logo).resolve()
+            company.logo = ImageFile(open(image_path, mode='rb'), name=random_logo)
+            company.save()    
         for user in User.objects.all():
             # Set random profile picture and company
             # TODO seeder should only set the seeded instances properties
             user.company = random.choice(list(companies))
             random_profile_picture = random.choice(profile_pictures)
-            image_path = (placeholder_path / random_profile_picture).resolve()
+            image_path = (placeholder_pp_path / random_profile_picture).resolve()
             user.profile_picture = ImageFile(open(image_path, mode='rb'), name=random_profile_picture)
             user.save()
 
