@@ -9,6 +9,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import Paragraph from '../../../components/Paragraph'
+import ProfilePicture from '../../../components/ProfilePicture'
 
 export default function SettingsTeamScreen({ route, navigation }) {
   const [user, setUser] = useState({name: 'User' })
@@ -87,8 +88,8 @@ export default function SettingsTeamScreen({ route, navigation }) {
               numColumns={1}
               contentContainerStyle={{marginHorizontal:16}}
               renderItem={({item, index}) => 
-              <OptionIconLink key={index}  text={item.first_name + " "+ item.last_name}>            
-                <Avatar.Image size={32} source={require('../../../assets/default_profile.png')}/>
+              <OptionIconLink key={index}  text={item.first_name + " "+ item.last_name}>        
+                <ProfilePicture size={32} user={item}/>
               </OptionIconLink>
               }                             
           />

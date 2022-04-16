@@ -1,16 +1,16 @@
 import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
-import { Avatar } from 'react-native-paper'
 import { theme } from '../core/theme'
 import OutlinedButton from './OutlinedButton'
+import ProfilePicture from './ProfilePicture'
 
 export default function Contact({user,contactType}) {
   return (
     <View style={styles.row}>
       <View style={{flex:1}}>
-        <Avatar.Image 
+        <ProfilePicture 
           size={72} 
-          source={require('../assets/default_profile.png')}  
+          user={user}
         />
       </View>
       <View style={{flex:3}}>

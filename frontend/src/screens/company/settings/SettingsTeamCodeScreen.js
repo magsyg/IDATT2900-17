@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, FlatList } from 'react-native'
-import { Avatar, Text, Subheading, IconButton } from 'react-native-paper'
+import {  Text, Subheading, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Header from '../../../components/Header'
 import OptionIconLink from '../../../components/OptionIconLink'
@@ -9,6 +9,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import Paragraph from '../../../components/Paragraph'
+import ProfilePicture from '../../../components/ProfilePicture'
 
 export default function SettingsTeamCodeScreen({ route, navigation }) {
   const [company, setCompany] = useState({name:'Company', codes: []})
@@ -97,9 +98,9 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
             </Header>
           </View>
           <View style={styles.row}>
-            <Avatar.Image 
-                  size={80} 
-                  source={require('../../../assets/default_profile.png')}  
+            <ProfilePicture 
+              size={80} 
+              user={user}
             />
           </View>
           <View style={[styles.row, {margin:4}]}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import filter from 'lodash.filter';
 import { View, StyleSheet, Modal, TouchableOpacity, Text, FlatList } from 'react-native'
-import { Avatar, Subheading, IconButton, Searchbar } from 'react-native-paper'
+import { Subheading, IconButton, Searchbar } from 'react-native-paper'
 import Background from '../../../components/Background'
 import TextInput from '../../../components/TextInput'
 import OptionTextLink from '../../../components/OptionTextLink'
@@ -11,6 +11,7 @@ import BackButton from '../../../components/BackButton'
 import Button from '../../../components/Button'
 import { theme } from '../../../core/theme'
 import { countryCodes } from '../../../core/countrycodes'
+import ProfilePicture from '../../../components/ProfilePicture';
 
 export default function SettingsProfileScreen({ route, navigation }) {
   const [email, setEmail] = React.useState('ms@gmail.com');
@@ -18,7 +19,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
   const [lastName, setLastName] = useState({ value: '', error: '' })
   const [countryCode, setCountryCode] = useState({ value: '+47', error: '' })
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
-
+  const [user, setUser] = useState({})
 
 
   const [CCvisible, setCCVisible] = React.useState(false);
@@ -51,6 +52,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
 
   useEffect(() => {
     axios.get('/accounts/current_user/').then((response) => {
+      setUser(response.data.user)
       setFirstName({value: response.data.first_name, error:""})
       setLastName({value: response.data.last_name, error:""})
       setCountryCode({value: "+"+response.data.country_code.toString(), error:""})
@@ -142,9 +144,9 @@ export default function SettingsProfileScreen({ route, navigation }) {
             <Header>Profile</Header>
           </View>
           <View style={styles.row}>
-            <Avatar.Image 
-                  size={96} 
-                  source={require('../../../assets/default_profile.png')}  
+            <ProfilePicture
+              size={96} 
+              source={require('../../../assets/default_profile.png')}  
             />
           </View>
           <View style={[styles.row, {margin:4}]}>

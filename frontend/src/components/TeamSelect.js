@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, FlatList,  Modal,ScrollView } from 'react-native'
-import { Avatar, IconButton, Subheading } from 'react-native-paper'
+import { IconButton, Subheading } from 'react-native-paper'
 import { theme } from '../core/theme'
 import Header from './Header'
+import ProfilePicture from './ProfilePicture'
 
 
 export default function TeamSelect({start, containerStyle, company, selectedUsers, main_user, addMethod, removeMethod}) {
@@ -51,9 +52,9 @@ export default function TeamSelect({start, containerStyle, company, selectedUser
               scrollEnabled={true}
               renderItem={({item, index}) =>
                 <View key={index} style={styles.teamRow}>
-                    <Avatar.Image 
+                    <ProfilePicture 
                       size={40} 
-                      source={require('../assets/default_profile.png')}  
+                      user={item}
                     />
                     <Subheading>{item.first_name} {item.last_name}</Subheading>
                     <IconButton icon='plus' onPress={() => add(item)} color={theme.colors.grey}/>
@@ -68,19 +69,19 @@ export default function TeamSelect({start, containerStyle, company, selectedUser
         <IconButton icon='plus' onPress={showTeamModal} color={theme.colors.grey}/>
         }
         <View style={{margin:2}}>
-            <Avatar.Image 
-                size={48} 
-                source={require('../assets/default_profile.png')}  
+            <ProfilePicture 
+              size={48} 
+              user={main_user}
             />
           </View>
           {
           selected.map((item, index) => {
               return(
                 <TouchableOpacity key={index} style={{margin:2}} onPress={() => select(item)}>
-                  <Avatar.Image 
-                    size={48} 
-                    source={require('../assets/default_profile.png')}  
-                  />
+                    <ProfilePicture 
+                      size={48} 
+                      user={item}
+                    />
                 </TouchableOpacity>
               );     
             })

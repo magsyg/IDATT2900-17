@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { TouchableOpacity, StyleSheet, View, ScrollView, Text} from 'react-native'
-import { Avatar , DataTable } from 'react-native-paper'
+import {  DataTable } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
 import Header from '../components/Header'
@@ -16,6 +16,7 @@ import CalendarFull from '../components/calendar/Calendar.js'
 import AgendaScreen from '../components/calendar/Agenda.js'
 import HoveringBar from '../components/HoveringBar.js'
 import AppointmentsList from '../components/AppointmentList';
+import ProfilePicture from '../components/ProfilePicture';
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()
@@ -23,7 +24,7 @@ export default function Dashboard({ navigation }) {
   const [appointments, setAppointments] =useState([])
   useEffect(() => {
     axios.get('/accounts/current_user/').then((response) => {
-      setUser(response.data);
+      setUser(response.data.user);
       console.log(response.data)
     }).catch(function (error) {
       console.log("-----axios----")
@@ -77,10 +78,10 @@ export default function Dashboard({ navigation }) {
             <Header>Hi, {user.first_name}</Header>
           </View>
           <View style={{flex: 1}}>
-            <Avatar.Image 
-              size={64} 
-              source={require('../assets/default_profile.png')}  
-            />
+            <ProfilePicture
+            size={64} 
+            user={user} />
+
           </View>
         </View>
         <Header>Notifications</Header> 
