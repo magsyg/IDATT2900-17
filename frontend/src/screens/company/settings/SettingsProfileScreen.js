@@ -24,13 +24,6 @@ export default function SettingsProfileScreen({ route, navigation }) {
   const [user, setUser] = useState({})
   const [profilePicture, setProfilePicture] = useState(null);
   
-  const contains = ({ name, dial_code }, query) => {
-    if (name.toLowerCase().includes(query) || dial_code.includes(query)) {
-      return true;
-    }
-  
-    return false;
-  };
   // Success modal
   const [successModal, setSuccessModal] = useState(false);
   const hideSuccessModal = () => setSuccessModal(false);
