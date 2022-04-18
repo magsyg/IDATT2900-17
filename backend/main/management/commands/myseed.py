@@ -63,11 +63,11 @@ class Command(BaseCommand):
 
         seeder.add_entity(User, 30, {'profile_picture':None})
 
-        seeder.add_entity(companies_models.Retailer, 8, {
+        seeder.add_entity(companies_models.Retailer, 5, {
             'name': lambda x: seeder.faker.word(),
         })
 
-        seeder.add_entity(companies_models.Brand, 8, {
+        seeder.add_entity(companies_models.Brand, 5, {
             'name': lambda x: seeder.faker.word(),
         })
         

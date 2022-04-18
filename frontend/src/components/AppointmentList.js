@@ -6,7 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import { theme } from '../core/theme'
 import OutlinedTouch from './OutlinedTouch';
 
-export default function AppointmentsList({ data, mode }) {
+export default function AppointmentsList({ data, mode, ap_type }) {
   const navigation = useNavigation();
 
   const goToAppointment = item => {
@@ -34,6 +34,11 @@ export default function AppointmentsList({ data, mode }) {
     'OT':"#f18a9a",
     'TS':"#7ec98a"
   }
+
+  const filteredData = (data) => {
+    if(typeof ap_type === 'undefined' || ap_type =='AL') return data;
+    return data.filter(ap => (ap.appointment_type === ap_type))
+  }
   function BasicRow(props) {
     return (
       <View key={props.index} style={[styles.row]}>
@@ -45,7 +50,7 @@ export default function AppointmentsList({ data, mode }) {
       </View>
     )
   }
-
+  
   function PrettyRow(props) {
     return (
       <View key={props.index} style={[styles.row]}>
@@ -70,7 +75,7 @@ export default function AppointmentsList({ data, mode }) {
   }
   return (
     <FlatList
-      data={data}
+      data={filteredData(data)}
       numColumns={1}
       scrollEnabled={true}
       renderItem={({item, index}) => 

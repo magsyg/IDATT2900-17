@@ -8,6 +8,7 @@ import { theme } from '../core/theme'
 
 import { Calendar } from 'react-native-calendars';
 import AppointmentsList from '../components/AppointmentList';
+import CalendarAppointments from '../components/CalendarAppointments'
 
 export default function AppointmentCalendarScreen({ route, navigation }) {
   const [meta, setMeta] = useState({'user': {}})
@@ -93,27 +94,7 @@ export default function AppointmentCalendarScreen({ route, navigation }) {
 
   return (
     <Background>
-      <Modal visible={monthVisible} onDismiss={hideMonthModal} style={{paddingTop:64}}>
-        <FlatList 
-            style={{paddingTop:64}}
-            data={monthNames}
-            numColumns={1}
-            scrollEnabled={false}
-            renderItem={({item, index}) => 
-              <TouchableOpacity key={index} style={{marginBottom:0}} onPress={() => selectMonth(index)}>
-                  <Text style={[styles.monthSelectStyle, index === month && {color:theme.colors.secondary}]}>{item}</Text>
-              </TouchableOpacity>
-            }/>
-      </Modal>
-      <View style={[styles.column,{marginTop:16}]}>
-        <TouchableOpacity onPress={showMonthModal}>
-          <Header>{monthNames[month]}</Header>
-        </TouchableOpacity>
-        <Calendar 
-          onDayPress={day => {selectDay(day.dateString)}}
-        />
-        <AppointmentsList mode='pretty' data={appointments}/>
-      </View>
+      <CalendarAppointments user={meta.user}/>
     </Background>
   )
 }
