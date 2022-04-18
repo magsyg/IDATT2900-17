@@ -8,49 +8,15 @@ import { theme } from '../core/theme'
 
 import { Calendar } from 'react-native-calendars';
 import AppointmentsList from '../components/AppointmentList';
+import CalendarAppointments from '../components/CalendarAppointments'
 
 export default function AppointmentCalendarScreen({ route, navigation }) {
-  const [meta, setMeta] = useState({'user': {}})
-  const [appointments, setAppointments] =useState([])
-  const [currentDate, setCurrentDate] = useState(new Date().toISOString().substring(0, 10))
-  // Month
-  const [month, setMonth] = useState(0);
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-  ];
-  const [monthVisible, setMonthVisible] = useState(false);
-  const showMonthModal = () => setMonthVisible(true);
-  const hideMonthModal = () => setMonthVisible(false);
-
-  const selectMonth = (value) => {
-    setMonth(value);
-    hideMonthModal();
-  }
+  const [meta, setMeta] = useState({'user': {'id':-1}})
 
   useEffect(() => {
-    console.log(currentDate)
-    const current_date = new Date();
-    setMonth(current_date.getMonth());
-    axios.get('/accounts/calendar/').then((response) => {
+    axios.get('/accounts/current_user/').then((response) => {
       setMeta(response.data)
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-    axios.get('/appointments/user/').then((response) => {
-      setAppointments(response.data)
+      console.log(response.data.user)
     }).catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -69,73 +35,12 @@ export default function AppointmentCalendarScreen({ route, navigation }) {
     });
   }, []);
 
-  const selectDay = (dateString) => {
-    setCurrentDate(dateString);
-    axios.get(`/appointments/user/?date=${dateString}`).then((response) => {
-      setAppointments(response.data)
-    }).catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-  }
-
   return (
     <Background>
-      <Modal visible={monthVisible} onDismiss={hideMonthModal} style={{paddingTop:64}}>
-        <FlatList 
-            style={{paddingTop:64}}
-            data={monthNames}
-            numColumns={1}
-            scrollEnabled={false}
-            renderItem={({item, index}) => 
-              <TouchableOpacity key={index} style={{marginBottom:0}} onPress={() => selectMonth(index)}>
-                  <Text style={[styles.monthSelectStyle, index === month && {color:theme.colors.secondary}]}>{item}</Text>
-              </TouchableOpacity>
-            }/>
-      </Modal>
-      <View style={[styles.column,{marginTop:16}]}>
-        <TouchableOpacity onPress={showMonthModal}>
-          <Header>{monthNames[month]}</Header>
-        </TouchableOpacity>
-        <Calendar 
-          onDayPress={day => {selectDay(day.dateString)}}
-        />
-        <AppointmentsList mode='pretty' data={appointments}/>
-      </View>
+      <CalendarAppointments user={meta.user}/>
     </Background>
   )
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    justifyContent:'center',
-    marginTop: 4,
-  },
-  column: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: 'center',
-    width:'100%'
-  },
-  button: {
-    backgroundColor: theme.colors.grey,
-    color: theme.colors.primary
-  },
-  monthSelectStyle: {
-    textAlign:'center', 
-    fontSize:32
-  }
 })

@@ -23,7 +23,7 @@ export default class App extends Component {
   UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 3000;
-    axios.defaults.headers.common.Authorization = `Token 03d6a57eb70f2e04554da921fb3cb9d92c50f3a3`; //TEST TOKEN
+    axios.defaults.headers.common.Authorization = `Token 71fdc88b4a624e06b28cecd120e1937bcc34b25c`; //TEST TOKEN
   }
 
   render() {
@@ -31,7 +31,7 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Company"
+            initialRouteName="Calendar"
             screenOptions={{
               headerShown: false,
             }}
