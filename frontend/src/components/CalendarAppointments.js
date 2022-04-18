@@ -1,12 +1,14 @@
 import React, { useState, useEffect, Fragment, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { View, TouchableOpacity, StyleSheet, Text, FlatList, Modal } from 'react-native';
+import {Modal as PModal, Portal} from 'react-native-paper'
 import { Calendar, CalendarProps } from 'react-native-calendars';
 import Background from './Background';
 import Header from './Header';
 import AppointmentsList from './AppointmentList.js';
 import { theme } from '../core/theme';
 import Header2 from './Header2';
+import Link from './Link';
 
 export default function CalendarAppointments({ user, currentUser }) {
   const [appointments, setAppointments] =useState([])
@@ -48,10 +50,27 @@ export default function CalendarAppointments({ user, currentUser }) {
     };
   }, [currentDate]);
 
+  // AP Modal
+  const [apType, setApType] = useState({label:'All', value:'AL'});
+  const apTypes = [
+    {'label':'All', 'value':'AL'},
+    {'label':'Showroom', 'value':'SR'},
+    {'label':'Trade Show', 'value':'TS'},
+    {'label':'Other', 'value':'OR'}
+  ]
 
+  const [apModalVisible, setApModalVisible] = useState(false);
+  const showAPModal = () => setApModalVisible(true); 
+  const hideAPModal= () => setApModalVisible(false);
+
+  const changeApType = (item) => {
+    setApType(item);
+    hideAPModal();
+  }
 
   useEffect(() => {
-    axios.get(`/appointments/user/?date=${currentDate}`).then((response) => {
+    console.log(`/appointments/users/${user.id}/?date=${currentDate}`)
+    axios.get(`/appointments/users/${user.id}/?date=${currentDate}`).then((response) => {
       setAppointments(response.data)
     }).catch(function (error) {
       console.log("-----axios----")
@@ -85,10 +104,21 @@ export default function CalendarAppointments({ user, currentUser }) {
               </TouchableOpacity>
             }/>
       </Modal>
+      <Portal>
+            <PModal visible ={apModalVisible} onDismiss={hideAPModal} contentContainerStyle={styles.apModal}>
+            {apTypes.map((item, index) => {
+                return(
+                      <Link style={{fontSize:20, textAlign:'center',margin:4}} onPress={() => changeApType(item)}>{item.label}</Link>
+                )
+              })
+            }
+            </PModal>
+          </Portal>
       <View style={[styles.column,{marginTop:16}]}>
         <TouchableOpacity onPress={showMonthModal}>
           <Header style={{textAlign:'center'}}>{monthNames[month]}</Header>
         </TouchableOpacity>
+        <Link onPress={showAPModal} style={{textAlign:'center', fontSize:16}}>{apType.label}</Link>
         <Calendar 
           current={monthDate}
           key={monthDate}
@@ -98,7 +128,9 @@ export default function CalendarAppointments({ user, currentUser }) {
           renderHeader={date => {}}
           hideArrows
         />
-        <AppointmentsList mode='pretty' data={appointments}/>
+        <View style={{marginTop:32}}>
+          <AppointmentsList mode='pretty' data={appointments} ap_type={apType.value}/>
+        </View>
       </View>
     </View>
   )
@@ -120,5 +152,9 @@ const styles = StyleSheet.create({
     textAlign:'center', 
     fontSize:32,
     paddingVertical:2
+  },
+  apModal : {
+    backgroundColor: 'white', 
+    padding: 20
   }
 });

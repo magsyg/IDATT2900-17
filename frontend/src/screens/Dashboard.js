@@ -32,10 +32,7 @@ export default function Dashboard({ navigation }) {
   ]
   // AP Modal
   const [apModalVisible, setApModalVisible] = useState(false);
-  const showAPModal = () => {
-    setApModalVisible(true); 
-  }
-
+  const showAPModal = () => setApModalVisible(true); 
   const hideAPModal= () => setApModalVisible(false);
 
   const changeApType = (item) => {

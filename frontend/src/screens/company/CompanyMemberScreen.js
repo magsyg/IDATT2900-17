@@ -13,6 +13,7 @@ import OutlinedButton from '../../components/OutlinedButton'
 import OutlinedTouch from '../../components/OutlinedTouch'
 import AppointmentsList from '../../components/AppointmentList'
 import ProfilePicture from '../../components/ProfilePicture'
+import CalendarAppointments from '../../components/CalendarAppointments'
 
 export default function CompanyMemberScreen({ route, navigation }) {
   const {profile_id} = route.params
@@ -79,7 +80,7 @@ export default function CompanyMemberScreen({ route, navigation }) {
         <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}}><Text style={styles.outlinedTouchText}>{profile.phone_number}</Text></OutlinedTouch>
 
         <View style={{margin:16, marginTop:32}}>
-          <AppointmentsList data={appointments} mode='pretty'/>
+          <CalendarAppointments user={profile}/>
         </View>
       </View>
     </Background>
