@@ -10,7 +10,8 @@ User = get_user_model()
 class Company(models.Model):
     bio = models.TextField(max_length=200, blank=True, null=True, verbose_name="Bio")
     homepage = models.URLField(blank=True, null=True, verbose_name="Homepage")
-
+    logo = models.ImageField(null=True, blank=True, upload_to ='company_logos/', verbose_name="Company Logo")
+    
     def get_correct_model(self):
         """Returns the extended model if any, either Brand or Retailer"""
         for sub in Company.__subclasses__():

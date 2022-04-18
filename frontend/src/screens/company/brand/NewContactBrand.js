@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
-import { Text, Subheading, Avatar, Badge } from 'react-native-paper'
+import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'
@@ -21,6 +21,7 @@ import Button from '../../../components/Button'
 import HeaderWithSub from '../../../components/HeaderWithSub'
 import Note from '../../../components/Note'
 import TeamSelect from '../../../components/TeamSelect'
+import CompanyLogo from '../../../components/CompanyLogo'
 
 export default function NewContactBrandScreen({ route, navigation }) {
   
@@ -149,9 +150,9 @@ export default function NewContactBrandScreen({ route, navigation }) {
       <Modal visible={successModal}>
         <TouchableOpacity  style={{flex:1}} onPress={nextScreen}>
           <View style={[styles.row, {margin:32,justifyContent:'flex-end'}]}> 
-            <Avatar.Image 
-                  size={64} 
-                  source={require('../../../assets/default_profile.png')}  
+            <CompanyLogo
+                size={64} 
+                company={brand}  
             />
           </View>
         <View style={{padding:64}}>
@@ -165,9 +166,9 @@ export default function NewContactBrandScreen({ route, navigation }) {
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={toBrandSearch}>  
-            <Avatar.Image 
+            <CompanyLogo
                 size={64} 
-                source={require('../../../assets/default_profile.png')}  
+                company={brand}  
             />
           </BackHeader>
         </View>

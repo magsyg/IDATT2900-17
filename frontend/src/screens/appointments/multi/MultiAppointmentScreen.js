@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import filter from 'lodash.filter';
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
-import { Avatar, Subheading, IconButton, Searchbar, Button } from 'react-native-paper'
+import { Subheading, IconButton, Searchbar, Button } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'

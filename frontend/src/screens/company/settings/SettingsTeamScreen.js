@@ -9,36 +9,22 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import Paragraph from '../../../components/Paragraph'
+import ProfilePicture from '../../../components/ProfilePicture'
+import CompanyLogo from '../../../components/CompanyLogo'
 
 export default function SettingsTeamScreen({ route, navigation }) {
   const [user, setUser] = useState({name: 'User' })
   const [company, setCompany] = useState({name:'Company', members: []})
+
+  const goToProfile = id => {
+    navigation.navigate('ProfileScreen', {profile_id:id});
+  }
+
   useEffect(() => {
     // Fetches details about user
     axios.get('/accounts/current_user/').then((response) => {
-      setUser({name: response.data.first_name+ " "+response.data.last_name})
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-    // Fetches details about company
-    axios.get('/companies/user/company/').then((response) => {
-      setCompany({
-        name: response.data.name,
-        members: response.data.members
-      })
+      setUser(response.data.user);
+      setCompany(response.data.company);
     })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -66,9 +52,9 @@ export default function SettingsTeamScreen({ route, navigation }) {
             <Header>Manage Users</Header>
           </View>
           <View style={styles.row}>
-            <Avatar.Image 
-                  size={80} 
-                  source={require('../../../assets/default_profile.png')}  
+            <CompanyLogo
+                size={64} 
+                company={company}  
             />
           </View>
           <View style={[styles.row, {margin:4}]}>
@@ -87,8 +73,8 @@ export default function SettingsTeamScreen({ route, navigation }) {
               numColumns={1}
               contentContainerStyle={{marginHorizontal:16}}
               renderItem={({item, index}) => 
-              <OptionIconLink key={index}  text={item.first_name + " "+ item.last_name}>            
-                <Avatar.Image size={32} source={require('../../../assets/default_profile.png')}/>
+              <OptionIconLink key={index}  text={item.first_name + " "+ item.last_name} onPress={() => goToProfile(item.id)}>        
+                <ProfilePicture size={32} user={item}/>
               </OptionIconLink>
               }                             
           />

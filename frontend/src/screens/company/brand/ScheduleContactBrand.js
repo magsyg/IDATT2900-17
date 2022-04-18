@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import { Text, Subheading, Avatar, Badge } from 'react-native-paper'
+import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'
@@ -23,6 +23,7 @@ import HeaderWithSub from '../../../components/HeaderWithSub'
 import Availabilty from '../../../components/Availability'
 import DurationModal from '../../../components/DurationModal'
 import Contact from '../../../components/Contact'
+import CompanyLogo from '../../../components/CompanyLogo'
 
 export default function ScheduleContactBrandScreen({ route, navigation }) {
   const {brand_id} = route.params
@@ -155,9 +156,9 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={goBack}>  
-            <Avatar.Image 
+            <CompanyLogo
                 size={64} 
-                source={require('../../../assets/default_profile.png')}  
+                company={brand}  
             />
           </BackHeader>
         </View>

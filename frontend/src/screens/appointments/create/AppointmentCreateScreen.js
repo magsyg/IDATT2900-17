@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Picker } from 'react-native'
-import { Text, Subheading, Searchbar, Avatar, IconButton, Button } from 'react-native-paper'
+import { Text, Subheading, Searchbar, IconButton, Button } from 'react-native-paper'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Background from '../../../components/Background'

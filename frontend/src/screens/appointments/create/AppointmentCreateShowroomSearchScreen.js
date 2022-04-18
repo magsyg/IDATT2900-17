@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList } from 'react-native'
-import { Text, Subheading, Searchbar, Avatar, IconButton } from 'react-native-paper'
+import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'

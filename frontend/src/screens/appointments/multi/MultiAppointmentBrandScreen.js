@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useIsFocused } from "@react-navigation/native";
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
-import { Avatar, Subheading, IconButton, Searchbar, configureFonts } from 'react-native-paper'
+import { Subheading, IconButton, Searchbar, configureFonts } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'
@@ -17,6 +17,7 @@ import HeaderWithSub from '../../../components/HeaderWithSub';
 import Button from '../../../components/Button';
 import OutlinedButton from '../../../components/OutlinedButton';
 import Note from '../../../components/Note';
+import CompanyLogo from '../../../components/CompanyLogo';
 
 
 export default function MultiAppointmentBrandScreen({ route, navigation }) {
@@ -62,9 +63,9 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
       <View style={styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
-            <Avatar.Image 
+            <CompanyLogo
                 size={64} 
-                source={require('../../../assets/default_profile.png')}  
+                company={brand}
             />
           </BackHeader>
         </View>

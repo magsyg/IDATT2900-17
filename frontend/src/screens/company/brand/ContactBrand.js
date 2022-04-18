@@ -18,6 +18,8 @@ import OutlinedTouch from '../../../components/OutlinedTouch'
 import Paragraph from '../../../components/Paragraph'
 import PillLink from '../../../components/PillLink'
 import Button from '../../../components/Button'
+import ProfilePicture from '../../../components/ProfilePicture'
+import CompanyLogo from '../../../components/CompanyLogo'
 
 export default function ContactBrandScreen({ route, navigation }) {
   const {brand_id} = route.params
@@ -75,9 +77,9 @@ export default function ContactBrandScreen({ route, navigation }) {
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
-            <Avatar.Image 
+            <CompanyLogo
                 size={64} 
-                source={require('../../../assets/default_profile.png')}  
+                company={brand}
             />
           </BackHeader>
         </View>
@@ -121,9 +123,9 @@ export default function ContactBrandScreen({ route, navigation }) {
           {brand.members.map((item, index) => {
               return(
                 <TouchableOpacity key={index} style={{margin:2}} onPress={() => select(item)}>
-                  <Avatar.Image 
+                  <ProfilePicture
                     size={48} 
-                    source={require('../../../assets/default_profile.png')}  
+                    user={item}
                   />
                 </TouchableOpacity>
               );     

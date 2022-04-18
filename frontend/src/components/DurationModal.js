@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, FlatList, Modal } from 'react-native'
-import { Avatar, IconButton, Subheading } from 'react-native-paper'
+import { IconButton, Subheading } from 'react-native-paper'
 import { theme } from '../core/theme'
 import Header from './Header'
 import Header2 from './Header2'
