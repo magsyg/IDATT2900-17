@@ -226,7 +226,6 @@ export default function SettingsProfileScreen({ route, navigation }) {
             />
           </View>
           <View style={styles.row}>  
-
             <TextInput
               label="Last Name"
               returnKeyType="next"

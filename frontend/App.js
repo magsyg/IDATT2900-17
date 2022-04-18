@@ -31,7 +31,7 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Register"
+            initialRouteName="Company"
             screenOptions={{
               headerShown: false,
             }}

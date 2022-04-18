@@ -3,6 +3,7 @@ import SettingsSelectScreen  from './SettingsSelectScreen';
 import SettingsProfileScreen  from './SettingsProfileScreen';
 import SettingsTeamScreen  from './SettingsTeamScreen';
 import SettingsTeamCodeScreen  from './SettingsTeamCodeScreen';
+import SettingsCompanyScreen from './SettingsCompanyScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -15,6 +16,7 @@ export default function Settings({ navigation }) {
         <Tab.Screen name="SettingsProfileScreen" component={SettingsProfileScreen} />
         <Tab.Screen name="SettingsTeamScreen" component={SettingsTeamScreen} />
         <Tab.Screen name="SettingsTeamCodeScreen" component={SettingsTeamCodeScreen} />
+        <Tab.Screen name="SettingsCompanyScreen" component={SettingsCompanyScreen} />
       </Tab.Navigator>
     );
 }
