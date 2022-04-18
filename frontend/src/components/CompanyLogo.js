@@ -14,7 +14,7 @@ export default function CompanyLogo({style, size, company}) {
       }
     }
   
-  },[company]);
+  }, [company]);
   return (
     <Avatar.Image 
       style={style}

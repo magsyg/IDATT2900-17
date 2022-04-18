@@ -13,10 +13,11 @@ export default function PillLink({onPress, style, labelStyle, mode, children}) {
 const styles = StyleSheet.create({
   button: {
     borderRadius:15,
-    marginBottom: 8,
-    paddingVertical: 4,
-    paddingHorizontal:2,
-    backgroundColor:theme.colors.lightgrey
+    marginVertical: 8,
+    paddingVertical:6,
+    paddingHorizontal:12,
+    backgroundColor:theme.colors.lightgrey,
+    alignSelf: 'center'
   },
   text: {
     textAlign:'center',

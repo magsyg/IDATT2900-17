@@ -13,7 +13,27 @@ import ProfilePicture from '../../../components/ProfilePicture'
 
 export default function SettingsTeamCodeScreen({ route, navigation }) {
   const [company, setCompany] = useState({name:'Company', codes: []})
+  const [user, setUser] = useState({name: 'User' })
   useEffect(() => {
+      // Fetches details about user
+      axios.get('/accounts/current_user/').then((response) => {
+        setUser(response.data.user);
+      })  .catch(function (error) {
+        console.log("-----axios----")
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log("-----axios----")
+      });
     // Fetches details about company and the codes
     axios.get('/companies/company/codes/').then((response) => {
       setCompany({

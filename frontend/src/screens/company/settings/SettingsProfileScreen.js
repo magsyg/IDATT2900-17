@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import filter from 'lodash.filter';
 import { View, StyleSheet, Modal, TouchableOpacity, Text, FlatList } from 'react-native'
-import { Subheading, IconButton, Searchbar } from 'react-native-paper'
+import * as ImagePicker from 'expo-image-picker';
+import { Subheading, IconButton, Searchbar, Avatar } from 'react-native-paper'
 import Background from '../../../components/Background'
 import TextInput from '../../../components/TextInput'
 import OptionTextLink from '../../../components/OptionTextLink'
@@ -10,37 +10,19 @@ import Header from '../../../components/Header'
 import BackButton from '../../../components/BackButton'
 import Button from '../../../components/Button'
 import { theme } from '../../../core/theme'
-import { countryCodes } from '../../../core/countrycodes'
 import ProfilePicture from '../../../components/ProfilePicture';
+import PillLink from '../../../components/PillLink';
+import OutlinedButton from '../../../components/OutlinedButton';
+import Paragraph from '../../../components/Paragraph';
+import PhoneNumberInput from '../../../components/PhoneNumberInput';
 
 export default function SettingsProfileScreen({ route, navigation }) {
-  const [email, setEmail] = React.useState('ms@gmail.com');
   const [firstName, setFirstName] = useState({ value: '', error: '' })
   const [lastName, setLastName] = useState({ value: '', error: '' })
   const [countryCode, setCountryCode] = useState({ value: '+47', error: '' })
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
   const [user, setUser] = useState({})
-
-
-  const [CCvisible, setCCVisible] = React.useState(false);
-  const [CCData, setCCData] = React.useState(countryCodes);
-  const showCCModal = () => setCCVisible(true);
-  const hideCCModal = () => setCCVisible(false);
-
-  const updateCountryCode = (code) => {
-    setCountryCode({value:code, error: ''});
-    hideCCModal();
-  }
-
-  const [searchCC, setSearchCC] = React.useState('');
-  const onChangeSearchCC = text => {
-    const formattedQuery = text.toLowerCase();
-    const filteredData = filter(countryCodes, CC => {
-      return contains(CC, formattedQuery);
-    });
-    setCCData(filteredData);
-    setSearchCC(text)
-  };
+  const [profilePicture, setProfilePicture] = useState(null);
   
   const contains = ({ name, dial_code }, query) => {
     if (name.toLowerCase().includes(query) || dial_code.includes(query)) {
@@ -49,15 +31,80 @@ export default function SettingsProfileScreen({ route, navigation }) {
   
     return false;
   };
+  // Success modal
+  const [successModal, setSuccessModal] = useState(false);
+  const hideSuccessModal = () => setSuccessModal(false);
 
+  // Profile Picture
+  const [PPModalVisible, setPPModalVisible] = useState(false);
+  const showPPModal = () => setPPModalVisible(true);
+  const hidePPModal = () => setPPModalVisible(false);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+    if (!result.cancelled) {
+      setProfilePicture(result);
+    }
+  };
+
+  const getFormData = object => Object.keys(object).reduce((formData, key) => {
+    formData.append(key, object[key]);
+    return formData;
+}, new FormData());
+
+  const updateProfilePicture = () => {
+    // TODO Find out how this works
+    var imageType = profilePicture.uri.split('.')
+    imageType = imageType[imageType.length-1]
+    var imageName = profilePicture.uri.split('/')
+    imageName = imageName[imageName.length-1].split('.')[0]
+
+    var data = new FormData();
+
+    data.append("profile_picture", {filename:imageName, type:imageType, uri: profilePicture.uri})
+    axios.put('/accounts/profile/update/', getFormData(data), {   
+      'Accept': 'application/json',
+      'Content-Type': 'multipart/form-data',
+    }).then((response) => {
+      setUser(response.data)
+      console.log(response.data)
+    }).catch(function (error) {
+      console.log("-----axios----")
+      console.log(error.response.data)
+      if (error.response) {
+        if (error.response.data.hasOwnProperty("phone_number")) {
+          setPhoneNumber({error: error.response.data.phone_number[0]})
+        }
+        if (error.response.data.hasOwnProperty("first_name")) {
+          setPhoneNumber({error: error.response.data.first_name[0]})
+        }
+        if (error.response.data.hasOwnProperty("last_name")) {
+          setPhoneNumber({error: error.response.data.last_name[0]})
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+      console.log("-----axios----")
+    });
+  }
   useEffect(() => {
     axios.get('/accounts/current_user/').then((response) => {
       setUser(response.data.user)
-      setFirstName({value: response.data.first_name, error:""})
-      setLastName({value: response.data.last_name, error:""})
-      setCountryCode({value: "+"+response.data.country_code.toString(), error:""})
-      setPhoneNumber({value: response.data.national_number.toString(), error:""})
-      setEmail(response.data.email)
+      setFirstName({value: response.data.user.first_name, error:""})
+      setLastName({value: response.data.user.last_name, error:""})
+      setCountryCode({value: "+"+response.data.user.country_code.toString(), error:""})
+      setPhoneNumber({value: response.data.user.national_number.toString(), error:""})
     })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -90,8 +137,8 @@ export default function SettingsProfileScreen({ route, navigation }) {
       setLastName({value: response.data.last_name, error:""})
       setCountryCode({value: "+"+response.data.country_code.toString(), error:""})
       setPhoneNumber({value: response.data.national_number.toString(), error:""})
-
-    })  .catch(function (error) {
+      setSuccessModal(true);
+    }).catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
         if (error.response.data.hasOwnProperty("phone_number")) {
@@ -115,26 +162,42 @@ export default function SettingsProfileScreen({ route, navigation }) {
   }
   return (
     <Background>
-      <Modal visible={CCvisible} onDismiss={hideCCModal}>
-        <View style={[styles.row, {marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
-          <View style={{flex:1}}>
-            <Searchbar placeholder="Search"       
-            onChangeText={onChangeSearchCC}
-            value={searchCC}
-            style={{backgroundColor:theme.colors.grey, borderRadius:100}}
-            />
-          </View>
-          <IconButton icon="close" size={30} color={theme.colors.primary} onPress={hideCCModal}></IconButton>
+      <Modal visible={successModal}>
+        <TouchableOpacity  style={{flex:1}} onPress={hideSuccessModal}>
+        <View style={{padding:64}}>
+          <Header style={{textAlign:'center'}}>User updated successfully!</Header>
+          <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
+            Click anywhere to return
+          </Paragraph>
         </View>
-        <View style={{paddingHorizontal:16}}>
-        <FlatList
-            data={CCData}
-            numColumns={1}
-            contentContainerStyle={{marginHorizontal:16}}
-            renderItem={({item, index}) => 
-              <OptionTextLink  key={item.dial_code} onPress={()=>updateCountryCode(item.dial_code)} text1={item.name} text2={item.dial_code}/>
-            }                             
-        />
+        </TouchableOpacity>
+      </Modal>
+      <Modal visible={PPModalVisible} onDismiss={hidePPModal}>
+        <View style={styles.column}>
+          <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
+            <IconButton icon="close" size={30} color={theme.colors.grey} onPress={hidePPModal}></IconButton>
+          </View>
+          <View style={styles.row}>
+            {profilePicture ? 
+            <Avatar.Image 
+              size={256} 
+              source={{ uri: profilePicture.uri }}
+            />:
+            <ProfilePicture
+              size={256} 
+              user={user}
+            />
+            }
+
+          </View>
+          <View style={styles.row}>
+            <OutlinedButton onPress={pickImage}>Select New Image</OutlinedButton>
+          </View>
+          <View style={{margin:32}}>
+            {profilePicture &&
+              <Button onPress={updateProfilePicture}>Update Profile Picture</Button>
+            }
+          </View>
         </View>
       </Modal>
       <BackButton goBack={navigation.goBack} />
@@ -143,15 +206,18 @@ export default function SettingsProfileScreen({ route, navigation }) {
           <View style={styles.row}>
             <Header>Profile</Header>
           </View>
-          <View style={styles.row}>
-            <ProfilePicture
-              size={96} 
-              user={user}
-            />
+          <View>
+            <View style={styles.row}>
+                <ProfilePicture
+                  size={96} 
+                  user={user}
+                />
+            </View>
+            <PillLink onPress={showPPModal} style={{flex:0}}>Edit</PillLink>
           </View>
           <View style={[styles.row, {margin:4}]}>
             <Subheading style={{color:theme.colors.secondary}}>
-              {email}
+              {user.email}
             </Subheading>
           </View>
         </View>
@@ -177,19 +243,13 @@ export default function SettingsProfileScreen({ route, navigation }) {
               errorText={lastName.error}
             />
           </View>
-          <View style={styles.row}>  
-            <TouchableOpacity style={{marginTop: 30}} onPress={showCCModal}>
-              <Text style={{color:theme.colors.secondary}}>{countryCode.value}</Text>
-            </TouchableOpacity>
-            <TextInput
-              label="Phone Number"
-              returnKeyType="next"
-              value={phoneNumber.value}
-              onChangeText={(text) => setPhoneNumber({ value: text, error: '' })}
-              error={!!phoneNumber.error}
-              errorText={phoneNumber.error}
+          <PhoneNumberInput 
+            phoneNumber={phoneNumber} 
+            setPhoneNumber={setPhoneNumber}
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
             />
-          </View>
+          
           
         </View>
         <View style={[styles.row,{marginBottom:16}]}>  
@@ -215,7 +275,7 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: 'center'
+    width:'100%',
   },
   button: {
     backgroundColor: theme.colors.grey,
