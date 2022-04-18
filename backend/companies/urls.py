@@ -13,6 +13,7 @@ app_name = 'companies'
 urlpatterns = [
     # General
     path('user/company/', view=company_views.GetUserCompany.as_view(), name="get_user_company"),
+    path('update/', view=company_views.UpdateCompany.as_view(), name="update_company"),
 
     # Brands
     path('brand/<int:pk>/', view=company_views.BrandDetail.as_view(), name="brand"),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('retailer/create/', view=company_views.CreateRetailer.as_view(), name="create_retailer"),
 
     # Codes
+
     path('company/codes/', view=company_views.CompanyCodesView.as_view(), name="get_company_codes"),
     path('code/', view=company_views.GetCompanyWithCode.as_view(), name="get_company_with_code"),
 

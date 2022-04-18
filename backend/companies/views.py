@@ -86,6 +86,16 @@ class CreateBrand(APIView):
 
         return Response(self.serializer_class(brand).data)
 
+class UpdateCompany(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = correct_company_serializer(request.user.company, data=request.data, context={'request': request}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
 class GetCompanyWithCode(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]

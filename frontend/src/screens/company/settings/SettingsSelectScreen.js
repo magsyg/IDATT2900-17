@@ -21,7 +21,7 @@ export default function SettingsSelectScreen({ route, navigation }) {
           <View style={styles.row}></View>
           <OptionIconLink onPress={() => navigation.navigate('SettingsProfileScreen')} text="My Profile"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
           <OptionIconLink onPress={() => navigation.navigate('SettingsTeamScreen')} text="Company Members"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
-          <OptionIconLink text="Company Settings"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
+          <OptionIconLink onPress={() => navigation.navigate('SettingsCompanyScreen')} text="Company Settings"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
           <OptionIconLink text="Date and Time Preference"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
         </View>
       </View>
