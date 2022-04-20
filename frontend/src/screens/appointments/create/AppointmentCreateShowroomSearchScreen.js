@@ -21,19 +21,15 @@ export default function AppointmentCreateShowroomSearchScreen({ route, navigatio
 
   const selectBrand = brand => {
     if (meta.company.contacts.map(x => x.id).includes(brand.id)) {
-      navigation.navigate('Company',{ 
-        screen: 'Brand',
-        params: {
+      navigation.navigate('Brand',{
           screen: 'ScheduleContactBrand',
           params:{brand_id:brand.id, passed_team:passed_team}
-        }});
+        });
     } else {
-      navigation.navigate('Company',{ 
-        screen: 'Brand',
-        params: {
-          screen: 'NewContactBrand',
-          params:{brand_id:brand.id, passed_team:passed_team}
-        }});
+      navigation.navigate('Brand',{
+        screen: 'NewContactBrand',
+        params:{brand_id:brand.id, passed_team:passed_team}
+      });
     }
   }
   const goToForm = () => {

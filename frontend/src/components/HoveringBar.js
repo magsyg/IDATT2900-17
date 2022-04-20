@@ -47,16 +47,16 @@ export default function HoveringBar({}) {
         switch (index) {
           case 0:
             //navigation.navigate('Team')
-            navigation.navigate('Company');
-            console.log('Navigate to Team');
+            navigation.navigate('Contacts');
+            console.log('Navigate to Contacts');
             break;
           case 1:
-            navigation.navigate('Appointment')
-            console.log('Navigate to ArrangementMenu')
+            navigation.navigate('AppointmentCreate')
+            console.log('Navigate to AppointmentCreate')
             break;
           case 2:
             navigation.navigate('Calendar')
-            console.log('Navigate to Square')
+            console.log('Navigate to Calendar')
             break;
           case 3:
             navigation.navigate('Dashboard')

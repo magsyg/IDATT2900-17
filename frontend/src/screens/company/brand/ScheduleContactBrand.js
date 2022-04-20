@@ -116,18 +116,20 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         'main_contact':mainContact.id
       }]
     }
+    console.log(payload);
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
     
     axios.post('/appointments/create/', payload).then((response) => {
       clearFields();
-      navigation.navigate('Appointment',{ 
-        screen: 'Showroom',
-        params: {
-          screen: 'ShowroomScreen',
-          params:{appointment_id:response.data.id}
-        },
-      });
+      console.log(response.data.brand);
+      navigation.navigate('Showroom',{appointment_id:response.data.id});
     }).catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -153,6 +155,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   
   return (
     <Background>
+      
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={goBack}>  

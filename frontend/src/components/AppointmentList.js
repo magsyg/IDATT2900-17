@@ -11,21 +11,13 @@ export default function AppointmentsList({ data, mode, ap_type }) {
 
   const goToAppointment = item => {
     if (item.appointment_type!=='SR') {
-      navigation.navigate('Appointment',{ 
-        screen: 'MultiAppointment',
+      navigation.navigate('MultiAppointment',{
+        screen: 'MultiAppointmentScreen',
         params: {
-          screen: 'MultiAppointmentScreen',
-          params:{appointment_id:item.id}
-        },
-      });
+          appointment_id:item.id
+        }});
     } else {
-      navigation.navigate('Appointment',{ 
-        screen: 'Showroom',
-        params: {
-          screen: 'ShowroomScreen',
-          params:{appointment_id:item.id}
-        },
-      });
+      navigation.navigate('Showroom',{appointment_id:item.id});
     }
   }
 

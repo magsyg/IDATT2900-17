@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { TouchableOpacity, StyleSheet, View, ScrollView, Text} from 'react-native'
 import {  DataTable, Modal, Portal } from 'react-native-paper'
-import Background from '../components/Background'
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import Paragraph from '../components/Paragraph'
-import Button from '../components/Button'
-import Link from '../components/Link'
-import PillLink from '../components/PillLink'
-import { currentDate } from '../utils/date_management'
-import { placeholder } from '../core/placeholders'
-import { theme } from '../core/theme'
-import CalendarFull from '../components/calendar/Calendar.js'
-import AgendaScreen from '../components/calendar/Agenda.js'
-import HoveringBar from '../components/HoveringBar.js'
-import AppointmentsList from '../components/AppointmentList';
-import ProfilePicture from '../components/ProfilePicture';
-import Dropdown from '../components/Dropdown';
+import Background from '../../components/Background'
+import Logo from '../../components/Logo'
+import Header from '../../components/Header'
+import Paragraph from '../../components/Paragraph'
+import Button from '../../components/Button'
+import Link from '../../components/Link'
+import PillLink from '../../components/PillLink'
+import { currentDate } from '../../utils/date_management'
+import { placeholder } from '../../core/placeholders'
+import { theme } from '../../core/theme'
+import CalendarFull from '../../components/calendar/Calendar.js'
+import AgendaScreen from '../../components/calendar/Agenda.js'
+import HoveringBar from '../../components/HoveringBar.js'
+import AppointmentsList from '../../components/AppointmentList';
+import ProfilePicture from '../../components/ProfilePicture';
+import Dropdown from '../../components/Dropdown';
 
 export default function Dashboard({ navigation }) {
   const today = currentDate()

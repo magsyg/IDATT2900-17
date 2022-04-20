@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, Modal, TouchableOpacity, Text, FlatList } from 'react-native'
 import { Subheading, IconButton, Searchbar } from 'react-native-paper'
-import Background from '../components/Background'
-import Header from '../components/Header'
-import { theme } from '../core/theme'
+import Background from '../../components/Background'
+import Header from '../../components/Header'
+import { theme } from '../../core/theme'
 
 import { Calendar } from 'react-native-calendars';
-import AppointmentsList from '../components/AppointmentList';
-import CalendarAppointments from '../components/CalendarAppointments'
+import AppointmentsList from '../../components/AppointmentList';
+import CalendarAppointments from '../../components/CalendarAppointments'
 
 export default function AppointmentCalendarScreen({ route, navigation }) {
   const [meta, setMeta] = useState({'user': {'id':-1}})

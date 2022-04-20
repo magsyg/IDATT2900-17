@@ -48,14 +48,10 @@ export default function NewContactBrandScreen({ route, navigation }) {
 
   // Return to create appointment
   const toBrandSearch = () => {
-    navigation.navigate('Appointment',{ 
-      screen: 'AppointmentCreate',
-      params: {
+    navigation.navigate('AppointmentCreate',{
         screen: 'AppointmentCreateShowroomSearchScreen',
-        params: {
-          passed_team:team
-        }
-      }});
+        params: {passed_team:team}
+      });
   }
   useEffect(() => {
     setSuccessmodal(false);
@@ -142,8 +138,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
 
   const nextScreen = () => {
     setSuccessmodal(false);
-    navigation.navigate('Appointment',{screen:'AppointmentCreate', 
-      params:{screen:'AppointmentCreateShowroomSearchScreen', params:{passed_team:passed_team}}}); //TODO set this to a better
+    toBrandSearch(); //TODO set this to a better
   }
   return (
     <Background>
