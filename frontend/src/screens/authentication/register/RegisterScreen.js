@@ -2,17 +2,16 @@ import React, { useState,useEffect } from 'react'
 import axios from 'axios';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text,  Subheading } from 'react-native-paper'
-import Background from '../../components/Background'
-import Link from '../../components/Link'
-import Header from '../../components/Header'
-import Button from '../../components/Button'
-import TextInput from '../../components/TextInput'
-import BackButton from '../../components/BackButton'
-import { theme } from '../../core/theme'
-import { emailValidator } from '../../helpers/emailValidator'
-import { passwordValidator } from '../../helpers/passwordValidator'
-import { nameValidator } from '../../helpers/nameValidator'
-import PhoneNumberInput from '../../components/PhoneNumberInput';
+import Background from '../../../components/Background'
+import Link from '../../../components/Link'
+import Header from '../../../components/Header'
+import Button from '../../../components/Button'
+import TextInput from '../../../components/TextInput'
+import BackButton from '../../../components/BackButton'
+import { theme } from '../../../core/theme'
+import { emailValidator } from '../../../helpers/emailValidator'
+import { passwordValidator } from '../../../helpers/passwordValidator'
+import PhoneNumberInput from '../../../components/PhoneNumberInput';
 
 export default function RegisterScreen({ route, navigation }) {
   const { teamType, companyCode, companyName, companyID } = route.params;
@@ -58,6 +57,7 @@ export default function RegisterScreen({ route, navigation }) {
       })
       .catch(function (error) {
         if (error.response) {
+          console.log(error.response.data)
           // Request made and server responded
           if (error.response) {
             if (error.response.data.hasOwnProperty("phone_number")) {
@@ -68,6 +68,9 @@ export default function RegisterScreen({ route, navigation }) {
             }
             if (error.response.data.hasOwnProperty("last_name")) {
               setPhoneNumber({error: error.response.data.last_name[0]})
+            }
+            if (error.response.data.hasOwnProperty("password")) {
+              setPassword({error: error.response.data.password[0]})
             }
           }
         } else if (error.request) {

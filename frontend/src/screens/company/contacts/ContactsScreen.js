@@ -2,20 +2,19 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
-import Background from '../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Header from '../../components/Header'
-import OptionIconLink from '../../components/OptionIconLink'
-import BackButton from '../../components/BackButton'
-import { theme } from '../../core/theme'
-import PillLink from '../../components/Link';
-import ProfilePicture from '../../components/ProfilePicture'
+import Header from '../../../components/Header'
+import OptionIconLink from '../../../components/OptionIconLink'
+import Background from '../../../components/Background'
+import { theme } from '../../../core/theme'
+import PillLink from '../../../components/Link';
+import ProfilePicture from '../../../components/ProfilePicture'
 
 export default function CompanyContactsScreen({ route, navigation }) {
   const [meta, setMeta] = useState({company:{id:-1, members:[], contacts:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
 
   const goToProfile = id => {
-    navigation.navigate('ProfileScreen', {profile_id:id});
+    navigation.navigate('Members', {screen:'CompanyMember', params:{profile_id:id}});
   }
   const goToContact = id => {
     navigation.navigate('Brand',{ 

@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
-import Background from '../../components/Background'
+import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Header from '../../components/Header'
-import OptionIconLink from '../../components/OptionIconLink'
-import BackButton from '../../components/BackButton'
-import { theme } from '../../core/theme'
-import PillLink from '../../components/Link';
-import OutlinedButton from '../../components/OutlinedButton'
-import OutlinedTouch from '../../components/OutlinedTouch'
-import AppointmentsList from '../../components/AppointmentList'
-import ProfilePicture from '../../components/ProfilePicture'
-import CalendarAppointments from '../../components/CalendarAppointments'
+import Header from '../../../components/Header'
+import OptionIconLink from '../../../components/OptionIconLink'
+import BackButton from '../../../components/BackButton'
+import { theme } from '../../../core/theme'
+import PillLink from '../../../components/Link';
+import OutlinedButton from '../../../components/OutlinedButton'
+import OutlinedTouch from '../../../components/OutlinedTouch'
+import AppointmentsList from '../../../components/AppointmentList'
+import ProfilePicture from '../../../components/ProfilePicture'
+import CalendarAppointments from '../../../components/CalendarAppointments'
 
 export default function CompanyMemberScreen({ route, navigation }) {
   const {profile_id} = route.params

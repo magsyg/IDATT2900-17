@@ -2,16 +2,16 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
-import Background from '../components/Background'
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import HeaderLine from '../components/HeaderLine'
-import Button from '../components/Button'
-import TextInput from '../components/TextInput'
-import BackButton from '../components/BackButton'
-import { theme } from '../core/theme'
-import { emailValidator } from '../helpers/emailValidator'
-import { passwordValidator } from '../helpers/passwordValidator'
+import Background from '../../../components/Background'
+import Logo from '../../../components/Logo'
+import Header from '../../../components/Header'
+import HeaderLine from '../../../components/HeaderLine'
+import Button from '../../../components/Button'
+import TextInput from '../../../components/TextInput'
+import BackButton from '../../../components/BackButton'
+import { theme } from '../../../core/theme'
+import { emailValidator } from '../../../helpers/emailValidator'
+import { passwordValidator } from '../../../helpers/passwordValidator'
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
@@ -97,7 +97,7 @@ export default function LoginScreen({ navigation }) {
         Sign In
       </Button>
       <HeaderLine>Or</HeaderLine>
-      <Button mode="contained" style = {styles.button} onPress={() => navigation.replace('Register')}>
+      <Button mode="contained" style = {styles.button} onPress={() => navigation.navigate('Register')}>
         Create Account
       </Button>
     </Background>

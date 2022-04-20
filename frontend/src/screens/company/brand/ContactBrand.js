@@ -28,21 +28,13 @@ export default function ContactBrandScreen({ route, navigation }) {
 
   const goToAppointment = item => {
     if (item.appointment_type!=='SR') {
-      navigation.navigate('Appointment',{ 
-        screen: 'MultiAppointment',
+      navigation.navigate('MultiAppointment',{
+        screen: 'MultiAppointmentScreen',
         params: {
-          screen: 'MultiAppointmentScreen',
-          params:{appointment_id:item.id}
-        },
-      });
+          appointment_id:item.id
+        }});
     } else {
-      navigation.navigate('Appointment',{ 
-        screen: 'Showroom',
-        params: {
-          screen: 'ShowroomScreen',
-          params:{appointment_id:item.id}
-        },
-      });
+      navigation.navigate('Showroom',{appointment_id:item.id});
     }
   }
   const goToScheduleContact = () => {
@@ -122,7 +114,7 @@ export default function ContactBrandScreen({ route, navigation }) {
           <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1,justifyContent:'flex-start'}}>
           {brand.members.map((item, index) => {
               return(
-                <TouchableOpacity key={index} style={{margin:2}} onPress={() => select(item)}>
+                <TouchableOpacity key={index} style={{margin:2}}>
                   <ProfilePicture
                     size={48} 
                     user={item}

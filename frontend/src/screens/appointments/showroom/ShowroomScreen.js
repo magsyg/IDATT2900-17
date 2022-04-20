@@ -43,9 +43,8 @@ export default function ShowroomScreen({ route, navigation }) {
     // Trigger only on enter
     if (isFocused) {
       axios.get(`/appointments/showroom/${appointment_id}`).then((response) => {
+        console.log(response.data.brand.main_contact)
         setMeta(response.data);
-        console.log(response.data.company.members);
-        console.log("found appointments")
       })  .catch(function (error) {
         console.log("-----axios----")
         if (error.response) {
@@ -94,7 +93,7 @@ export default function ShowroomScreen({ route, navigation }) {
           <BackHeader goBack={navigation.goBack}>  
             <CompanyLogo
                 size={64} 
-                company={meta.brand}
+                company={meta.brand.brand}
             />
           </BackHeader>
         </View>
@@ -107,9 +106,11 @@ export default function ShowroomScreen({ route, navigation }) {
           main_user={meta.appointment.retailer.organizer}
           addMethod={inviteTeamRetailer}
          />
+        { meta.brand.main_contact !== null &&
         <View style={{marginTop:32}}>
           <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
         </View>
+        } 
         <View style={[styles.row, {marginTop:32}]}>
           <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
           <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>

@@ -9,15 +9,14 @@ import Header from '../../../components/Header'
 import { theme } from '../../../core/theme'
 import OptionIconLink from '../../../components/OptionIconLink';
 import Link from '../../../components/Link';
-import { transformNiceDate } from '../../../utils/date_management';
 import HeaderWithSub from '../../../components/HeaderWithSub';
 import AddBrands from '../../../components/AddBrand';
 import TeamSelect from '../../../components/TeamSelect';
 import AppointmentInfo from '../../../components/AppointmentInfo';
 
 
-export default function AppointmentScreen({ route, navigation }) {
-  const {appointment_id} = route.params
+export default function MultiAppointmentScreen({ route, navigation }) {
+  const {appointment_id} = route.params;
   const [meta, setMeta] = useState({'user': {}, 'company':{'members':[]}, 'appointment':{'id':-1,'retailer':{
     'retailer_participants':[]},'start_time':'09:00','end_time':'10:00', 'date':'2022-04-10', 'appointment_type':'TS','brands':[], 'other_information':'lorem ipsum'}})
 
