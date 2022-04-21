@@ -2,16 +2,16 @@ import React, { useState,useEffect } from 'react'
 import axios from 'axios';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text,  Subheading } from 'react-native-paper'
-import Background from '../../components/Background'
-import Link from '../../components/Link'
-import Header from '../../components/Header'
-import Button from '../../components/Button'
-import TextInput from '../../components/TextInput'
-import BackButton from '../../components/BackButton'
-import { theme } from '../../core/theme'
-import { emailValidator } from '../../helpers/emailValidator'
-import { passwordValidator } from '../../helpers/passwordValidator'
-import { nameValidator } from '../../helpers/nameValidator'
+import Background from '../../../components/Background'
+import Link from '../../../components/Link'
+import Header from '../../../components/Header'
+import Button from '../../../components/Button'
+import TextInput from '../../../components/TextInput'
+import BackButton from '../../../components/BackButton'
+import { theme } from '../../../core/theme'
+import { emailValidator } from '../../../helpers/emailValidator'
+import { passwordValidator } from '../../../helpers/passwordValidator'
+import PhoneNumberInput from '../../../components/PhoneNumberInput';
 
 export default function RegisterScreen({ route, navigation }) {
   const { teamType, companyCode, companyName, companyID } = route.params;
@@ -22,6 +22,9 @@ export default function RegisterScreen({ route, navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
   const [confirmPassword, setConfirmPassword] = useState({ value: '', error: '' })
+
+  const [countryCode, setCountryCode] = useState({ value: '+47', error: '' })
+  const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
 
   useEffect(() => {
     console.log(route.params)
@@ -35,12 +38,12 @@ export default function RegisterScreen({ route, navigation }) {
         first_name:firstName.value,
         last_name:lastName.value,
         password: password.value, 
-        password2: password.value, 
-        company_code:companyCode
-      } 
-    console.log(payload)
-    axios
-      .post(`/accounts/register/newcompany`, payload)
+        password2: confirmPassword.value, 
+        company_code:companyCode,
+        phone_number: countryCode.value+phoneNumber.value
+      }
+      console.log(payload)
+      axios.post(`/accounts/register/newcompany`, payload)
       .then(response => {
         const { token, user } = response.data;
         console.log(response.data)
@@ -54,10 +57,22 @@ export default function RegisterScreen({ route, navigation }) {
       })
       .catch(function (error) {
         if (error.response) {
+          console.log(error.response.data)
           // Request made and server responded
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
+          if (error.response) {
+            if (error.response.data.hasOwnProperty("phone_number")) {
+              setPhoneNumber({error: error.response.data.phone_number[0]})
+            }
+            if (error.response.data.hasOwnProperty("first_name")) {
+              setPhoneNumber({error: error.response.data.first_name[0]})
+            }
+            if (error.response.data.hasOwnProperty("last_name")) {
+              setPhoneNumber({error: error.response.data.last_name[0]})
+            }
+            if (error.response.data.hasOwnProperty("password")) {
+              setPassword({error: error.response.data.password[0]})
+            }
+          }
         } else if (error.request) {
           // The request was made but no response was received
           console.log(error.request);
@@ -123,6 +138,12 @@ export default function RegisterScreen({ route, navigation }) {
         error={!!lastName.error}
         errorText={lastName.error}
       />
+      <PhoneNumberInput 
+        phoneNumber={phoneNumber} 
+        setPhoneNumber={setPhoneNumber}
+        countryCode={countryCode}
+        setCountryCode={setCountryCode}
+        />
       <TextInput
         label="Password"
         returnKeyType="done"
@@ -135,7 +156,7 @@ export default function RegisterScreen({ route, navigation }) {
       <TextInput
         label="Confirm Password"
         returnKeyType="done"
-        value={password.value}
+        value={confirmPassword.value}
         onChangeText={(text) => setConfirmPassword({ value: text, error: '' })}
         error={!!confirmPassword.error}
         errorText={confirmPassword.error}

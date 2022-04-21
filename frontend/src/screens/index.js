@@ -1,9 +1,23 @@
-export { default as LoginScreen } from './LoginScreen'
-export { default as ResetPasswordScreen } from './ResetPasswordScreen'
-export { default as Dashboard } from './Dashboard'
-export { default as Calendar } from './CalendarScreen'
-export { default as Appointment } from './appointments/Appointment'
-export { default as Company } from './company/Company'
-export { default as Register } from './register/Register'
+// File containing all the main screens
+
+// Misc
+export { default as Dashboard } from './misc//Dashboard'
+export { default as Calendar } from './misc/CalendarScreen'
+
+// Appointment
+export { default as AppointmentCreate } from './appointments/create/AppointmentCreate'
+export { default as Showroom } from './appointments/showroom/ShowroomScreen'
+export { default as MultiAppointment } from './appointments/multi/MultiAppointment'
+
+// Authentication 
+export {default as Authentication } from './authentication/Authentication'
+
+// Company
 export { default as Settings } from './company/settings/Settings'
+export { default as Contacts } from './company/contacts/Contacts'
+export { default as Members } from './company/member/Members'
+export { default as Brand } from './company/brand/Brand'
+
+// Maps
 export { default as MapFullScreen } from './MapFullScreen'
+

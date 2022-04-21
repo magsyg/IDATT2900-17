@@ -1,11 +1,12 @@
 import React, {useState} from 'react'
 import axios from 'axios'
 import { StyleSheet, View, Modal, FlatList, TouchableOpacity} from 'react-native'
-import { Text, Button, Avatar, Searchbar, IconButton, Subheading} from 'react-native-paper'
+import { Text, Button, Searchbar, IconButton, Subheading} from 'react-native-paper'
 import { theme } from '../core/theme'
 import PickerDropdown from '../components/PickerDropdown'
 import Header from './Header'
 import TextInput from './TextInput'
+import ProfilePicture from './ProfilePicture'
 
 export default function AddBrands({completeAction}) {
 
@@ -86,9 +87,9 @@ export default function AddBrands({completeAction}) {
               scrollEnabled={true}
               renderItem={({item, index}) => 
                   <TouchableOpacity onPress={() => selectBrand(item)} key={index} style={[styles.brandRow, {justifyContent:'flex-start'}]}>
-                    <Avatar.Image 
+                    <ProfilePicture 
                       size={40} 
-                      source={require('../assets/default_profile.png')}  
+                      user={item}
                     />
                     <Subheading style={{marginLeft:16}}>{item.name}</Subheading>
                   </TouchableOpacity>

@@ -1,22 +1,25 @@
-import React,{ Component} from 'react'
+import React,{ Component,} from 'react'
 import axios from 'axios';
 import { Provider } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { theme } from './src/core/theme'
 import { baseURL } from './config';
+
 import {
-  LoginScreen,
-  ResetPasswordScreen,
+  Authentication,
+  AppointmentCreate,
   Dashboard,
-  Register,
+  Showroom,
+  MultiAppointment,
   Settings,
   Calendar,
+  Contacts,
+  Members,
+  Brand,
   Company,
   MapFullScreen,
-
 } from './src/screens';
-import Appointment from './src/screens/appointments/Appointment';
 
 const Stack = createStackNavigator()
 
@@ -24,7 +27,7 @@ export default class App extends Component {
   UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
     axios.defaults.timeout = 3000;
-    axios.defaults.headers.common.Authorization = `Token 6e4f36d6ca09a7e7432bc32365ea5e04f9e9a99b`; //TEST TOKEN
+    axios.defaults.headers.common.Authorization = `Token 71fdc88b4a624e06b28cecd120e1937bcc34b25c`; //TEST TOKEN
   }
 
   render() {
@@ -32,15 +35,16 @@ export default class App extends Component {
       <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Appointment"
+            initialRouteName="Authentication"
             screenOptions={{
               headerShown: false,
             }}
           >
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
-            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Authentication" component={Authentication} />
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen name="Calendar" component={Calendar} />
+            <Stack.Screen name="Contacts" component={Contacts} />
+            <Stack.Screen name="Members" component={Members} />
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Company" component={Company} />
             <Stack.Screen name="Appointment" component={Appointment} />
@@ -49,6 +53,10 @@ export default class App extends Component {
               name="ResetPasswordScreen"
               component={ResetPasswordScreen}
             />
+            <Stack.Screen name="Brand" component={Brand} />
+            <Stack.Screen name="AppointmentCreate" component={AppointmentCreate} />
+            <Stack.Screen name="Showroom" component={Showroom} />
+            <Stack.Screen name="MultiAppointment" component={MultiAppointment} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

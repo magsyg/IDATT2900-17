@@ -46,7 +46,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=30, blank=True, null=True, verbose_name="Name")
     last_name = models.CharField(max_length=30, blank=True, null=True, verbose_name="Surname")
     phone_number = PhoneNumberField(null=True, blank=True, verbose_name="Phone Number")
-
+    profile_picture = models.ImageField(null=True, blank=True,upload_to ='profile_pictures/', verbose_name="Profile Picture")
     # Company
     company = models.ForeignKey('companies.Company', null=True, blank=True,  on_delete=models.SET_NULL, related_name="members", verbose_name="Company")
     

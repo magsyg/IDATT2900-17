@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, FlatList } from 'react-native'
-import { Avatar, Text, Subheading, IconButton } from 'react-native-paper'
+import {  Text, Subheading, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Header from '../../../components/Header'
 import OptionIconLink from '../../../components/OptionIconLink'
@@ -9,10 +9,31 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import Paragraph from '../../../components/Paragraph'
+import ProfilePicture from '../../../components/ProfilePicture'
 
 export default function SettingsTeamCodeScreen({ route, navigation }) {
   const [company, setCompany] = useState({name:'Company', codes: []})
+  const [user, setUser] = useState({name: 'User' })
   useEffect(() => {
+      // Fetches details about user
+      axios.get('/accounts/current_user/').then((response) => {
+        setUser(response.data.user);
+      })  .catch(function (error) {
+        console.log("-----axios----")
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log("-----axios----")
+      });
     // Fetches details about company and the codes
     axios.get('/companies/company/codes/').then((response) => {
       setCompany({
@@ -97,9 +118,9 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
             </Header>
           </View>
           <View style={styles.row}>
-            <Avatar.Image 
-                  size={80} 
-                  source={require('../../../assets/default_profile.png')}  
+            <ProfilePicture 
+              size={80} 
+              user={user}
             />
           </View>
           <View style={[styles.row, {margin:4}]}>

@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
-import { Text, Subheading, Searchbar, IconButton, Avatar } from 'react-native-paper'
-import Background from '../../components/Background'
+import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Header from '../../components/Header'
-import OptionIconLink from '../../components/OptionIconLink'
-import BackButton from '../../components/BackButton'
-import { theme } from '../../core/theme'
-import PillLink from '../../components/Link';
+import Header from '../../../components/Header'
+import OptionIconLink from '../../../components/OptionIconLink'
+import Background from '../../../components/Background'
+import { theme } from '../../../core/theme'
+import PillLink from '../../../components/Link';
+import ProfilePicture from '../../../components/ProfilePicture'
 
 export default function CompanyContactsScreen({ route, navigation }) {
   const [meta, setMeta] = useState({company:{id:-1, members:[], contacts:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
 
   const goToProfile = id => {
-    navigation.navigate('ProfileScreen', {profile_id:id});
+    navigation.navigate('Members', {screen:'CompanyMember', params:{profile_id:id}});
   }
   const goToContact = id => {
     navigation.navigate('Brand',{ 
@@ -54,9 +54,9 @@ export default function CompanyContactsScreen({ route, navigation }) {
           <Header>MY TEAM</Header>
           <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{justifyContent:'flex-start'}}>
             <View style={{margin:6}}>
-              <Avatar.Image 
+              <ProfilePicture
                   size={56} 
-                  source={require('../../assets/default_profile.png')}  
+                  user={meta.user}
                 />
             </View>
             {
@@ -64,9 +64,9 @@ export default function CompanyContactsScreen({ route, navigation }) {
                 if (item.id !== meta.user.id) {
                   return(
                     <TouchableOpacity key={index} style={{margin:6}} onPress={() => goToProfile(item.id)}>
-                      <Avatar.Image 
+                      <ProfilePicture 
                         size={56} 
-                        source={require('../../assets/default_profile.png')}  
+                        user={item}
                       />
                     </TouchableOpacity>
                   );     

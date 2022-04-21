@@ -10,14 +10,15 @@ class CompanySerializer(serializers.ModelSerializer):
     members = UserSerializer(read_only=True, many=True)
     class Meta:
         model = Company
-        fields = ('id', 'name', 'members', 'bio', 'homepage')
+        fields = ('id', 'name', 'members', 'bio', 'homepage','logo')
         extra_kwargs = {
             'name': {'required': True},
-            'members': {'required':False}
+            'members': {'required':False},
+            'logo': {'required':False},
         }
 
     def validate(self, attrs):
-        if self.Meta.model.objects.filter(name=attrs['name']).first():
+        if 'name' in attrs and self.Meta.model.objects.filter(name=attrs['name']).first():
             raise serializers.ValidationError({"name": f"{self.Meta.model.get_model_name} with same name already exists"})
         return attrs
 
@@ -41,27 +42,27 @@ class BrandSerializer(CompanySerializer):
     contacts = SimpleRetailerSerializer(read_only=True, many=True, source='retailers')
     class Meta:
         model = Brand
-        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts')
+        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts','logo')
 
 class RetailerSerializer(CompanySerializer):
     contacts = SimpleBrandSerializer(read_only=True, many=True, source='brands')
     class Meta:
         model = Retailer
-        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts')
-
-def correct_company_serializer(company):
+        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts','logo')
+        
+def correct_company_serializer(company, *args, **kwargs):
     company = company.get_correct_model()
     if type(Company) == Brand:
-        return BrandSerializer(company)
+        return BrandSerializer(company, *args, **kwargs)
     else:
-        return RetailerSerializer(company)
+        return RetailerSerializer(company, *args, **kwargs)
 
-def correct_simple_company_serializer(company):
+def correct_simple_company_serializer(company, *args, **kwargs):
     company = company.get_correct_model()
     if type(Company) == Brand:
-        return SimpleBrandSerializer(company)
+        return SimpleBrandSerializer(company, *args, **kwargs)
     else:
-        return SimpleRetailerSerializer(company)
+        return SimpleRetailerSerializer(company, *args, **kwargs)
 
 
 class NoteSerializer(serializers.ModelSerializer):  

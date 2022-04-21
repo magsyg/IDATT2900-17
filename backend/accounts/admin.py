@@ -12,7 +12,7 @@ class CustomUserAdmin(BaseUserAdmin):
     form = CustomUserChangeForm
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number','profile_picture')}),
         ('Permissions', {
             'fields': ('is_admin',),
         }),
@@ -28,7 +28,7 @@ class CustomUserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2', 'is_admin', )}
          ),
     )
-    list_display = ('email', 'first_name', 'last_name', 'company', 'is_admin', )
+    list_display = ('id','email', 'first_name', 'last_name', 'company', 'is_admin', )
     list_filter = ('is_admin',)
     search_fields = ('email', 'first_name', 'last_name','company__name')
     ordering = ('email',)

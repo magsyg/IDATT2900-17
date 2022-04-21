@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useIsFocused } from "@react-navigation/native";
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
-import { Avatar, Subheading, IconButton, Searchbar, configureFonts } from 'react-native-paper'
+import { Subheading, IconButton, Searchbar, configureFonts } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'
@@ -20,6 +20,7 @@ import AppointmentInfo from '../../../components/AppointmentInfo';
 import TeamSelect from '../../../components/TeamSelect';
 import AddBrands from '../../../components/AddBrand';
 import Note from '../../../components/Note';
+import CompanyLogo from '../../../components/CompanyLogo';
 
 
 export default function ShowroomScreen({ route, navigation }) {
@@ -42,9 +43,8 @@ export default function ShowroomScreen({ route, navigation }) {
     // Trigger only on enter
     if (isFocused) {
       axios.get(`/appointments/showroom/${appointment_id}`).then((response) => {
+        console.log(response.data.brand.main_contact)
         setMeta(response.data);
-        console.log(response.data.company.members);
-        console.log("found appointments")
       })  .catch(function (error) {
         console.log("-----axios----")
         if (error.response) {
@@ -91,9 +91,9 @@ export default function ShowroomScreen({ route, navigation }) {
       <View style={styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
-            <Avatar.Image 
+            <CompanyLogo
                 size={64} 
-                source={require('../../../assets/default_profile.png')}  
+                company={meta.brand.brand}
             />
           </BackHeader>
         </View>
@@ -106,9 +106,11 @@ export default function ShowroomScreen({ route, navigation }) {
           main_user={meta.appointment.retailer.organizer}
           addMethod={inviteTeamRetailer}
          />
+        { meta.brand.main_contact !== null &&
         <View style={{marginTop:32}}>
           <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
         </View>
+        } 
         <View style={[styles.row, {marginTop:32}]}>
           <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
           <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>

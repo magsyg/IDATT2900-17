@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
-import { Text, Subheading, Searchbar, IconButton, Avatar } from 'react-native-paper'
-import Background from '../../components/Background'
+import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
+import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Header from '../../components/Header'
-import OptionIconLink from '../../components/OptionIconLink'
-import BackButton from '../../components/BackButton'
-import { theme } from '../../core/theme'
-import PillLink from '../../components/Link';
-import OutlinedButton from '../../components/OutlinedButton'
-import OutlinedTouch from '../../components/OutlinedTouch'
-import AppointmentsList from '../../components/AppointmentList'
+import Header from '../../../components/Header'
+import OptionIconLink from '../../../components/OptionIconLink'
+import BackButton from '../../../components/BackButton'
+import { theme } from '../../../core/theme'
+import PillLink from '../../../components/Link';
+import OutlinedButton from '../../../components/OutlinedButton'
+import OutlinedTouch from '../../../components/OutlinedTouch'
+import AppointmentsList from '../../../components/AppointmentList'
+import ProfilePicture from '../../../components/ProfilePicture'
+import CalendarAppointments from '../../../components/CalendarAppointments'
 
 export default function CompanyMemberScreen({ route, navigation }) {
   const {profile_id} = route.params
@@ -63,9 +65,9 @@ export default function CompanyMemberScreen({ route, navigation }) {
           <IconButton icon="close" size={30} color={theme.colors.grey} onPress={navigation.goBack}></IconButton>
         </View>
         <View style={styles.row}>
-          <Avatar.Image 
+          <ProfilePicture 
               size={96} 
-              source={require('../../assets/default_profile.png')}  
+              user={profile}
           />
         </View>
         <Header style={{textAlign:'center'}}>{profile.first_name} {profile.last_name}</Header>
@@ -78,7 +80,7 @@ export default function CompanyMemberScreen({ route, navigation }) {
         <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}}><Text style={styles.outlinedTouchText}>{profile.phone_number}</Text></OutlinedTouch>
 
         <View style={{margin:16, marginTop:32}}>
-          <AppointmentsList data={appointments} mode='pretty'/>
+          <CalendarAppointments user={profile}/>
         </View>
       </View>
     </Background>

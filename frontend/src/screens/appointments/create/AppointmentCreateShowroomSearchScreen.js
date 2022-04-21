@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList } from 'react-native'
-import { Text, Subheading, Searchbar, Avatar, IconButton } from 'react-native-paper'
+import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'
@@ -21,19 +21,15 @@ export default function AppointmentCreateShowroomSearchScreen({ route, navigatio
 
   const selectBrand = brand => {
     if (meta.company.contacts.map(x => x.id).includes(brand.id)) {
-      navigation.navigate('Company',{ 
-        screen: 'Brand',
-        params: {
+      navigation.navigate('Brand',{
           screen: 'ScheduleContactBrand',
           params:{brand_id:brand.id, passed_team:passed_team}
-        }});
+        });
     } else {
-      navigation.navigate('Company',{ 
-        screen: 'Brand',
-        params: {
-          screen: 'NewContactBrand',
-          params:{brand_id:brand.id, passed_team:passed_team}
-        }});
+      navigation.navigate('Brand',{
+        screen: 'NewContactBrand',
+        params:{brand_id:brand.id, passed_team:passed_team}
+      });
     }
   }
   const goToForm = () => {

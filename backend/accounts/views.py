@@ -9,6 +9,7 @@ from django.core.exceptions import PermissionDenied
 
 
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -87,6 +88,7 @@ class UpdateProfileView(APIView):
     serializer_class = UserSerializer
 
     def put(self, request, format=None):
+        #TODO Find out about image upload
         serializer = self.serializer_class(request.user, data=request.data, context={'request': request}, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import { Text, Subheading, Avatar, Badge } from 'react-native-paper'
+import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'
@@ -23,6 +23,7 @@ import HeaderWithSub from '../../../components/HeaderWithSub'
 import Availabilty from '../../../components/Availability'
 import DurationModal from '../../../components/DurationModal'
 import Contact from '../../../components/Contact'
+import CompanyLogo from '../../../components/CompanyLogo'
 
 export default function ScheduleContactBrandScreen({ route, navigation }) {
   const {brand_id} = route.params
@@ -115,18 +116,20 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         'main_contact':mainContact.id
       }]
     }
+    console.log(payload);
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
+    console.log("cookookokokokokokokoko");
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
     
     axios.post('/appointments/create/', payload).then((response) => {
       clearFields();
-      navigation.navigate('Appointment',{ 
-        screen: 'Showroom',
-        params: {
-          screen: 'ShowroomScreen',
-          params:{appointment_id:response.data.id}
-        },
-      });
+      console.log(response.data.brand);
+      navigation.navigate('Showroom',{appointment_id:response.data.id});
     }).catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -152,12 +155,13 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   
   return (
     <Background>
+      
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={goBack}>  
-            <Avatar.Image 
+            <CompanyLogo
                 size={64} 
-                source={require('../../../assets/default_profile.png')}  
+                company={brand}  
             />
           </BackHeader>
         </View>

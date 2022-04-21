@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
-import { Avatar } from 'react-native-paper'
 import { theme } from '../core/theme'
 import { transformNiceDate } from '../utils/date_management'
 import OutlinedButton from './OutlinedButton'
