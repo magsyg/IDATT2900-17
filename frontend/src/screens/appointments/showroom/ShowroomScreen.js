@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { useIsFocused } from "@react-navigation/native";
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
 import { Subheading, IconButton, Searchbar, configureFonts } from 'react-native-paper'
@@ -23,6 +22,7 @@ import Note from '../../../components/Note';
 import CompanyLogo from '../../../components/CompanyLogo';
 import CurrentUserContext from '../../../../Context';
 import BackgroundAuth from '../../../components/BackgroundAuth';
+import api from '../../../../api';
 
 
 export default function ShowroomScreen({ route, navigation }) {
@@ -45,11 +45,11 @@ export default function ShowroomScreen({ route, navigation }) {
   useEffect(() => {
     // Trigger only on enter
     if (isFocused) {
-      axios.get(`/appointments/showroom/${appointment_id}`).then((response) => {
+      api.get(`/appointments/showroom/${appointment_id}`).then((response) => {
         console.log(response.data.brand.main_contact)
         setMeta(response.data);
       })  .catch(function (error) {
-        console.log("-----axios----")
+        
         if (error.response) {
           console.log(error.response.data);
           console.log(error.response.status);
@@ -59,19 +59,19 @@ export default function ShowroomScreen({ route, navigation }) {
           console.log('Error', error.message);
         }
         navigation.goBack(); // If error in response, go back to last screen
-        console.log("-----axios----")
+        
       });
     }
   }, [appointment_id]);
 
   const inviteTeamRetailer = item => {
     const payload = {'user_id':item.id}
-    axios.post(`/appointments/${meta.appointment.id}/retailer/invite/`, payload).then((response) => {
+    api.post(`/appointments/${meta.appointment.id}/retailer/invite/`, payload).then((response) => {
       let temp_meta = meta
       temp_meta.appointment.retailer.retailer_participants = response.data.retailer_participants
       setMeta(temp_meta);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -84,7 +84,7 @@ export default function ShowroomScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
     return false;
   }

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { View, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -16,6 +15,7 @@ import ProfilePicture from '../../../components/ProfilePicture'
 import CalendarAppointments from '../../../components/CalendarAppointments'
 import BackgroundAuth from '../../../components/BackgroundAuth'
 import CurrentUserContext from '../../../../Context'
+import api from '../../../../api';
 
 export default function CompanyMemberScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -24,10 +24,10 @@ export default function CompanyMemberScreen({ route, navigation }) {
   const [profile, setProfile] = useState({'first_name':'First Name', 'last_name':'Last Name','phone_number':'3333 6666', 'email':'email@email.com'});
   const [appointments, setAppointments] = useState([])
   useEffect(() => {
-    axios.get(`/accounts/profile/${profile_id}/`).then((response) => {
+    api.get(`/accounts/profile/${profile_id}/`).then((response) => {
       setProfile(response.data)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -40,12 +40,12 @@ export default function CompanyMemberScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
-    axios.get(`/appointments/users/${profile_id}/`).then((response) => {
+    api.get(`/appointments/users/${profile_id}/`).then((response) => {
       setAppointments(response.data)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -58,7 +58,7 @@ export default function CompanyMemberScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [profile_id]);
 

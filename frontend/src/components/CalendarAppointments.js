@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment, useCallback, useMemo } from 'react';
-import axios from 'axios';
 import { View, TouchableOpacity, StyleSheet, Text, FlatList, Modal } from 'react-native';
 import {Modal as PModal, Portal} from 'react-native-paper'
 import { Calendar, CalendarProps } from 'react-native-calendars';
@@ -9,6 +8,7 @@ import AppointmentsList from './AppointmentList.js';
 import { theme } from '../core/theme';
 import Header2 from './Header2';
 import Link from './Link';
+import api from '../../api';
 
 export default function CalendarAppointments({ user, currentUser }) {
   const [appointments, setAppointments] =useState([])
@@ -70,10 +70,10 @@ export default function CalendarAppointments({ user, currentUser }) {
 
   useEffect(() => {
     console.log(`/appointments/users/${user.id}/?date=${currentDate}`)
-    axios.get(`/appointments/users/${user.id}/?date=${currentDate}`).then((response) => {
+    api.get(`/appointments/users/${user.id}/?date=${currentDate}`).then((response) => {
       setAppointments(response.data)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -86,7 +86,7 @@ export default function CalendarAppointments({ user, currentUser }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [currentDate, user]);
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import axios from 'axios';
 import { TouchableOpacity, StyleSheet, View, ScrollView, Text} from 'react-native'
 import {  DataTable, Modal, Portal } from 'react-native-paper'
 import Background from '../../components/Background'
@@ -20,6 +19,7 @@ import ProfilePicture from '../../components/ProfilePicture';
 import Dropdown from '../../components/Dropdown';
 import CurrentUserContext from '../../../Context';
 import BackgroundAuth from '../../components/BackgroundAuth';
+import api from '../../../api'
 
 export default function Dashboard({ navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -42,10 +42,10 @@ export default function Dashboard({ navigation }) {
     hideAPModal();
   }
   useEffect(() => {
-    axios.get('/appointments/user/').then((response) => {
+    api.get('/appointments/user/').then((response) => {
       setAppointments(response.data)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -58,7 +58,7 @@ export default function Dashboard({ navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, []);
 

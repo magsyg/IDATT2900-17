@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { useIsFocused } from "@react-navigation/native";
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
 import { Subheading, IconButton, Searchbar, configureFonts } from 'react-native-paper'
@@ -41,12 +41,12 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
   useEffect(() => {
     // Trigger only on enter
     if (isFocused) {
-      axios.get(`/appointments/${appointment_id}/brand/${brand_id}`).then((response) => {
+      api.get(`/appointments/${appointment_id}/brand/${brand_id}`).then((response) => {
         setMeta(response.data);
         setBrand(response.data.brand.brand);
         console.log("found appointments")
       })  .catch(function (error) {
-        console.log("-----axios----")
+        
         if (error.response) {
           console.log(error.response.data);
           console.log(error.response.status);
@@ -56,7 +56,7 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
           console.log('Error', error.message);
         }
         navigation.goBack(); // If error in response, go back to last screen
-        console.log("-----axios----")
+        
       });
     }
   }, [isFocused]);

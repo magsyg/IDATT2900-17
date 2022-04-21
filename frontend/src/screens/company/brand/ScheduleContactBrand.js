@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -26,6 +26,7 @@ import Contact from '../../../components/Contact'
 import CompanyLogo from '../../../components/CompanyLogo'
 import CurrentUserContext from '../../../../Context'
 import BackgroundAuth from '../../../components/BackgroundAuth'
+import api from '../../../../api';
 
 export default function ScheduleContactBrandScreen({ route, navigation }) {
   const {brand_id} = route.params
@@ -59,13 +60,13 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     setStartTime(new Date(time.getTime() + userTimezoneOffset));
   }
   
-  const [mainContact, setMainContact] = useState({})
+  const [mainContact, setMainContact] = useState({'first_name':'','last_name':''})
   useEffect(() => {
-    axios.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
+    api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
       setMainContact(response.data.brand.members[0])
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -78,7 +79,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [brand_id]);
 
@@ -103,12 +104,12 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
     
-    axios.post('/appointments/create/', payload).then((response) => {
+    api.post('/appointments/create/', payload).then((response) => {
       clearFields();
       console.log(response.data.brand);
       navigation.navigate('Showroom',{appointment_id:response.data.id});
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -119,7 +120,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   const clearFields = () => {

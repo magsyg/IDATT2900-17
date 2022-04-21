@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { View, StyleSheet, FlatList } from 'react-native'
 import { Avatar, Text, Subheading, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -11,6 +10,8 @@ import { theme } from '../../../core/theme'
 import Paragraph from '../../../components/Paragraph'
 import ProfilePicture from '../../../components/ProfilePicture'
 import CompanyLogo from '../../../components/CompanyLogo'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
 
 export default function SettingsTeamScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);

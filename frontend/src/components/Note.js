@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import axios from 'axios'
 import { FlatList, Modal, StyleSheet, View } from 'react-native'
 import { Text, IconButton} from 'react-native-paper'
 import { theme } from '../core/theme'
@@ -9,6 +8,7 @@ import Header2 from './Header2'
 import Paragraph from './Paragraph'
 import TextInput from './TextInput'
 import Button from './Button'
+import api from '../../api'
 
 export default function Note({containerStyle, company}) {
   //TODO maybe rename this
@@ -19,10 +19,10 @@ export default function Note({containerStyle, company}) {
   useEffect(() => {
     console.log(Object.keys(company));
     setModalVisible(false);
-    axios.get(`/companies/${company.id}/notes/`).then((response) => {
+    api.get(`/companies/${company.id}/notes/`).then((response) => {
       setNotes(response.data);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -33,7 +33,7 @@ export default function Note({containerStyle, company}) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [company]);
 
@@ -41,12 +41,12 @@ export default function Note({containerStyle, company}) {
     const payload = {
       text:newNote
     }
-    axios.post(`/companies/${company.id}/notes/`, payload).then((response) => {
+    api.post(`/companies/${company.id}/notes/`, payload).then((response) => {
       setNotes(response.data);
       setModalVisible(false);
       setNewNote('');
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       console.log(company.id);
       if (error.response) {
         // Request made and server responded
@@ -58,7 +58,7 @@ export default function Note({containerStyle, company}) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 

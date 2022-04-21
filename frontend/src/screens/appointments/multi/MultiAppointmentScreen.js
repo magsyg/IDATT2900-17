@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import filter from 'lodash.filter';
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
 import { Subheading, IconButton, Searchbar, Button } from 'react-native-paper'
@@ -15,6 +14,7 @@ import TeamSelect from '../../../components/TeamSelect';
 import AppointmentInfo from '../../../components/AppointmentInfo';
 import CurrentUserContext from '../../../../Context';
 import BackgroundAuth from '../../../components/BackgroundAuth';
+import api from '../../../../api';
 
 
 export default function MultiAppointmentScreen({ route, navigation }) {
@@ -32,13 +32,13 @@ export default function MultiAppointmentScreen({ route, navigation }) {
 
   const inviteTeamRetailer = item => {
     const payload = {'user_id':item.id}
-    axios.post(`/appointments/${meta.appointment.id}/retailer/invite/`, payload).then((response) => {
+    api.post(`/appointments/${meta.appointment.id}/retailer/invite/`, payload).then((response) => {
       let temp_meta = meta
       temp_meta.appointment.retailer.retailer_participants = response.data.retailer_participants
       setMeta(temp_meta);
       console.log(response.data.retailer);
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -51,16 +51,16 @@ export default function MultiAppointmentScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 
   useEffect(() => {
-    axios.get(`/appointments/${appointment_id}`).then((response) => {
+    api.get(`/appointments/${appointment_id}`).then((response) => {
       setMeta(response.data);
       console.log(response.data);
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -73,7 +73,7 @@ export default function MultiAppointmentScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [appointment_id]);
   
@@ -88,10 +88,10 @@ export default function MultiAppointmentScreen({ route, navigation }) {
       'main_contact': brand.main_contact.id
 
     }
-    axios.post('/appointments/brand/invite/', payload).then((response) => {
+    api.post('/appointments/brand/invite/', payload).then((response) => {
       navigation.navigate('MultiAppointmentBrand', {'brand_id':brand.id, 'tradeshow_id':meta.appointment.id});
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -104,7 +104,7 @@ export default function MultiAppointmentScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 

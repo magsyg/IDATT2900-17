@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { View, StyleSheet, FlatList } from 'react-native'
 import {  Text, Subheading, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -12,6 +12,7 @@ import Paragraph from '../../../components/Paragraph'
 import ProfilePicture from '../../../components/ProfilePicture'
 import BackgroundAuth from '../../../components/BackgroundAuth'
 import CurrentUserContext from '../../../../Context'
+import api from '../../../../api'
 
 export default function SettingsTeamCodeScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -20,10 +21,10 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
   const [user, setUser] = useState({name: 'User' })
   useEffect(() => {
       // Fetches details about user
-      axios.get('/accounts/current_user/').then((response) => {
+      api.get('/accounts/current_user/').then((response) => {
         setUser(response.data.user);
       })  .catch(function (error) {
-        console.log("-----axios----")
+        
         if (error.response) {
           // Request made and server responded
           console.log(error.response.data);
@@ -36,16 +37,16 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
           // Something happened in setting up the request that triggered an Error
           console.log('Error', error.message);
         }
-        console.log("-----axios----")
+        
       });
     // Fetches details about company and the codes
-    axios.get('/companies/company/codes/').then((response) => {
+    api.get('/companies/company/codes/').then((response) => {
       setCompany({
         name: response.data.name,
         codes: response.data.codes
       })
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -58,18 +59,18 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, []);
 
   const onNewCodePressed = () => {
-    axios.post('/companies/company/codes/').then((response) => {
+    api.post('/companies/company/codes/').then((response) => {
       setCompany({
         name: response.data.name,
         codes: response.data.codes
       })
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -82,20 +83,20 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   const onDeleteCodePressed = code => {
     const payload = {
       code: code
     }
-    axios.delete('/companies/company/codes/', {data:payload}).then((response) => {
+    api.delete('/companies/company/codes/', {data:payload}).then((response) => {
       setCompany({
         name: response.data.name,
         codes: response.data.codes
       })
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -108,7 +109,7 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   return (

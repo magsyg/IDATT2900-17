@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { View, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -24,6 +24,7 @@ import TeamSelect from '../../../components/TeamSelect'
 import CompanyLogo from '../../../components/CompanyLogo'
 import CurrentUserContext from '../../../../Context'
 import BackgroundAuth from '../../../components/BackgroundAuth'
+import api from '../../../../api';
 
 export default function NewContactBrandScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -57,11 +58,11 @@ export default function NewContactBrandScreen({ route, navigation }) {
   }
   useEffect(() => {
     setSuccessmodal(false);
-    axios.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
+    api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
       setAppointments(response.data.appointments)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -74,7 +75,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [brand_id]);
 
@@ -102,10 +103,10 @@ export default function NewContactBrandScreen({ route, navigation }) {
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
     
-    axios.post('/appointments/create/', payload).then((response) => {
+    api.post('/appointments/create/', payload).then((response) => {
       setSuccessmodal(true);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -116,7 +117,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 

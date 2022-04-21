@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useReducer } from 'react'
-import axios from 'axios'
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Picker } from 'react-native'
 import { Text, Subheading, Searchbar, IconButton, Button } from 'react-native-paper'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -18,6 +17,7 @@ import AddBrands from '../../../components/AddBrand'
 import TeamSelect from '../../../components/TeamSelect'
 import CurrentUserContext from '../../../../Context';
 import BackgroundAuth from '../../../components/BackgroundAuth';
+import api from '../../../../api';
 
 export default function AppointmentCreateScreen({ route, navigation }) {
   const { ap_type, passed_team, passed_date, passed_time } = route.params; // passes params from previous
@@ -72,10 +72,10 @@ export default function AppointmentCreateScreen({ route, navigation }) {
 
   const editBrand = id => {
     showBrandModal();
-    axios.get(`companies/brand/${id}/`).then((response) => {
+    api.get(`companies/brand/${id}/`).then((response) => {
       setSelectedBrand(response.data);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -88,7 +88,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   const addBrand = (item) => {
@@ -125,10 +125,10 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   useEffect(() => {
     clearFields();
     setTeam(passed_team); // fetch passed params of team
-    axios.get(`companies/brands`).then((response) => {
+    api.get(`companies/brands`).then((response) => {
       setBrandSearchResults(response.data);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -141,7 +141,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [ap_type]);
 
@@ -168,7 +168,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
 
-    axios.post('/appointments/create/', payload).then((response) => {
+    api.post('/appointments/create/', payload).then((response) => {
       clearFields();
       if (response.data.appointment_type!=='SR') {
         navigation.navigate('MultiAppointment',{ 
@@ -182,7 +182,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         });
       }
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -217,7 +217,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 

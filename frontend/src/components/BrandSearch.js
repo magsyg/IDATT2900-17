@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
-import axios from 'axios'
 import { StyleSheet, View, Modal, FlatList, TouchableOpacity} from 'react-native'
 import { Text, Button, Searchbar, IconButton, Subheading} from 'react-native-paper'
+import api from '../../api'
 import { theme } from '../core/theme'
 import CompanyLogo from './CompanyLogo'
 
@@ -13,11 +13,11 @@ export default function BrandSearch({selectMethod, exitMethod, mode}) {
     const onChangeBrandSearch = text => {
       const formattedQuery = text.toLowerCase();
       
-      axios.get(`companies/brands?name=${text}`).then((response) => {
+      api.get(`companies/brands?name=${text}`).then((response) => {
         setBrandSearchResults(response.data);
         console.log(response.data);
       })  .catch(function (error) {
-        console.log("-----axios----")
+        
         if (error.response) {
           // Request made and server responded
           console.log(error.response.data);
@@ -30,7 +30,7 @@ export default function BrandSearch({selectMethod, exitMethod, mode}) {
           // Something happened in setting up the request that triggered an Error
           console.log('Error', error.message);
         }
-        console.log("-----axios----")
+        
       });
       setSearchBrandText(text)
     };
@@ -39,10 +39,10 @@ export default function BrandSearch({selectMethod, exitMethod, mode}) {
     }
 
   useEffect(() => {
-    axios.get('companies/brands').then((response) => {
+    api.get('companies/brands').then((response) => {
       setBrandSearchResults(response.data);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -55,7 +55,7 @@ export default function BrandSearch({selectMethod, exitMethod, mode}) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, []);
   

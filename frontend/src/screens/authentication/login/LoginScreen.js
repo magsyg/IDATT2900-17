@@ -12,6 +12,7 @@ import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import { emailValidator } from '../../../helpers/emailValidator'
 import { passwordValidator } from '../../../helpers/passwordValidator'
+import api from '../../../../api';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })
@@ -21,7 +22,7 @@ export default function LoginScreen({ navigation }) {
   const loginRequest = () => {
     const payload = { username: email.value, password: password.value } 
     console.log(payload)
-    axios
+    api
       .post(`/accounts/api-token-auth/`, payload)
       .then(response => {
         const { token, user } = response.data;

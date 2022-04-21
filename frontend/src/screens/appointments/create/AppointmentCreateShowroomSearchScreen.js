@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList } from 'react-native'
 import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
