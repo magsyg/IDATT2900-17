@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import {useNavigation} from '@react-navigation/native';
 
-const GOOGLE_PLACES_API_KEY = 'AIzaSyDR5V-mL10shT3s0KkqnU8Vj426EaRMUwg';
+const GOOGLE_PLACES_API_KEY = 'GOOGLE API KEY';
 
 export default function Autocomplete() {
 

@@ -5,7 +5,7 @@ import MapView, { Animated, Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Constants from 'expo-constants';
 
-const GOOGLE_PLACES_API_KEY = 'AIzaSyDR5V-mL10shT3s0KkqnU8Vj426EaRMUwg';
+const GOOGLE_PLACES_API_KEY = 'GOOGLE API KEY';
 
 export default function MapFullScreen({ navigation }) {
 
