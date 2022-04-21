@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { View, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -22,12 +22,15 @@ import HeaderWithSub from '../../../components/HeaderWithSub'
 import Note from '../../../components/Note'
 import TeamSelect from '../../../components/TeamSelect'
 import CompanyLogo from '../../../components/CompanyLogo'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
+import api from '../../../../api';
 
 export default function NewContactBrandScreen({ route, navigation }) {
-  
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+
   // Should probably be moved
   const {brand_id, passed_team } = route.params
-  const [meta, setMeta] = useState({'company':{"members":[]}})
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
   const [successModal, setSuccessmodal] = useState(false);
 
@@ -37,12 +40,12 @@ export default function NewContactBrandScreen({ route, navigation }) {
     var added = team;
     if (teamMember.id != -1) {
       added.push(teamMember)
-      added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== meta.user.id);
+      added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== currentUser.user.id);
     }
     setTeam(added)
   }
   const removeTeam = teamMember => {
-    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== meta.user.id && ar.id !== teamMember.id));
+    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== currentUser.user.id && ar.id !== teamMember.id));
     setTeam(added)
   }
 
@@ -55,11 +58,11 @@ export default function NewContactBrandScreen({ route, navigation }) {
   }
   useEffect(() => {
     setSuccessmodal(false);
-    axios.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
+    api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
       setAppointments(response.data.appointments)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -72,25 +75,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
-    });
-    axios.get('/accounts/current_user/').then((response) => {
-      setMeta(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
+      
     });
   }, [brand_id]);
 
@@ -101,7 +86,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
 
   const requestAppointment = () => {
     const payload = {
-      'retailer': {'retailer': meta.company.id, 'organizer': meta.user.id},
+      'retailer': {'retailer': currentUser.company.id, 'organizer': currentUser.user.id},
       'appointment': {
         'appointment_type': 'SR',
         'is_request':true,
@@ -118,10 +103,10 @@ export default function NewContactBrandScreen({ route, navigation }) {
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
     
-    axios.post('/appointments/create/', payload).then((response) => {
+    api.post('/appointments/create/', payload).then((response) => {
       setSuccessmodal(true);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -132,7 +117,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 
@@ -141,7 +126,8 @@ export default function NewContactBrandScreen({ route, navigation }) {
     toBrandSearch(); //TODO set this to a better
   }
   return (
-    <Background>
+    <BackgroundAuth>
+    {!authIsLoading &&
       <Modal visible={successModal}>
         <TouchableOpacity  style={{flex:1}} onPress={nextScreen}>
           <View style={[styles.row, {margin:32,justifyContent:'flex-end'}]}> 
@@ -158,6 +144,8 @@ export default function NewContactBrandScreen({ route, navigation }) {
         </View>
         </TouchableOpacity>
       </Modal>
+    }
+    {!authIsLoading &&
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={toBrandSearch}>  
@@ -180,9 +168,9 @@ export default function NewContactBrandScreen({ route, navigation }) {
         <View style={{marginVertical:16}}>
           <TeamSelect 
             containerStyle={{marginVertical:16}}
-            company={meta.company} 
+            company={currentUser.company} 
             selectedUsers={team} 
-            main_user={meta.user}
+            main_user={currentUser.user}
             addMethod={manageTeam}
             removeMethod={removeTeam}
             start={true}
@@ -193,7 +181,8 @@ export default function NewContactBrandScreen({ route, navigation }) {
           <Button onPress={requestAppointment}>Request Appointment</Button>
         </View>
       </View>
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

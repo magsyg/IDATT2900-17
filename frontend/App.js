@@ -1,10 +1,9 @@
-import React,{ Component,} from 'react'
-import axios from 'axios';
-import { Provider } from 'react-native-paper'
+import React,{ Component } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { theme } from './src/core/theme'
 import { baseURL } from './config';
+import {CurrentUserProvider} from './Context';
 
 import {
   Authentication,
@@ -18,22 +17,18 @@ import {
   Members,
   Brand,
 } from './src/screens';
+import { Provider } from 'react-native-paper';
 
 const Stack = createStackNavigator()
-
 export default class App extends Component {
-  UNSAFE_componentWillMount() {
-    axios.defaults.baseURL = baseURL;
-    axios.defaults.timeout = 3000;
-    axios.defaults.headers.common.Authorization = `Token 71fdc88b4a624e06b28cecd120e1937bcc34b25c`; //TEST TOKEN
-  }
-
   render() {
     return (
+      <CurrentUserProvider>
       <Provider theme={theme}>
+
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Authentication"
+            initialRouteName="Dashboard"
             screenOptions={{
               headerShown: false,
             }}
@@ -50,7 +45,8 @@ export default class App extends Component {
             <Stack.Screen name="MultiAppointment" component={MultiAppointment} />
           </Stack.Navigator>
         </NavigationContainer>
-      </Provider>
+        </Provider>
+      </CurrentUserProvider>
     );
   }
 }

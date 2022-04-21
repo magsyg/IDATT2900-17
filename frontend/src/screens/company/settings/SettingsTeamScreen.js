@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { View, StyleSheet, FlatList } from 'react-native'
 import { Avatar, Text, Subheading, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -11,41 +10,20 @@ import { theme } from '../../../core/theme'
 import Paragraph from '../../../components/Paragraph'
 import ProfilePicture from '../../../components/ProfilePicture'
 import CompanyLogo from '../../../components/CompanyLogo'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
 
 export default function SettingsTeamScreen({ route, navigation }) {
-  const [user, setUser] = useState({name: 'User' })
-  const [company, setCompany] = useState({name:'Company', members: []})
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
   const goToProfile = id => {
     navigation.navigate('ProfileScreen', {profile_id:id});
   }
 
-  useEffect(() => {
-    // Fetches details about user
-    axios.get('/accounts/current_user/').then((response) => {
-      setUser(response.data.user);
-      setCompany(response.data.company);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-  }, []);
-
   return (
-    <Background>
+    <BackgroundAuth>
       <BackButton goBack={navigation.goBack} />
+      {!authIsLoading && 
       <View style={styles.column}>
         <View style={[{flex:1,  marginVertical:16}]}>
           <View style={styles.row}>
@@ -54,12 +32,12 @@ export default function SettingsTeamScreen({ route, navigation }) {
           <View style={styles.row}>
             <CompanyLogo
                 size={64} 
-                company={company}  
+                company={currentUser.company}  
             />
           </View>
           <View style={[styles.row, {margin:4}]}>
             <Subheading style={{color:theme.colors.secondary}}>
-              {company.name}
+              {currentUser.company.name}
             </Subheading>
           </View>
         </View>
@@ -69,7 +47,7 @@ export default function SettingsTeamScreen({ route, navigation }) {
         </View>
         <View style={{flex:2}}>
           <FlatList
-              data={company.members}
+              data={currentUser.company.members}
               numColumns={1}
               contentContainerStyle={{marginHorizontal:16}}
               renderItem={({item, index}) => 
@@ -86,7 +64,8 @@ export default function SettingsTeamScreen({ route, navigation }) {
             </Paragraph>
         </View>
       </View>
-    </Background>
+      }
+    </BackgroundAuth>
   )
 }
 

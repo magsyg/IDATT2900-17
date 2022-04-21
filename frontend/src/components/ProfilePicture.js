@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import axios from 'axios'
+
 import { Avatar } from 'react-native-paper'
+import { baseURL } from '../../config';
 
 
 export default function ProfilePicture({style, size, user}) {
@@ -8,7 +9,7 @@ export default function ProfilePicture({style, size, user}) {
   useEffect(() => {
     if ((typeof user !== 'undefined' && user.profile_picture)) {
       if(user.profile_picture.charAt(0) === '/') {
-        setImageUrl(axios.defaults.baseURL+user.profile_picture)
+        setImageUrl(baseURL+user.profile_picture)
       } else {
         setImageUrl(user.profile_picture)
       }

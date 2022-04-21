@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { useIsFocused } from "@react-navigation/native";
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
 import { Subheading, IconButton, Searchbar, configureFonts } from 'react-native-paper'
@@ -18,16 +18,20 @@ import Button from '../../../components/Button';
 import OutlinedButton from '../../../components/OutlinedButton';
 import Note from '../../../components/Note';
 import CompanyLogo from '../../../components/CompanyLogo';
+import CurrentUserContext from '../../../../Context';
+import BackgroundAuth from '../../../components/BackgroundAuth';
 
 
 export default function MultiAppointmentBrandScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+
   const {appointment_id, brand_id} = route.params
   const [brand, setBrand] =useState({'name':'Brand Name','main_contact':{}})
   const [meta, setMeta] = useState({'user': {}, 
     'company':{'members':[]}, 
     'appointment':{'name':'Tradeshow Name', 'appointment_type':'TS','id':-1},
     'brand':{'main_contact':{}}
-})
+  })
 
   const ap_types = {
     'TS':"Trade Show",
@@ -37,12 +41,12 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
   useEffect(() => {
     // Trigger only on enter
     if (isFocused) {
-      axios.get(`/appointments/${appointment_id}/brand/${brand_id}`).then((response) => {
+      api.get(`/appointments/${appointment_id}/brand/${brand_id}`).then((response) => {
         setMeta(response.data);
         setBrand(response.data.brand.brand);
         console.log("found appointments")
       })  .catch(function (error) {
-        console.log("-----axios----")
+        
         if (error.response) {
           console.log(error.response.data);
           console.log(error.response.status);
@@ -52,14 +56,15 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
           console.log('Error', error.message);
         }
         navigation.goBack(); // If error in response, go back to last screen
-        console.log("-----axios----")
+        
       });
     }
   }, [isFocused]);
   
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style={styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
@@ -88,7 +93,8 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
         </View>
         <Note company={brand}/>
       </View>
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

@@ -1,4 +1,4 @@
-import axios from 'axios';
+
 
 function handleRequest() {
     const endpoint = 'login'
@@ -9,8 +9,7 @@ function handleRequest() {
       payload.last_name = this.state.lastName;
     }
     
-    axios
-      .post(`/auth/${endpoint}/`, payload)
+    api.post(`/auth/${endpoint}/`, payload)
       .then(response => {
         const { token, user } = response.data;
   

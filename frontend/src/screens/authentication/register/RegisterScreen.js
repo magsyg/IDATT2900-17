@@ -12,6 +12,7 @@ import { theme } from '../../../core/theme'
 import { emailValidator } from '../../../helpers/emailValidator'
 import { passwordValidator } from '../../../helpers/passwordValidator'
 import PhoneNumberInput from '../../../components/PhoneNumberInput';
+import api from '../../../../api';
 
 export default function RegisterScreen({ route, navigation }) {
   const { teamType, companyCode, companyName, companyID } = route.params;
@@ -43,7 +44,7 @@ export default function RegisterScreen({ route, navigation }) {
         phone_number: countryCode.value+phoneNumber.value
       }
       console.log(payload)
-      axios.post(`/accounts/register/newcompany`, payload)
+      api.post(`/accounts/register/newcompany`, payload)
       .then(response => {
         const { token, user } = response.data;
         console.log(response.data)

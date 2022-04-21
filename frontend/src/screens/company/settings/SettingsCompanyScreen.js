@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { View, StyleSheet, FlatList } from 'react-native'
 import { Avatar, Text, Subheading, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -13,22 +12,26 @@ import ProfilePicture from '../../../components/ProfilePicture'
 import CompanyLogo from '../../../components/CompanyLogo'
 import TextInput from '../../../components/TextInput'
 import Button from '../../../components/Button'
+import BackgroundAuth from '../../../components/BackgroundAuth'
+import CurrentUserContext from '../../../../Context'
+import api from '../../../../api'
 
 export default function SettingsCompanyScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const [user, setUser] = useState({name: 'User' })
   const [company, setCompany] = useState({name:'Company', members: []})
   const [bio, setBio] = useState({ value: '', error: '' })
   const [homePage, setHomePage] = useState({ value: '', error: '' })
   useEffect(() => {
     // Fetches details about user
-    axios.get('/accounts/current_user/').then((response) => {
+    api.get('/accounts/current_user/').then((response) => {
       setUser(response.data.user);
       setCompany(response.data.company);
       setBio({value:response.data.company.bio, error:''});
       setHomePage({value:response.data.company.homepage, error:''});
 
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -41,7 +44,7 @@ export default function SettingsCompanyScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, []);
 
@@ -51,13 +54,13 @@ export default function SettingsCompanyScreen({ route, navigation }) {
     if (bio.value !== company.bio) payload['bio'] = bio.value;
     if (homePage.value !== company.homepage) payload['homepage'] = homePage.value;
     console.log(payload)
-    axios.post('/companies/update/', payload).then((response) => {
+    api.post('/companies/update/', payload).then((response) => {
       setCompany(response.data);
       setBio({value:response.data.bio, error:''});
       setHomePage({value:response.data.homepage, error:''});
 
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         console.log(error.response.data);
         if (error.response.data.hasOwnProperty("bio")) {
@@ -73,13 +76,14 @@ export default function SettingsCompanyScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 
   return (
-    <Background>
+    <BackgroundAuth>
       <BackButton goBack={navigation.goBack} />
+      {!authIsLoading &&
       <View style={styles.column}>
         <View style={[{flex:1,  marginVertical:16}]}>
           <View style={styles.row}>
@@ -131,7 +135,8 @@ export default function SettingsCompanyScreen({ route, navigation }) {
           </Button>
         </View>
       </View>
-    </Background>
+      }
+    </BackgroundAuth>
   )
 }
 

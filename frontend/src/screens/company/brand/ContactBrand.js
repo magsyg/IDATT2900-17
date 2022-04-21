@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { Text, Subheading, Avatar, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -20,8 +20,12 @@ import PillLink from '../../../components/PillLink'
 import Button from '../../../components/Button'
 import ProfilePicture from '../../../components/ProfilePicture'
 import CompanyLogo from '../../../components/CompanyLogo'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
+import api from '../../../../api';
 
 export default function ContactBrandScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const {brand_id} = route.params
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
   const [appointments, setAppointments] = useState([]);
@@ -43,11 +47,11 @@ export default function ContactBrandScreen({ route, navigation }) {
   }
 
   useEffect(() => {
-    axios.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
+    api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
       setAppointments(response.data.appointments)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -60,12 +64,13 @@ export default function ContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [brand_id]);
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
@@ -131,8 +136,8 @@ export default function ContactBrandScreen({ route, navigation }) {
           <PillLink>{brand.homepage}</PillLink>
         </View>
       </View>
-
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

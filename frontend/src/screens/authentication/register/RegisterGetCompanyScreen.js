@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import axios from 'axios';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Subheading } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -9,6 +8,7 @@ import TextInput from '../../../components/TextInput'
 import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import Link from '../../../components/Link'
+import api from '../../../../api';
 
 export default function RegisterGetCompanyScreen({ route, navigation }) {
   const [companyCode, setCompanyCode] = useState({ value: '', error: '' })
@@ -18,7 +18,7 @@ export default function RegisterGetCompanyScreen({ route, navigation }) {
         company_code:companyCode.value
       } 
     console.log(payload)
-    axios
+    api
       .post(`/companies/code/`, payload)
       .then(response => {
         navigation.navigate('RegisterScreen', {

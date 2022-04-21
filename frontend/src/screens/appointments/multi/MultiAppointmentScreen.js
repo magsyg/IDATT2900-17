@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import filter from 'lodash.filter';
 import { View, StyleSheet, Modal, ScrollView, TouchableOpacity, Text, FlatList } from 'react-native'
 import { Subheading, IconButton, Searchbar, Button } from 'react-native-paper'
@@ -13,11 +12,17 @@ import HeaderWithSub from '../../../components/HeaderWithSub';
 import AddBrands from '../../../components/AddBrand';
 import TeamSelect from '../../../components/TeamSelect';
 import AppointmentInfo from '../../../components/AppointmentInfo';
+import CurrentUserContext from '../../../../Context';
+import BackgroundAuth from '../../../components/BackgroundAuth';
+import api from '../../../../api';
 
 
 export default function MultiAppointmentScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+
   const {appointment_id} = route.params;
   const [meta, setMeta] = useState({'user': {}, 'company':{'members':[]}, 'appointment':{'id':-1,'retailer':{
+    'organizer':{'id':-1},
     'retailer_participants':[]},'start_time':'09:00','end_time':'10:00', 'date':'2022-04-10', 'appointment_type':'TS','brands':[], 'other_information':'lorem ipsum'}})
 
   const ap_types = {
@@ -27,12 +32,13 @@ export default function MultiAppointmentScreen({ route, navigation }) {
 
   const inviteTeamRetailer = item => {
     const payload = {'user_id':item.id}
-    axios.post(`/appointments/${meta.appointment.id}/retailer/invite/`, payload).then((response) => {
+    api.post(`/appointments/${meta.appointment.id}/retailer/invite/`, payload).then((response) => {
       let temp_meta = meta
       temp_meta.appointment.retailer.retailer_participants = response.data.retailer_participants
       setMeta(temp_meta);
+      console.log(response.data.retailer);
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -45,16 +51,16 @@ export default function MultiAppointmentScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 
   useEffect(() => {
-    axios.get(`/appointments/${appointment_id}`).then((response) => {
+    api.get(`/appointments/${appointment_id}`).then((response) => {
       setMeta(response.data);
       console.log(response.data);
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -67,7 +73,7 @@ export default function MultiAppointmentScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [appointment_id]);
   
@@ -82,10 +88,10 @@ export default function MultiAppointmentScreen({ route, navigation }) {
       'main_contact': brand.main_contact.id
 
     }
-    axios.post('/appointments/brand/invite/', payload).then((response) => {
+    api.post('/appointments/brand/invite/', payload).then((response) => {
       navigation.navigate('MultiAppointmentBrand', {'brand_id':brand.id, 'tradeshow_id':meta.appointment.id});
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -98,19 +104,20 @@ export default function MultiAppointmentScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style={styles.column}>
         <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={ap_types[meta.appointment.appointment_type]+ ' appointment'} />
         <AppointmentInfo appointment={meta.appointment}/>
         
         <TeamSelect 
           containerStyle={{marginVertical:16}} 
-          company={meta.company} 
+          company={currentUser.company} 
           selectedUsers={meta.appointment.retailer.retailer_participants} 
           main_user={meta.appointment.retailer.organizer}
           addMethod={inviteTeamRetailer}
@@ -142,7 +149,8 @@ export default function MultiAppointmentScreen({ route, navigation }) {
           
         </View>
      </View>
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

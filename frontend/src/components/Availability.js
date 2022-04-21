@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
-import axios from 'axios'
 import { FlatList, ScrollView, StyleSheet, Touchable, TouchableHighlight, TouchableOpacity, View } from 'react-native'
 import { IconButton, Subheading, Text } from 'react-native-paper'
 import { theme } from '../core/theme'
 import Icon from "react-native-vector-icons/MaterialIcons"
 import { transformNiceShortDate } from '../utils/date_management'
 import PillLink from './PillLink'
+import api from '../../api'
 
 export default function Availabilty({users, date, time, selectMethod}) {
   const [availability, setAvailability] = useState([])
@@ -22,7 +22,7 @@ export default function Availabilty({users, date, time, selectMethod}) {
     const payload = {
       'users': users.map(x => x.id)
     }
-    axios.post('/appointments/availability/',payload).then((response) => {
+    api.post('/appointments/availability/',payload).then((response) => {
       setAvailability(response.data)
     })  .catch(function (error) {
       if (error.response) {

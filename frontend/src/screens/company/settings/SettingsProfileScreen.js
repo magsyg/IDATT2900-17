@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { View, StyleSheet, Modal, TouchableOpacity, Text, FlatList } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import { Subheading, IconButton, Searchbar, Avatar } from 'react-native-paper'
@@ -15,8 +14,12 @@ import PillLink from '../../../components/PillLink';
 import OutlinedButton from '../../../components/OutlinedButton';
 import Paragraph from '../../../components/Paragraph';
 import PhoneNumberInput from '../../../components/PhoneNumberInput';
+import BackgroundAuth from '../../../components/BackgroundAuth';
+import CurrentUserContext from '../../../../Context';
+import api from '../../../../api';
 
 export default function SettingsProfileScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const [firstName, setFirstName] = useState({ value: '', error: '' })
   const [lastName, setLastName] = useState({ value: '', error: '' })
   const [countryCode, setCountryCode] = useState({ value: '+47', error: '' })
@@ -62,14 +65,14 @@ export default function SettingsProfileScreen({ route, navigation }) {
     var data = new FormData();
 
     data.append("profile_picture", {filename:imageName, type:imageType, uri: profilePicture.uri})
-    axios.put('/accounts/profile/update/', getFormData(data), {   
+    api.put('/accounts/profile/update/', getFormData(data), {   
       'Accept': 'application/json',
       'Content-Type': 'multipart/form-data',
     }).then((response) => {
       setUser(response.data)
       console.log(response.data)
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       console.log(error.response.data)
       if (error.response) {
         if (error.response.data.hasOwnProperty("phone_number")) {
@@ -88,18 +91,18 @@ export default function SettingsProfileScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   useEffect(() => {
-    axios.get('/accounts/current_user/').then((response) => {
+    api.get('/accounts/current_user/').then((response) => {
       setUser(response.data.user)
       setFirstName({value: response.data.user.first_name, error:""})
       setLastName({value: response.data.user.last_name, error:""})
       setCountryCode({value: "+"+response.data.user.country_code.toString(), error:""})
       setPhoneNumber({value: response.data.user.national_number.toString(), error:""})
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -112,7 +115,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, []);
 
@@ -124,7 +127,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
 
     }
     console.log(payload)
-    axios.put('/accounts/profile/update/', payload).then((response) => {
+    api.put('/accounts/profile/update/', payload).then((response) => {
       console.log(response.data)
       setFirstName({value: response.data.first_name, error:""})
       setLastName({value: response.data.last_name, error:""})
@@ -132,7 +135,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
       setPhoneNumber({value: response.data.national_number.toString(), error:""})
       setSuccessModal(true);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         if (error.response.data.hasOwnProperty("phone_number")) {
           setPhoneNumber({error: error.response.data.phone_number[0]})
@@ -150,12 +153,15 @@ export default function SettingsProfileScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   return (
-    <Background>
-      <Modal visible={successModal}>
+    <BackgroundAuth>
+      <BackButton goBack={navigation.goBack} />
+      { !authIsLoading && 
+      <View style={styles.column}>
+        <Modal visible={successModal}>
         <TouchableOpacity  style={{flex:1}} onPress={hideSuccessModal}>
         <View style={{padding:64}}>
           <Header style={{textAlign:'center'}}>User updated successfully!</Header>
@@ -165,6 +171,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
         </View>
         </TouchableOpacity>
       </Modal>
+      
       <Modal visible={PPModalVisible} onDismiss={hidePPModal}>
         <View style={styles.column}>
           <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
@@ -193,8 +200,6 @@ export default function SettingsProfileScreen({ route, navigation }) {
           </View>
         </View>
       </Modal>
-      <BackButton goBack={navigation.goBack} />
-      <View style={styles.column}>
         <View style={[{flex:1,  marginVertical:16}]}>
           <View style={styles.row}>
             <Header>Profile</Header>
@@ -254,7 +259,8 @@ export default function SettingsProfileScreen({ route, navigation }) {
           </Button>
         </View>
       </View>
-    </Background>
+      }
+    </BackgroundAuth>
   )
 }
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useReducer } from 'react'
-import axios from 'axios'
 import { View, StyleSheet, ScrollView, TouchableOpacity, Modal, FlatList, Picker } from 'react-native'
 import { Text, Subheading, Searchbar, IconButton, Button } from 'react-native-paper'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -16,12 +15,15 @@ import HeaderLine from '../../../components/HeaderLine'
 import PickerDropdown from '../../../components/PickerDropdown'
 import AddBrands from '../../../components/AddBrand'
 import TeamSelect from '../../../components/TeamSelect'
+import CurrentUserContext from '../../../../Context';
+import BackgroundAuth from '../../../components/BackgroundAuth';
+import api from '../../../../api';
 
 export default function AppointmentCreateScreen({ route, navigation }) {
   const { ap_type, passed_team, passed_date, passed_time } = route.params; // passes params from previous
   const [availability, setAvailability] = useState({dates: []}) //TODO add availbility
   const [team, setTeam] = useState([])
-  const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   
 
   // Form values
@@ -70,10 +72,10 @@ export default function AppointmentCreateScreen({ route, navigation }) {
 
   const editBrand = id => {
     showBrandModal();
-    axios.get(`companies/brand/${id}/`).then((response) => {
+    api.get(`companies/brand/${id}/`).then((response) => {
       setSelectedBrand(response.data);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -86,7 +88,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   const addBrand = (item) => {
@@ -99,19 +101,19 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   const removeBrand = id => {
     setBrands({value:brands.value.filter(ar => ar.id !== id), error:''});
   }
-  
+
   // Methods for managing team
   const manageTeam = teamMember => {
     var added = team;
     if (teamMember.id != -1) {
       added.push(teamMember)
-      added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== meta.user.id);
+      added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== currentUser.user.id);
     }
     setTeam(added)
   }
 
   const removeTeam = teamMember => {
-    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== meta.user.id && ar.id !== teamMember.id));
+    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== currentUser.user.id && ar.id !== teamMember.id));
     setTeam(added)
   }
   const appointment_types = {
@@ -123,28 +125,10 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   useEffect(() => {
     clearFields();
     setTeam(passed_team); // fetch passed params of team
-    axios.get('/appointments/create/').then((response) => {
-      setMeta(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-    axios.get(`companies/brands`).then((response) => {
+    api.get(`companies/brands`).then((response) => {
       setBrandSearchResults(response.data);
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -157,7 +141,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }, [ap_type]);
 
@@ -169,7 +153,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   // create appointment post
   const createAppointment = () => {
     const payload = {
-      'retailer': {'retailer': meta.company.id, 'organizer': meta.user.id},
+      'retailer': {'retailer': currentUser.company.id, 'organizer': currentUser.user.id},
       'appointment': {
         'appointment_type': ap_type,
         'name':name.value, 
@@ -184,7 +168,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
 
-    axios.post('/appointments/create/', payload).then((response) => {
+    api.post('/appointments/create/', payload).then((response) => {
       clearFields();
       if (response.data.appointment_type!=='SR') {
         navigation.navigate('MultiAppointment',{ 
@@ -198,7 +182,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         });
       }
     })  .catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -233,7 +217,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
 
@@ -248,7 +232,8 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   }
 
 return (
-<Background>
+<BackgroundAuth>
+  {!authIsLoading &&
   <View style= {styles.column}>
       <BackHeader goBack={navigation.goBack}>
           <Text style={{color:theme.colors.grey}}>
@@ -257,9 +242,9 @@ return (
       </BackHeader>
         <TeamSelect 
           containerStyle={{marginVertical:16}}
-          company={meta.company} 
+          company={currentUser.company} 
           selectedUsers={team} 
-          main_user={meta.user}
+          main_user={currentUser.user}
           addMethod={manageTeam}
           removeMethod={removeTeam}
           start={true}
@@ -359,8 +344,8 @@ return (
       </Button>
       </View>
   </View>
-
-</Background>
+  }
+</BackgroundAuth>
   )
 }
 const styles = StyleSheet.create({

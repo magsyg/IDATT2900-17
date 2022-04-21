@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import axios from 'axios'
 import { StyleSheet, View, Modal, FlatList, TouchableOpacity} from 'react-native'
 import { Text, Button, Searchbar, IconButton, Subheading} from 'react-native-paper'
 import { theme } from '../core/theme'
@@ -7,6 +6,7 @@ import PickerDropdown from '../components/PickerDropdown'
 import Header from './Header'
 import TextInput from './TextInput'
 import ProfilePicture from './ProfilePicture'
+import api from '../../api'
 
 export default function AddBrands({completeAction}) {
 
@@ -25,11 +25,11 @@ export default function AddBrands({completeAction}) {
     const onChangeBrandSearch = text => {
       const formattedQuery = text.toLowerCase();
       
-      axios.get(`companies/brands?name=${text}`).then((response) => {
+      api.get(`companies/brands?name=${text}`).then((response) => {
         setBrandSearchResults(response.data);
         console.log(response.data);
       })  .catch(function (error) {
-        console.log("-----axios----")
+        
         if (error.response) {
           // Request made and server responded
           console.log(error.response.data);
@@ -42,7 +42,7 @@ export default function AddBrands({completeAction}) {
           // Something happened in setting up the request that triggered an Error
           console.log('Error', error.message);
         }
-        console.log("-----axios----")
+        
       });
       setSearchBrandText(text)
     };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
@@ -24,10 +24,13 @@ import Availabilty from '../../../components/Availability'
 import DurationModal from '../../../components/DurationModal'
 import Contact from '../../../components/Contact'
 import CompanyLogo from '../../../components/CompanyLogo'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
+import api from '../../../../api';
 
 export default function ScheduleContactBrandScreen({ route, navigation }) {
   const {brand_id} = route.params
-  const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
   const [appointments, setAppointments] = useState([]);
@@ -38,12 +41,12 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     var added = team;
     if (teamMember.id != -1) {
       added.push(teamMember)
-      added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== meta.user.id);
+      added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== currentUser.user.id);
     }
     setTeam(added)
   }
   const removeTeam = teamMember => {
-    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== meta.user.id && ar.id !== teamMember.id));
+    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== currentUser.user.id && ar.id !== teamMember.id));
     setTeam(added)
   }
 
@@ -57,13 +60,13 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     setStartTime(new Date(time.getTime() + userTimezoneOffset));
   }
   
-  const [mainContact, setMainContact] = useState({})
+  const [mainContact, setMainContact] = useState({'first_name':'','last_name':''})
   useEffect(() => {
-    axios.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
+    api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
       setMainContact(response.data.brand.members[0])
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -76,25 +79,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
-    });
-    axios.get('/appointments/create/').then((response) => {
-      setMeta(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
+      
     });
   }, [brand_id]);
 
@@ -102,7 +87,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     console.log(startTime.toTimeString().slice(0,5));
     console.log((new Date(startTime.getTime() + duration*60000)).toTimeString().slice(0,5));
     const payload = {
-      'retailer': {'retailer': meta.company.id, 'organizer': meta.user.id},
+      'retailer': {'retailer': currentUser.company.id, 'organizer': currentUser.user.id},
       'appointment': {
         'appointment_type': 'SR',
         'name':'Showroom',  //TODO WHAT NAMES GOES HERE?
@@ -116,22 +101,15 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         'main_contact':mainContact.id
       }]
     }
-    console.log(payload);
-    console.log("cookookokokokokokokoko");
-    console.log("cookookokokokokokokoko");
-    console.log("cookookokokokokokokoko");
-    console.log("cookookokokokokokokoko");
-    console.log("cookookokokokokokokoko");
-    console.log("cookookokokokokokokoko");
     // Checks if there is an team for this appointment
     if (team.length > 0) payload['retailer']['retailer_participants'] =  team.map(x => x.id);
     
-    axios.post('/appointments/create/', payload).then((response) => {
+    api.post('/appointments/create/', payload).then((response) => {
       clearFields();
       console.log(response.data.brand);
       navigation.navigate('Showroom',{appointment_id:response.data.id});
     }).catch(function (error) {
-      console.log("-----axios----")
+      
       if (error.response) {
         // Request made and server responded
         console.log(error.response.data);
@@ -142,7 +120,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-      console.log("-----axios----")
+      
     });
   }
   const clearFields = () => {
@@ -154,8 +132,8 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   }
   
   return (
-    <Background>
-      
+    <BackgroundAuth>
+    {!authIsLoading &&
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={goBack}>  
@@ -169,9 +147,9 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         <LocationInfo item={brand}/>
         <TeamSelect 
           containerStyle={{marginVertical:16}}
-          company={meta.company} 
+          company={currentUser.company} 
           selectedUsers={team} 
-          main_user={meta.user}
+          main_user={currentUser.user}
           addMethod={manageTeam}
           removeMethod={removeTeam}
           start={true}
@@ -179,9 +157,11 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
         <Availabilty users={team} selectMethod={handleAvailability} date={date} time={startTime}/>
         <Contact user={mainContact} />
       </View>
-
+    }
+    {!authIsLoading &&
       <DurationModal onFinish={createAppointment} containerStyle={{alignSelf:'flex-end'}}  />
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

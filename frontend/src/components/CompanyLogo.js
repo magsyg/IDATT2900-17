@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import axios from 'axios'
+
 import { Avatar } from 'react-native-paper'
+import { baseURL } from '../../config';
 
 
 export default function CompanyLogo({style, size, company}) {
@@ -8,7 +9,7 @@ export default function CompanyLogo({style, size, company}) {
   useEffect(() => {
     if ((typeof company !== 'undefined' && company.logo)) {
       if(company.logo.charAt(0) === '/') {
-        setImageUrl(axios.defaults.baseURL+company.logo);
+        setImageUrl(baseURL+company.logo);
       } else {
         setImageUrl(company.logo);
       }
