@@ -8,6 +8,7 @@ import { theme } from '../core/theme'
 
 import { Calendar } from 'react-native-calendars';
 import AppointmentsList from '../components/AppointmentList';
+import Map from '../components/maps/Map'
 
 export default function AppointmentCalendarScreen({ route, navigation }) {
   const [meta, setMeta] = useState({'user': {}})
@@ -113,6 +114,9 @@ export default function AppointmentCalendarScreen({ route, navigation }) {
           onDayPress={day => {selectDay(day.dateString)}}
         />
         <AppointmentsList mode='pretty' data={appointments}/>
+        <TouchableOpacity onPress={() => navigation.navigate('FullMap')}>
+          <Map />
+        </TouchableOpacity> 
       </View>
     </Background>
   )
