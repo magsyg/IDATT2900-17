@@ -9,9 +9,12 @@ import Background from '../../../components/Background'
 import { theme } from '../../../core/theme'
 import PillLink from '../../../components/Link';
 import ProfilePicture from '../../../components/ProfilePicture'
+import CurrentUserContext from '../../../../Context';
+import BackgroundAuth from '../../../components/BackgroundAuth';
+
 
 export default function CompanyContactsScreen({ route, navigation }) {
-  const [meta, setMeta] = useState({company:{id:-1, members:[], contacts:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
+  const { currentUser,authIsLoading } = React.useContext(CurrentUserContext);
 
   const goToProfile = id => {
     navigation.navigate('Members', {screen:'CompanyMember', params:{profile_id:id}});
@@ -22,29 +25,10 @@ export default function CompanyContactsScreen({ route, navigation }) {
       params:{brand_id:id}
     });
   }
-  useEffect(() => {
-    axios.get('/companies/user/company/').then((response) => {
-      setMeta(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-  }, []);
 
   return (
-    <Background>
+    <BackgroundAuth>
+    {!authIsLoading &&
       <View style={styles.column}>
         <View style={[styles.row,{marginTop:16}]}>
           <Searchbar placeholder='Search' style={{backgroundColor:theme.colors.grey, flex:1, borderRadius:100}}/>
@@ -56,12 +40,12 @@ export default function CompanyContactsScreen({ route, navigation }) {
             <View style={{margin:6}}>
               <ProfilePicture
                   size={56} 
-                  user={meta.user}
+                  user={currentUser.user}
                 />
             </View>
             {
-            meta.company.members.map((item, index) => {
-                if (item.id !== meta.user.id) {
+            currentUser.company.members.map((item, index) => {
+                if (item.id !== currentUser.user.id) {
                   return(
                     <TouchableOpacity key={index} style={{margin:6}} onPress={() => goToProfile(item.id)}>
                       <ProfilePicture 
@@ -81,7 +65,7 @@ export default function CompanyContactsScreen({ route, navigation }) {
             <PillLink>Scan QR Code</PillLink>
           </View>
           <FlatList
-            data={meta.company.contacts}
+            data={currentUser.company.contacts}
             numColumns={1}
             scrollEnabled={true}
             renderItem={({item, index}) => 
@@ -91,7 +75,8 @@ export default function CompanyContactsScreen({ route, navigation }) {
       
         </View>
       </View>
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

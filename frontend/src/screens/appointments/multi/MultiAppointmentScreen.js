@@ -13,11 +13,16 @@ import HeaderWithSub from '../../../components/HeaderWithSub';
 import AddBrands from '../../../components/AddBrand';
 import TeamSelect from '../../../components/TeamSelect';
 import AppointmentInfo from '../../../components/AppointmentInfo';
+import CurrentUserContext from '../../../../Context';
+import BackgroundAuth from '../../../components/BackgroundAuth';
 
 
 export default function MultiAppointmentScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+
   const {appointment_id} = route.params;
   const [meta, setMeta] = useState({'user': {}, 'company':{'members':[]}, 'appointment':{'id':-1,'retailer':{
+    'organizer':{'id':-1},
     'retailer_participants':[]},'start_time':'09:00','end_time':'10:00', 'date':'2022-04-10', 'appointment_type':'TS','brands':[], 'other_information':'lorem ipsum'}})
 
   const ap_types = {
@@ -31,6 +36,7 @@ export default function MultiAppointmentScreen({ route, navigation }) {
       let temp_meta = meta
       temp_meta.appointment.retailer.retailer_participants = response.data.retailer_participants
       setMeta(temp_meta);
+      console.log(response.data.retailer);
     })  .catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -103,14 +109,15 @@ export default function MultiAppointmentScreen({ route, navigation }) {
   }
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style={styles.column}>
         <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={ap_types[meta.appointment.appointment_type]+ ' appointment'} />
         <AppointmentInfo appointment={meta.appointment}/>
         
         <TeamSelect 
           containerStyle={{marginVertical:16}} 
-          company={meta.company} 
+          company={currentUser.company} 
           selectedUsers={meta.appointment.retailer.retailer_participants} 
           main_user={meta.appointment.retailer.organizer}
           addMethod={inviteTeamRetailer}
@@ -142,7 +149,8 @@ export default function MultiAppointmentScreen({ route, navigation }) {
           
         </View>
      </View>
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

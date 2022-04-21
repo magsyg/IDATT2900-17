@@ -20,8 +20,11 @@ import PillLink from '../../../components/PillLink'
 import Button from '../../../components/Button'
 import ProfilePicture from '../../../components/ProfilePicture'
 import CompanyLogo from '../../../components/CompanyLogo'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
 
 export default function ContactBrandScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const {brand_id} = route.params
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
   const [appointments, setAppointments] = useState([]);
@@ -65,7 +68,8 @@ export default function ContactBrandScreen({ route, navigation }) {
   }, [brand_id]);
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style= {styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
@@ -131,8 +135,8 @@ export default function ContactBrandScreen({ route, navigation }) {
           <PillLink>{brand.homepage}</PillLink>
         </View>
       </View>
-
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

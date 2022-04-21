@@ -14,13 +14,15 @@ import HoveringBar from '../../../components/HoveringBar'
 import BackHeader from '../../../components/BackHeader'
 import BrandSearch from '../../../components/BrandSearch'
 import OutlinedButton from '../../../components/OutlinedButton'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
 
 export default function AppointmentCreateShowroomSearchScreen({ route, navigation }) {
   const { passed_team } = route.params;
-  const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
-
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  
   const selectBrand = brand => {
-    if (meta.company.contacts.map(x => x.id).includes(brand.id)) {
+    if (currentUser.company.contacts.map(x => x.id).includes(brand.id)) {
       navigation.navigate('Brand',{
           screen: 'ScheduleContactBrand',
           params:{brand_id:brand.id, passed_team:passed_team}
@@ -40,33 +42,16 @@ export default function AppointmentCreateShowroomSearchScreen({ route, navigatio
       }
     );
   }
-  useEffect(() => {
-    axios.get('/accounts/current_user/').then((response) => {
-      setMeta(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-  }, []);
+
   return (
-  <Background>
+  <BackgroundAuth>
+    {!authIsLoading &&
     <View style= {styles.column}>
       <BrandSearch exitMethod={navigation.goBack} selectMethod={selectBrand}/>
       <OutlinedButton onPress={goToForm}>Create Showroom Appointment</OutlinedButton>
     </View>
-  </Background>
+  }
+  </BackgroundAuth>
   )
 }
 

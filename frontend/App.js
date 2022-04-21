@@ -1,10 +1,10 @@
-import React,{ Component,} from 'react'
+import React,{ Component } from 'react'
 import axios from 'axios';
-import { Provider } from 'react-native-paper'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { theme } from './src/core/theme'
 import { baseURL } from './config';
+import {CurrentUserProvider} from './Context';
 
 import {
   Authentication,
@@ -18,9 +18,9 @@ import {
   Members,
   Brand,
 } from './src/screens';
+import { Provider } from 'react-native-paper';
 
 const Stack = createStackNavigator()
-
 export default class App extends Component {
   UNSAFE_componentWillMount() {
     axios.defaults.baseURL = baseURL;
@@ -30,10 +30,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <Provider theme={theme}>
+      <Provider>
+      <CurrentUserProvider>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Authentication"
+            initialRouteName="Dashboard"
             screenOptions={{
               headerShown: false,
             }}
@@ -50,7 +51,8 @@ export default class App extends Component {
             <Stack.Screen name="MultiAppointment" component={MultiAppointment} />
           </Stack.Navigator>
         </NavigationContainer>
-      </Provider>
+      </CurrentUserProvider>
+    </Provider>
     );
   }
 }

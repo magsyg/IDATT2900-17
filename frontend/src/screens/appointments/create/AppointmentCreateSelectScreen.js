@@ -12,11 +12,13 @@ import { currentDate } from '../../../utils/date_management';
 import Availabilty from '../../../components/Availability'
 import HoveringBar from '../../../components/HoveringBar'
 import TeamSelect from '../../../components/TeamSelect'
+import CurrentUserContext from '../../../../Context'
+import BackgroundAuth from '../../../components/BackgroundAuth'
 
 export default function AppointmentCreateSelectScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const [team, setTeam] = useState([])
-  const [meta, setMeta] = useState({company:{id:-1, members:[]}, user: {id:-1, first_name:'User'}}) // add placeholders
-
+ 
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
 
@@ -29,13 +31,13 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
       var added = team;
       if (teamMember.id != -1) {
         added.push(teamMember)
-        added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== meta.user.id);
+        added = added.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => ar.id !== currentUser.user.id);
       }
       setTeam(added)
   }
 
   const removeTeam = teamMember => {
-    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== meta.user.id && ar.id !== teamMember.id));
+    let added = team.filter((v,i,a)=>a.findIndex(v2=>(v2.id===v.id))===i).filter(ar => (ar.id !== currentUser.user.id && ar.id !== teamMember.id));
     setTeam(added)
   }
 
@@ -60,36 +62,10 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
         
     }
   }
-  useEffect(() => {
-    axios.get('/appointments/create/').then((response) => {
-      setMeta(response.data);
-    })  .catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
-  }, []);
-
-  // update team on company members
-  useEffect(() => {
-    // using useEffect in this way, with end param, causes this function to run each time the end param is changed
-    manageTeam(meta.user);
-  },[meta]);
-
 
   return (
-<Background>
+<BackgroundAuth>
+  {!authIsLoading &&
   <View style= {styles.column}>
   <View style={{flex:1, marginTop:16}}>
       <Searchbar placeholder="Search"       
@@ -116,9 +92,9 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
       </View>
       <TeamSelect 
           containerStyle={{flex:1, paddingVertical:32}} 
-          company={meta.company} 
+          company={currentUser.company} 
           selectedUsers={team} 
-          main_user={meta.user}
+          main_user={currentUser.user}
           addMethod={manageTeam}
           removeMethod={removeTeam}
           start={true}
@@ -127,7 +103,8 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
         <Availabilty users={team} selectMethod={handleAvailability} date={date} time={time}/>
       </View>
   </View>
-</Background>
+  }
+</BackgroundAuth>
   )
 }
 

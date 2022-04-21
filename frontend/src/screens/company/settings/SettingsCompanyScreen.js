@@ -13,8 +13,11 @@ import ProfilePicture from '../../../components/ProfilePicture'
 import CompanyLogo from '../../../components/CompanyLogo'
 import TextInput from '../../../components/TextInput'
 import Button from '../../../components/Button'
+import BackgroundAuth from '../../../components/BackgroundAuth'
+import CurrentUserContext from '../../../../Context'
 
 export default function SettingsCompanyScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const [user, setUser] = useState({name: 'User' })
   const [company, setCompany] = useState({name:'Company', members: []})
   const [bio, setBio] = useState({ value: '', error: '' })
@@ -78,8 +81,9 @@ export default function SettingsCompanyScreen({ route, navigation }) {
   }
 
   return (
-    <Background>
+    <BackgroundAuth>
       <BackButton goBack={navigation.goBack} />
+      {!authIsLoading &&
       <View style={styles.column}>
         <View style={[{flex:1,  marginVertical:16}]}>
           <View style={styles.row}>
@@ -131,7 +135,8 @@ export default function SettingsCompanyScreen({ route, navigation }) {
           </Button>
         </View>
       </View>
-    </Background>
+      }
+    </BackgroundAuth>
   )
 }
 

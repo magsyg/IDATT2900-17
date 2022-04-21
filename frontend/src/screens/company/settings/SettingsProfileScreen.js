@@ -15,8 +15,11 @@ import PillLink from '../../../components/PillLink';
 import OutlinedButton from '../../../components/OutlinedButton';
 import Paragraph from '../../../components/Paragraph';
 import PhoneNumberInput from '../../../components/PhoneNumberInput';
+import BackgroundAuth from '../../../components/BackgroundAuth';
+import CurrentUserContext from '../../../../Context';
 
 export default function SettingsProfileScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const [firstName, setFirstName] = useState({ value: '', error: '' })
   const [lastName, setLastName] = useState({ value: '', error: '' })
   const [countryCode, setCountryCode] = useState({ value: '+47', error: '' })
@@ -154,8 +157,11 @@ export default function SettingsProfileScreen({ route, navigation }) {
     });
   }
   return (
-    <Background>
-      <Modal visible={successModal}>
+    <BackgroundAuth>
+      <BackButton goBack={navigation.goBack} />
+      { !authIsLoading && 
+      <View style={styles.column}>
+        <Modal visible={successModal}>
         <TouchableOpacity  style={{flex:1}} onPress={hideSuccessModal}>
         <View style={{padding:64}}>
           <Header style={{textAlign:'center'}}>User updated successfully!</Header>
@@ -165,6 +171,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
         </View>
         </TouchableOpacity>
       </Modal>
+      
       <Modal visible={PPModalVisible} onDismiss={hidePPModal}>
         <View style={styles.column}>
           <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
@@ -193,8 +200,6 @@ export default function SettingsProfileScreen({ route, navigation }) {
           </View>
         </View>
       </Modal>
-      <BackButton goBack={navigation.goBack} />
-      <View style={styles.column}>
         <View style={[{flex:1,  marginVertical:16}]}>
           <View style={styles.row}>
             <Header>Profile</Header>
@@ -254,7 +259,8 @@ export default function SettingsProfileScreen({ route, navigation }) {
           </Button>
         </View>
       </View>
-    </Background>
+      }
+    </BackgroundAuth>
   )
 }
 

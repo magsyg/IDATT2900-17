@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios';
 import { TouchableOpacity, StyleSheet, View, ScrollView, Text} from 'react-native'
 import {  DataTable, Modal, Portal } from 'react-native-paper'
@@ -18,10 +18,12 @@ import HoveringBar from '../../components/HoveringBar.js'
 import AppointmentsList from '../../components/AppointmentList';
 import ProfilePicture from '../../components/ProfilePicture';
 import Dropdown from '../../components/Dropdown';
+import CurrentUserContext from '../../../Context';
+import BackgroundAuth from '../../components/BackgroundAuth';
 
 export default function Dashboard({ navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const today = currentDate()
-  const [user, setUser] = useState({ first_name:"" });
   const [appointments, setAppointments] =useState([]);
   const [apType, setApType] = useState({label:'All', value:'AL'});
   const apTypes = [
@@ -40,27 +42,8 @@ export default function Dashboard({ navigation }) {
     hideAPModal();
   }
   useEffect(() => {
-    axios.get('/accounts/current_user/').then((response) => {
-      setUser(response.data.user);
-    }).catch(function (error) {
-      console.log("-----axios----")
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      console.log("-----axios----")
-    });
     axios.get('/appointments/user/').then((response) => {
       setAppointments(response.data)
-      console.log(response.data)
     }).catch(function (error) {
       console.log("-----axios----")
       if (error.response) {
@@ -80,16 +63,17 @@ export default function Dashboard({ navigation }) {
   }, []);
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style = {styles.column}>
         <View style={[styles.row, {flex:2, paddingTop:32}]}>
           <View style={{flex: 3}}>
-            <Header>Hi, {user.first_name}</Header>
+            <Header>Hi, {currentUser.user.first_name}</Header>
           </View>
           <View style={{flex: 1}}>
             <ProfilePicture
             size={64} 
-            user={user} />
+            user={currentUser.user} />
 
           </View>
         </View>
@@ -122,7 +106,8 @@ export default function Dashboard({ navigation }) {
           <AppointmentsList data={appointments} ap_type={apType.value}/>
         </View>         
       </View>
-    </Background>
+      }
+    </BackgroundAuth>
   )
 }
 

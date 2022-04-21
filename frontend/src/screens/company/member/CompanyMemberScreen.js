@@ -14,8 +14,12 @@ import OutlinedTouch from '../../../components/OutlinedTouch'
 import AppointmentsList from '../../../components/AppointmentList'
 import ProfilePicture from '../../../components/ProfilePicture'
 import CalendarAppointments from '../../../components/CalendarAppointments'
+import BackgroundAuth from '../../../components/BackgroundAuth'
+import CurrentUserContext from '../../../../Context'
 
 export default function CompanyMemberScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+
   const {profile_id} = route.params
   const [profile, setProfile] = useState({'first_name':'First Name', 'last_name':'Last Name','phone_number':'3333 6666', 'email':'email@email.com'});
   const [appointments, setAppointments] = useState([])
@@ -59,7 +63,8 @@ export default function CompanyMemberScreen({ route, navigation }) {
   }, [profile_id]);
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style= {styles.column}>
         <View style={[styles.row, {flex:0,justifyContent:'flex-end', marginTop:24, marginBottom:0}]}>
           <IconButton icon="close" size={30} color={theme.colors.grey} onPress={navigation.goBack}></IconButton>
@@ -83,7 +88,8 @@ export default function CompanyMemberScreen({ route, navigation }) {
           <CalendarAppointments user={profile}/>
         </View>
       </View>
-    </Background>
+      }
+    </BackgroundAuth>
   )
 }
 

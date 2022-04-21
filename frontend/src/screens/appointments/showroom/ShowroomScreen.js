@@ -21,9 +21,12 @@ import TeamSelect from '../../../components/TeamSelect';
 import AddBrands from '../../../components/AddBrand';
 import Note from '../../../components/Note';
 import CompanyLogo from '../../../components/CompanyLogo';
+import CurrentUserContext from '../../../../Context';
+import BackgroundAuth from '../../../components/BackgroundAuth';
 
 
 export default function ShowroomScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const {appointment_id} = route.params
   
   const [meta, setMeta] = useState({
@@ -87,7 +90,8 @@ export default function ShowroomScreen({ route, navigation }) {
   }
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style={styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
@@ -101,7 +105,7 @@ export default function ShowroomScreen({ route, navigation }) {
         <AppointmentInfo containerStyle ={{marginVertical:32}}appointment={meta.appointment}/>
         <TeamSelect 
           containerStyle={{marginVertical:16}} 
-          company={meta.company} 
+          company={currentUser.company} 
           selectedUsers={meta.appointment.retailer.retailer_participants} 
           main_user={meta.appointment.retailer.organizer}
           addMethod={inviteTeamRetailer}
@@ -126,7 +130,8 @@ export default function ShowroomScreen({ route, navigation }) {
         </View>
         <Note company={meta.company} />
       </View>
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 

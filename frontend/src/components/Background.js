@@ -2,6 +2,7 @@ import React from 'react'
 import {ScrollView, View, StyleSheet, KeyboardAvoidingView } from 'react-native'
 import { theme } from '../core/theme'
 import HoveringBar from './HoveringBar'
+import CurrentUserContext  from '../../Context'
 
 export default function Background({ children }) {
   return (
@@ -11,7 +12,7 @@ export default function Background({ children }) {
             {children}
           </KeyboardAvoidingView>
         </ScrollView>
-     <HoveringBar/>
+      <HoveringBar/>
     </View>
   )
 }

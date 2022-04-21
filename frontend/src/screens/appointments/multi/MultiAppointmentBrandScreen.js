@@ -18,16 +18,20 @@ import Button from '../../../components/Button';
 import OutlinedButton from '../../../components/OutlinedButton';
 import Note from '../../../components/Note';
 import CompanyLogo from '../../../components/CompanyLogo';
+import CurrentUserContext from '../../../../Context';
+import BackgroundAuth from '../../../components/BackgroundAuth';
 
 
 export default function MultiAppointmentBrandScreen({ route, navigation }) {
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+
   const {appointment_id, brand_id} = route.params
   const [brand, setBrand] =useState({'name':'Brand Name','main_contact':{}})
   const [meta, setMeta] = useState({'user': {}, 
     'company':{'members':[]}, 
     'appointment':{'name':'Tradeshow Name', 'appointment_type':'TS','id':-1},
     'brand':{'main_contact':{}}
-})
+  })
 
   const ap_types = {
     'TS':"Trade Show",
@@ -59,7 +63,8 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
   
 
   return (
-    <Background>
+    <BackgroundAuth>
+      {!authIsLoading &&
       <View style={styles.column}>
         <View style={styles.row}> 
           <BackHeader goBack={navigation.goBack}>  
@@ -88,7 +93,8 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
         </View>
         <Note company={brand}/>
       </View>
-    </Background>
+    }
+    </BackgroundAuth>
   )
 }
 
