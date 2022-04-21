@@ -17,7 +17,6 @@ import {
   Contacts,
   Members,
   Brand,
-  Company,
   MapFullScreen,
 } from './src/screens';
 
@@ -46,8 +45,6 @@ export default class App extends Component {
             <Stack.Screen name="Contacts" component={Contacts} />
             <Stack.Screen name="Members" component={Members} />
             <Stack.Screen name="Settings" component={Settings} />
-            <Stack.Screen name="Company" component={Company} />
-            <Stack.Screen name="Appointment" component={Appointment} />
             <Stack.Screen name="FullMap" component={MapFullScreen} />
             <Stack.Screen
               name="ResetPasswordScreen"

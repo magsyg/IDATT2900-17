@@ -9,6 +9,7 @@ import { theme } from '../../core/theme'
 import { Calendar } from 'react-native-calendars';
 import AppointmentsList from '../../components/AppointmentList';
 import CalendarAppointments from '../../components/CalendarAppointments'
+import Map from '../components/maps/Map'
 
 export default function AppointmentCalendarScreen({ route, navigation }) {
   const [meta, setMeta] = useState({'user': {'id':-1}})
