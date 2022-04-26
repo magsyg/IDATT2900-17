@@ -16,6 +16,7 @@ import {
   Contacts,
   Members,
   Brand,
+  MapFullScreen,
 } from './src/screens';
 import { Provider } from 'react-native-paper';
 
@@ -28,7 +29,7 @@ export default class App extends Component {
 
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Dashboard"
+            initialRouteName="FullMap"
             screenOptions={{
               headerShown: false,
             }}
@@ -43,6 +44,7 @@ export default class App extends Component {
             <Stack.Screen name="AppointmentCreate" component={AppointmentCreate} />
             <Stack.Screen name="Showroom" component={Showroom} />
             <Stack.Screen name="MultiAppointment" component={MultiAppointment} />
+            <Stack.Screen name="FullMap" component={MapFullScreen} />
           </Stack.Navigator>
         </NavigationContainer>
         </Provider>

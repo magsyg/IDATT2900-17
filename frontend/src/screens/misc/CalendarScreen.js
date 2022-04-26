@@ -9,17 +9,25 @@ import AppointmentsList from '../../components/AppointmentList';
 import CalendarAppointments from '../../components/CalendarAppointments'
 import CurrentUserContext from '../../../Context'
 import BackgroundAuth from '../../components/BackgroundAuth'
+import MapMini from '../../components/MapMini.js'
 
 export default function AppointmentCalendarScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
 
   return (
-    <BackgroundAuth>
-      {!authIsLoading &&
-        <CalendarAppointments user={currentUser.user}/>
-      }
-    </BackgroundAuth>
+    <View>
+      <BackgroundAuth>
+        {!authIsLoading &&
+          <CalendarAppointments user={currentUser.user}/>
+        }
+      </BackgroundAuth>
+      <View>
+        <TouchableOpacity onPress={() => navigation.navigate('FullMap')}>
+          <MapMini />
+        </TouchableOpacity>
+      </View>
+    </View>
   )
 }
 
