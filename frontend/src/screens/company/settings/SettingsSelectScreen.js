@@ -12,10 +12,10 @@ import CurrentUserContext from '../../../../Context';
 
 export default function SettingsSelectScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  if (!authIsLoading && currentUser !== null) {
   return (
     <BackgroundAuth>
       <BackButton goBack={navigation.goBack} />
-      { !authIsLoading && 
       <View style={styles.column}>
         <View style={[styles.row, {flex:1,  marginTop:32}]}>
           <Header>Settings</Header>
@@ -28,9 +28,11 @@ export default function SettingsSelectScreen({ route, navigation }) {
           <OptionIconLink text="Date and Time Preference"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
         </View>
       </View>
-      }
     </BackgroundAuth>
-  )
+  ) 
+  } else {
+    <BackgroundAuth/>
+  }
 }
 
 const styles = StyleSheet.create({

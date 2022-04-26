@@ -24,10 +24,9 @@ export default function CompanyContactsScreen({ route, navigation }) {
       params:{brand_id:id}
     });
   }
-
+  if (!authIsLoading && currentUser !== null) {
   return (
     <BackgroundAuth>
-    {!authIsLoading &&
       <View style={styles.column}>
         <View style={[styles.row,{marginTop:16}]}>
           <Searchbar placeholder='Search' style={{backgroundColor:theme.colors.grey, flex:1, borderRadius:100}}/>
@@ -74,9 +73,11 @@ export default function CompanyContactsScreen({ route, navigation }) {
       
         </View>
       </View>
-    }
     </BackgroundAuth>
-  )
+  ) 
+  } else {
+    return (<BackgroundAuth/>)
+  }
 }
 
 const styles = StyleSheet.create({

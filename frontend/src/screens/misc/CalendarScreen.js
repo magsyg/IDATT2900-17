@@ -14,13 +14,16 @@ export default function AppointmentCalendarScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
 
-  return (
-    <BackgroundAuth>
-      {!authIsLoading &&
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
         <CalendarAppointments user={currentUser.user}/>
-      }
-    </BackgroundAuth>
-  )
+
+      </BackgroundAuth>
+    )
+  } else {
+    <BackgroundAuth/>
+  }
 }
 
 const styles = StyleSheet.create({

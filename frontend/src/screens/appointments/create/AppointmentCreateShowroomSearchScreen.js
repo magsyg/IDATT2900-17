@@ -43,16 +43,20 @@ export default function AppointmentCreateShowroomSearchScreen({ route, navigatio
     );
   }
 
-  return (
-  <BackgroundAuth>
-    {!authIsLoading &&
-    <View style= {styles.column}>
-      <BrandSearch exitMethod={navigation.goBack} selectMethod={selectBrand}/>
-      <OutlinedButton onPress={goToForm}>Create Showroom Appointment</OutlinedButton>
-    </View>
+  // Render Method
+  // Only render when authenticatated
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style= {styles.column}>
+          <BrandSearch exitMethod={navigation.goBack} selectMethod={selectBrand}/>
+          <OutlinedButton onPress={goToForm}>Create Showroom Appointment</OutlinedButton>
+        </View>
+      </BackgroundAuth>
+    )
+  } else {
+    return (<BackgroundAuth/>)
   }
-  </BackgroundAuth>
-  )
 }
 
 const styles = StyleSheet.create({

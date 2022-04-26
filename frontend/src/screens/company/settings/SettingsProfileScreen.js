@@ -156,112 +156,114 @@ export default function SettingsProfileScreen({ route, navigation }) {
       
     });
   }
-  return (
-    <BackgroundAuth>
-      <BackButton goBack={navigation.goBack} />
-      { !authIsLoading && 
-      <View style={styles.column}>
-        <Modal visible={successModal}>
-        <TouchableOpacity  style={{flex:1}} onPress={hideSuccessModal}>
-        <View style={{padding:64}}>
-          <Header style={{textAlign:'center'}}>User updated successfully!</Header>
-          <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
-            Click anywhere to return
-          </Paragraph>
-        </View>
-        </TouchableOpacity>
-      </Modal>
-      
-      <Modal visible={PPModalVisible} onDismiss={hidePPModal}>
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <BackButton goBack={navigation.goBack} />
         <View style={styles.column}>
-          <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
-            <IconButton icon="close" size={30} color={theme.colors.grey} onPress={hidePPModal}></IconButton>
+          <Modal visible={successModal}>
+          <TouchableOpacity  style={{flex:1}} onPress={hideSuccessModal}>
+          <View style={{padding:64}}>
+            <Header style={{textAlign:'center'}}>User updated successfully!</Header>
+            <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
+              Click anywhere to return
+            </Paragraph>
           </View>
-          <View style={styles.row}>
-            {profilePicture ? 
-            <Avatar.Image 
-              size={256} 
-              source={{ uri: profilePicture.uri }}
-            />:
-            <ProfilePicture
-              size={256} 
-              user={user}
-            />
-            }
-
-          </View>
-          <View style={styles.row}>
-            <OutlinedButton onPress={pickImage}>Select New Image</OutlinedButton>
-          </View>
-          <View style={{margin:32}}>
-            {profilePicture &&
-              <Button onPress={updateProfilePicture}>Update Profile Picture</Button>
-            }
-          </View>
-        </View>
-      </Modal>
-        <View style={[{flex:1,  marginVertical:16}]}>
-          <View style={styles.row}>
-            <Header>Profile</Header>
-          </View>
-          <View>
-            <View style={styles.row}>
-                <ProfilePicture
-                  size={96} 
-                  user={user}
-                />
+          </TouchableOpacity>
+        </Modal>
+        
+        <Modal visible={PPModalVisible} onDismiss={hidePPModal}>
+          <View style={styles.column}>
+            <View style={[styles.row, {flex:0,justifyContent:'flex-end',marginHorizontal: 32, marginTop:24, marginBottom:0}]}>
+              <IconButton icon="close" size={30} color={theme.colors.grey} onPress={hidePPModal}></IconButton>
             </View>
-            <PillLink onPress={showPPModal} style={{flex:0}}>Edit</PillLink>
+            <View style={styles.row}>
+              {profilePicture ? 
+              <Avatar.Image 
+                size={256} 
+                source={{ uri: profilePicture.uri }}
+              />:
+              <ProfilePicture
+                size={256} 
+                user={user}
+              />
+              }
+
+            </View>
+            <View style={styles.row}>
+              <OutlinedButton onPress={pickImage}>Select New Image</OutlinedButton>
+            </View>
+            <View style={{margin:32}}>
+              {profilePicture &&
+                <Button onPress={updateProfilePicture}>Update Profile Picture</Button>
+              }
+            </View>
           </View>
-          <View style={[styles.row, {margin:4}]}>
-            <Subheading style={{color:theme.colors.secondary}}>
-              {user.email}
-            </Subheading>
+        </Modal>
+          <View style={[{flex:1,  marginVertical:16}]}>
+            <View style={styles.row}>
+              <Header>Profile</Header>
+            </View>
+            <View>
+              <View style={styles.row}>
+                  <ProfilePicture
+                    size={96} 
+                    user={user}
+                  />
+              </View>
+              <PillLink onPress={showPPModal} style={{flex:0}}>Edit</PillLink>
+            </View>
+            <View style={[styles.row, {margin:4}]}>
+              <Subheading style={{color:theme.colors.secondary}}>
+                {user.email}
+              </Subheading>
+            </View>
+          </View>
+          <View style={{flex:3, marginTop:16}}>
+            <View style={styles.row}>  
+              <TextInput
+                label="First Name"
+                returnKeyType="next"
+                value={firstName.value}
+                onChangeText={(text) => setFirstName({ value: text, error: '' })}
+                error={!!firstName.error}
+                errorText={firstName.error}
+              />
+            </View>
+            <View style={styles.row}>  
+              <TextInput
+                label="Last Name"
+                returnKeyType="next"
+                value={lastName.value}
+                onChangeText={(text) => setLastName({ value: text, error: '' })}
+                error={!!lastName.error}
+                errorText={lastName.error}
+              />
+            </View>
+            <PhoneNumberInput 
+              phoneNumber={phoneNumber} 
+              setPhoneNumber={setPhoneNumber}
+              countryCode={countryCode}
+              setCountryCode={setCountryCode}
+              />
+            
+            
+          </View>
+          <View style={[styles.row,{marginBottom:16}]}>  
+            <Button
+              mode="contained"
+              style={styles.button}
+              onPress={onUpdatePressed}
+            >
+              Update Profile
+            </Button>
           </View>
         </View>
-        <View style={{flex:3, marginTop:16}}>
-          <View style={styles.row}>  
-            <TextInput
-              label="First Name"
-              returnKeyType="next"
-              value={firstName.value}
-              onChangeText={(text) => setFirstName({ value: text, error: '' })}
-              error={!!firstName.error}
-              errorText={firstName.error}
-            />
-          </View>
-          <View style={styles.row}>  
-            <TextInput
-              label="Last Name"
-              returnKeyType="next"
-              value={lastName.value}
-              onChangeText={(text) => setLastName({ value: text, error: '' })}
-              error={!!lastName.error}
-              errorText={lastName.error}
-            />
-          </View>
-          <PhoneNumberInput 
-            phoneNumber={phoneNumber} 
-            setPhoneNumber={setPhoneNumber}
-            countryCode={countryCode}
-            setCountryCode={setCountryCode}
-            />
-          
-          
-        </View>
-        <View style={[styles.row,{marginBottom:16}]}>  
-          <Button
-            mode="contained"
-            style={styles.button}
-            onPress={onUpdatePressed}
-          >
-            Update Profile
-          </Button>
-        </View>
-      </View>
-      }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    ) 
+  } else {
+    return <BackgroundAuth/>
+  }
 }
 
 const styles = StyleSheet.create({

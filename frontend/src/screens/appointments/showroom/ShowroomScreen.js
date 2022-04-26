@@ -88,51 +88,54 @@ export default function ShowroomScreen({ route, navigation }) {
     });
     return false;
   }
-
-  return (
-    <BackgroundAuth>
-      {!authIsLoading &&
-      <View style={styles.column}>
-        <View style={styles.row}> 
-          <BackHeader goBack={navigation.goBack}>  
-            <CompanyLogo
-                size={64} 
-                company={meta.brand.brand}
-            />
-          </BackHeader>
+  // Render Method
+  // Only render when authenticatated
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style={styles.column}>
+          <View style={styles.row}> 
+            <BackHeader goBack={navigation.goBack}>  
+              <CompanyLogo
+                  size={64} 
+                  company={meta.brand.brand}
+              />
+            </BackHeader>
+          </View>
+          <HeaderWithSub header={meta.brand.brand.name} subheader='Showroom appointment' />
+          <AppointmentInfo containerStyle ={{marginVertical:32}}appointment={meta.appointment}/>
+          <TeamSelect 
+            containerStyle={{marginVertical:16}} 
+            company={currentUser.company} 
+            selectedUsers={meta.appointment.retailer.retailer_participants} 
+            main_user={meta.appointment.retailer.organizer}
+            addMethod={inviteTeamRetailer}
+          />
+          { meta.brand.main_contact !== null &&
+          <View style={{marginTop:32}}>
+            <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
+          </View>
+          } 
+          <View style={[styles.row, {marginTop:32}]}>
+            <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
+            <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
+          </View>
+          <View style={[styles.row, {marginTop:32}]}>
+            <IconButton size={32} icon='plus' color={theme.colors.grey}/>
+            <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1}}>
+              <View style={styles.imageBoxPlaceholder}/>
+              <View style={styles.imageBoxPlaceholder}/>
+              <View style={styles.imageBoxPlaceholder}/>
+              <View style={styles.imageBoxPlaceholder}/>
+            </ScrollView>
+          </View>
+          <Note company={meta.company} />
         </View>
-        <HeaderWithSub header={meta.brand.brand.name} subheader='Showroom appointment' />
-        <AppointmentInfo containerStyle ={{marginVertical:32}}appointment={meta.appointment}/>
-        <TeamSelect 
-          containerStyle={{marginVertical:16}} 
-          company={currentUser.company} 
-          selectedUsers={meta.appointment.retailer.retailer_participants} 
-          main_user={meta.appointment.retailer.organizer}
-          addMethod={inviteTeamRetailer}
-         />
-        { meta.brand.main_contact !== null &&
-        <View style={{marginTop:32}}>
-          <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
-        </View>
-        } 
-        <View style={[styles.row, {marginTop:32}]}>
-          <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
-          <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
-        </View>
-        <View style={[styles.row, {marginTop:32}]}>
-          <IconButton size={32} icon='plus' color={theme.colors.grey}/>
-          <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1}}>
-            <View style={styles.imageBoxPlaceholder}/>
-            <View style={styles.imageBoxPlaceholder}/>
-            <View style={styles.imageBoxPlaceholder}/>
-            <View style={styles.imageBoxPlaceholder}/>
-          </ScrollView>
-        </View>
-        <Note company={meta.company} />
-      </View>
-    }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    ) 
+  } else {
+    return (<Background/>)
+  }
 }
 
 const styles = StyleSheet.create({

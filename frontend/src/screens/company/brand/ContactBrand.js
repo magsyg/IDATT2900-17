@@ -68,77 +68,81 @@ export default function ContactBrandScreen({ route, navigation }) {
     });
   }, [brand_id]);
 
-  return (
-    <BackgroundAuth>
-      {!authIsLoading &&
-      <View style= {styles.column}>
-        <View style={styles.row}> 
-          <BackHeader goBack={navigation.goBack}>  
-            <CompanyLogo
-                size={64} 
-                company={brand}
+  // Render Method
+  // Only render when authenticatated
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style= {styles.column}>
+          <View style={styles.row}> 
+            <BackHeader goBack={navigation.goBack}>  
+              <CompanyLogo
+                  size={64} 
+                  company={brand}
+              />
+            </BackHeader>
+          </View>
+          <Header style={{textAlign:'center'}}>{brand.name}</Header>
+          <LocationInfo item={brand}/>
+          <View style={[styles.row, {marginTop:16}]}>
+            <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
+            <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
+          </View>
+          <View>
+            <Button onPress={goToScheduleContact}>Schedule</Button>
+          </View>
+          <View style={{marginVertical:16}}>
+            <Header2>NEXT SHIPMENT: MM/DD/YY</Header2>
+          </View>
+          <View style={{marginVertical:16}}>
+            <Header2>BUYERS</Header2>
+            <Avatar.Image 
+                  size={48} 
+                  source={require('../../../assets/default_profile.png')}  
             />
-          </BackHeader>
-        </View>
-        <Header style={{textAlign:'center'}}>{brand.name}</Header>
-        <LocationInfo item={brand}/>
-        <View style={[styles.row, {marginTop:16}]}>
-          <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
-          <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
-        </View>
-        <View>
-          <Button onPress={goToScheduleContact}>Schedule</Button>
-        </View>
-        <View style={{marginVertical:16}}>
-          <Header2>NEXT SHIPMENT: MM/DD/YY</Header2>
-        </View>
-        <View style={{marginVertical:16}}>
-          <Header2>BUYERS</Header2>
-          <Avatar.Image 
-                size={48} 
-                source={require('../../../assets/default_profile.png')}  
-          />
-        </View> 
+          </View> 
 
-        <View style={{marginVertical:16}}>
-          <Header2>APPOINTMENT HISTORY</Header2>
-          <FlatList
-            data={appointments}
-            numColumns={1}
-            scrollEnabled={true}
-            renderItem={({item, index}) =>  
-              <OutlinedTouch key={index} style={styles.appointmentButton} onPress={() => goToAppointment(item)}>
-                <Text style={styles.appointmentButtonText}>{item.date}</Text>
-                <Text style={styles.appointmentButtonText}>{item.name}</Text>
-              </OutlinedTouch>
+          <View style={{marginVertical:16}}>
+            <Header2>APPOINTMENT HISTORY</Header2>
+            <FlatList
+              data={appointments}
+              numColumns={1}
+              scrollEnabled={true}
+              renderItem={({item, index}) =>  
+                <OutlinedTouch key={index} style={styles.appointmentButton} onPress={() => goToAppointment(item)}>
+                  <Text style={styles.appointmentButtonText}>{item.date}</Text>
+                  <Text style={styles.appointmentButtonText}>{item.name}</Text>
+                </OutlinedTouch>
+              }
+            />
+          </View>
+          <View style={{marginVertical:16}}>
+            <Header2>WHOLESALE TEAM</Header2>
+            <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1,justifyContent:'flex-start'}}>
+            {brand.members.map((item, index) => {
+                return(
+                  <TouchableOpacity key={index} style={{margin:2}}>
+                    <ProfilePicture
+                      size={48} 
+                      user={item}
+                    />
+                  </TouchableOpacity>
+                );     
+              })
             }
-          />
+            </ScrollView>
+          </View>
+          <View style={{marginVertical:32, justifyContent:'flex-start'}}>
+            <Header2>Company Profile</Header2>
+            <Paragraph>{brand.bio}</Paragraph>
+            <PillLink>{brand.homepage}</PillLink>
+          </View>
         </View>
-        <View style={{marginVertical:16}}>
-          <Header2>WHOLESALE TEAM</Header2>
-          <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1,justifyContent:'flex-start'}}>
-          {brand.members.map((item, index) => {
-              return(
-                <TouchableOpacity key={index} style={{margin:2}}>
-                  <ProfilePicture
-                    size={48} 
-                    user={item}
-                  />
-                </TouchableOpacity>
-              );     
-            })
-          }
-          </ScrollView>
-        </View>
-        <View style={{marginVertical:32, justifyContent:'flex-start'}}>
-          <Header2>Company Profile</Header2>
-          <Paragraph>{brand.bio}</Paragraph>
-          <PillLink>{brand.homepage}</PillLink>
-        </View>
-      </View>
-    }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    )
+  } else {
+    return (<BackgroundAuth/>)
+  }
 }
 
 const styles = StyleSheet.create({

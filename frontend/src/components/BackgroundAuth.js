@@ -16,9 +16,11 @@ export default function BackgroundAuth({ children }) {
     console.log("USER");
     console.log(currentUser);
     if(!authIsLoading && currentUser === null) {
+      console.log("lolololo");
       navigation.navigate('Authentication');
     }
   }, [authIsLoading, currentUser]);
+
   if (authIsLoading  || currentUser === null) {
     return <ActivityIndicator style={styles.loading}size='large' animating={true} color={theme.colors.secondary} />
   } else {

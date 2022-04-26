@@ -231,122 +231,126 @@ export default function AppointmentCreateScreen({ route, navigation }) {
 
   }
 
-return (
-<BackgroundAuth>
-  {!authIsLoading &&
-  <View style= {styles.column}>
-      <BackHeader goBack={navigation.goBack}>
-          <Text style={{color:theme.colors.grey}}>
-          {appointment_types[ap_type]}
-          </Text>
-      </BackHeader>
-        <TeamSelect 
-          containerStyle={{marginVertical:16}}
-          company={currentUser.company} 
-          selectedUsers={team} 
-          main_user={currentUser.user}
-          addMethod={manageTeam}
-          removeMethod={removeTeam}
-          start={true}
-        />
-      <Availabilty users={team} selectMethod={handleAvailability} date={date} time={startTime}/>
-      <View style={{flex:2}}>
-        <TextInput
-          label="Title"
-          returnKeyType="next"
-          value={name.value}
-          onChangeText={(text) => setName({ value: text, error: '' })}
-          error={!!name.error}
-          errorText={name.error}
-        />
-        <View>
-          <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}} onPress={showDate}>
-            <TextInput
-              label="Date"
-              returnKeyType="next"
-              value={date.toISOString().substring(0, 10)}
-              disabled={true}
+    // Render Method
+  // Only render when authenticatated
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style= {styles.column}>
+            <BackHeader goBack={navigation.goBack}>
+                <Text style={{color:theme.colors.grey}}>
+                {appointment_types[ap_type]}
+                </Text>
+            </BackHeader>
+              <TeamSelect 
+                containerStyle={{marginVertical:16}}
+                company={currentUser.company} 
+                selectedUsers={team} 
+                main_user={currentUser.user}
+                addMethod={manageTeam}
+                removeMethod={removeTeam}
+                start={true}
+              />
+            <Availabilty users={team} selectMethod={handleAvailability} date={date} time={startTime}/>
+            <View style={{flex:2}}>
+              <TextInput
+                label="Title"
+                returnKeyType="next"
+                value={name.value}
+                onChangeText={(text) => setName({ value: text, error: '' })}
+                error={!!name.error}
+                errorText={name.error}
+              />
+              <View>
+                <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1}} onPress={showDate}>
+                  <TextInput
+                    label="Date"
+                    returnKeyType="next"
+                    value={date.toISOString().substring(0, 10)}
+                    disabled={true}
+                    
+                  />
+                </TouchableOpacity>
+                <DateTimePickerModal
+                  isVisible={dateVisible}
+                  mode="date"
+                  onConfirm={handleDate}
+                  onCancel={hideDate}
+                />
+              </View>
               
-            />
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={dateVisible}
-            mode="date"
-            onConfirm={handleDate}
-            onCancel={hideDate}
-          />
-        </View>
-        
-        <View style={styles.row}>
-          <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1, flex:1}} onPress={showStartTime}>
-            <TextInput
-              label="Start Time"
-              returnKeyType="next"
-              value={startTime.toTimeString().slice(0,5)}
-              disabled={true}
-            />
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={startTimeVisible}
-            mode="time"
-            onConfirm={handleStartTime}
-            onCancel={hideStartTime}
-          />
-          <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1,flex:1}} onPress={showEndTime}>
-            <TextInput
-              label="End Time"
-              returnKeyType="next"
-              value={endTime.toTimeString().slice(0,5)}
-              disabled={true}
-            />
-          </TouchableOpacity>
-          <DateTimePickerModal
-            isVisible={endTimeVisible}
-            mode="time"
-            onConfirm={handleEndTime}
-            onCancel={hideEndTime}
-          />
-        </View>
-        <View>
-          <HeaderLine containerStyle={{marginVertical:8}} textStyle={{fontSize:16, paddingHorizontal:8}}>
-            {ap_type !== 'SR' ? 'Brands':'Brand'}        
-          </HeaderLine>
-            {
-            brands.value.map((item, index) => {
-                return(
-                  <View style={styles.teamRow}>
-                    <TouchableOpacity onPress={() => editBrand(item.id)}>
-                      <Text>{item.name}</Text>
-                      <Text>Contact {(item.hasOwnProperty('main_contact')) && item.main_contact.name}</Text>
-                    </TouchableOpacity>
-                    <IconButton onPress={() => removeBrand(item.id)} icon='close'/>
-                  </View>
-                );     
-              })
-            }
-            {brands.error.length > 0 &&
-              <Text style={{color:theme.colors.danger, textAlign:'center', marginBottom:16}}>{brands.error}</Text>
-            }
-          <AddBrands completeAction={addBrand} />
-        </View>
-        <TextInput
-          label="Other Info"
-          returnKeyType="next"
-          value={otherInfo.value}
-          multiline
-          onChangeText={(text) => setOtherInfo({ value: text, error: '' })}
-          error={!!otherInfo.error}
-          errorText={otherInfo.error}
-        />
+              <View style={styles.row}>
+                <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1, flex:1}} onPress={showStartTime}>
+                  <TextInput
+                    label="Start Time"
+                    returnKeyType="next"
+                    value={startTime.toTimeString().slice(0,5)}
+                    disabled={true}
+                  />
+                </TouchableOpacity>
+                <DateTimePickerModal
+                  isVisible={startTimeVisible}
+                  mode="time"
+                  onConfirm={handleStartTime}
+                  onCancel={hideStartTime}
+                />
+                <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1,flex:1}} onPress={showEndTime}>
+                  <TextInput
+                    label="End Time"
+                    returnKeyType="next"
+                    value={endTime.toTimeString().slice(0,5)}
+                    disabled={true}
+                  />
+                </TouchableOpacity>
+                <DateTimePickerModal
+                  isVisible={endTimeVisible}
+                  mode="time"
+                  onConfirm={handleEndTime}
+                  onCancel={hideEndTime}
+                />
+              </View>
+              <View>
+                <HeaderLine containerStyle={{marginVertical:8}} textStyle={{fontSize:16, paddingHorizontal:8}}>
+                  {ap_type !== 'SR' ? 'Brands':'Brand'}        
+                </HeaderLine>
+                  {
+                  brands.value.map((item, index) => {
+                      return(
+                        <View style={styles.teamRow}>
+                          <TouchableOpacity onPress={() => editBrand(item.id)}>
+                            <Text>{item.name}</Text>
+                            <Text>Contact {(item.hasOwnProperty('main_contact')) && item.main_contact.name}</Text>
+                          </TouchableOpacity>
+                          <IconButton onPress={() => removeBrand(item.id)} icon='close'/>
+                        </View>
+                      );     
+                    })
+                  }
+                  {brands.error.length > 0 &&
+                    <Text style={{color:theme.colors.danger, textAlign:'center', marginBottom:16}}>{brands.error}</Text>
+                  }
+                <AddBrands completeAction={addBrand} />
+              </View>
+              <TextInput
+                label="Other Info"
+                returnKeyType="next"
+                value={otherInfo.value}
+                multiline
+                onChangeText={(text) => setOtherInfo({ value: text, error: '' })}
+                error={!!otherInfo.error}
+                errorText={otherInfo.error}
+              />
 
-      <Button mode="contained" style = {{backgroundColor: theme.colors.grey, color: theme.colors.primary, marginTop:32}} onPress={createAppointment}>
-        Create Appointment
-      </Button>
-      </View>
-  </View>
+            <Button mode="contained" style = {{backgroundColor: theme.colors.grey, color: theme.colors.primary, marginTop:32}} onPress={createAppointment}>
+              Create Appointment
+            </Button>
+            </View>
+        </View>
+      </BackgroundAuth>
+    )
+  } else {
+    return (<BackgroundAuth/>)
   }
-</BackgroundAuth>
-  )
 }
 const styles = StyleSheet.create({
   row: {

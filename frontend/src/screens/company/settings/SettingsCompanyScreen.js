@@ -79,65 +79,66 @@ export default function SettingsCompanyScreen({ route, navigation }) {
       
     });
   }
-
-  return (
-    <BackgroundAuth>
-      <BackButton goBack={navigation.goBack} />
-      {!authIsLoading &&
-      <View style={styles.column}>
-        <View style={[{flex:1,  marginVertical:16}]}>
-          <View style={styles.row}>
-            <Header>Edit Company</Header>
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <BackButton goBack={navigation.goBack} />
+        <View style={styles.column}>
+          <View style={[{flex:1,  marginVertical:16}]}>
+            <View style={styles.row}>
+              <Header>Edit Company</Header>
+            </View>
+            <View style={styles.row}>
+              <CompanyLogo
+                size={64} 
+                company={company}  
+              />
+            </View>
+            <View style={[styles.row, {margin:4}]}>
+              <Subheading style={{color:theme.colors.secondary}}>
+                {company.name}
+              </Subheading>
+            </View>
           </View>
-          <View style={styles.row}>
-            <CompanyLogo
-              size={64} 
-              company={company}  
-            />
+          
+          <View style={{flex:3, marginTop:16}}>
+            <View style={styles.row}>  
+              <TextInput
+                label="Homepage URL"
+                returnKeyType="next"
+                value={homePage.value}
+                onChangeText={(text) => setHomePage({ value: text, error: '' })}
+                error={!!homePage.error}
+                errorText={homePage.error}
+              />
+            </View>
+            <View style={styles.row}>  
+              <TextInput
+                label="Company Description"
+                returnKeyType="next"
+                multiline
+                value={bio.value}
+                onChangeText={(text) => setBio({ value: text, error: '' })}
+                error={!!bio.error}
+                errorText={bio.error}
+              />
+            </View>
           </View>
-          <View style={[styles.row, {margin:4}]}>
-            <Subheading style={{color:theme.colors.secondary}}>
-              {company.name}
-            </Subheading>
+          <View style={[styles.row,{marginBottom:16}]}>  
+            <Button
+              mode="contained"
+              style={styles.button}
+              onPress={onUpdatePressed}
+            >
+              Update Company
+            </Button>
           </View>
         </View>
-        
-        <View style={{flex:3, marginTop:16}}>
-          <View style={styles.row}>  
-            <TextInput
-              label="Homepage URL"
-              returnKeyType="next"
-              value={homePage.value}
-              onChangeText={(text) => setHomePage({ value: text, error: '' })}
-              error={!!homePage.error}
-              errorText={homePage.error}
-            />
-          </View>
-          <View style={styles.row}>  
-            <TextInput
-              label="Company Description"
-              returnKeyType="next"
-              multiline
-              value={bio.value}
-              onChangeText={(text) => setBio({ value: text, error: '' })}
-              error={!!bio.error}
-              errorText={bio.error}
-            />
-          </View>
-        </View>
-        <View style={[styles.row,{marginBottom:16}]}>  
-          <Button
-            mode="contained"
-            style={styles.button}
-            onPress={onUpdatePressed}
-          >
-            Update Company
-          </Button>
-        </View>
-      </View>
-      }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    )
+  } else {
+    <BackgroundAuth/>
+  }
 }
 
 const styles = StyleSheet.create({

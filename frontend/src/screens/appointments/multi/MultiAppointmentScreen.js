@@ -108,50 +108,54 @@ export default function MultiAppointmentScreen({ route, navigation }) {
     });
   }
 
-  return (
-    <BackgroundAuth>
-      {!authIsLoading &&
-      <View style={styles.column}>
-        <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={ap_types[meta.appointment.appointment_type]+ ' appointment'} />
-        <AppointmentInfo appointment={meta.appointment}/>
-        
-        <TeamSelect 
-          containerStyle={{marginVertical:16}} 
-          company={currentUser.company} 
-          selectedUsers={meta.appointment.retailer.retailer_participants} 
-          main_user={meta.appointment.retailer.organizer}
-          addMethod={inviteTeamRetailer}
-         />
-
-        <View style={{marginTop:16}}>
-          <View style={[styles.row, {justifyContent:'space-between'}]}>
-            <Header>Brands</Header>
-            <Link>Scan QR Code</Link>
-          </View>
-          <FlatList
-            data={meta.appointment.brands}
-            numColumns={1}
-            scrollEnabled={true}
-            renderItem={({item, index}) => 
-              <OptionIconLink key={index} text={item.brand.name} onPress={() => showBrand(item)}><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
-            }
-          />
-          <AddBrands completeAction={inviteBrand}/>
-        </View>
-       
-        <View style={{marginTop:32}}>
-            <Header>Other information</Header>
-            <Text style={{color:theme.colors.grey}}>{meta.appointment.other_information.length > 0 ?
-               meta.appointment.other_information:
-               'No additional information'
-              }
-            </Text>
+  // Render Method
+  // Only render when authenticatated
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style={styles.column}>
+          <HeaderWithSub containerStyle={{marginTop:16}} header={meta.appointment.name} subheader={ap_types[meta.appointment.appointment_type]+ ' appointment'} />
+          <AppointmentInfo appointment={meta.appointment}/>
           
-        </View>
-     </View>
+          <TeamSelect 
+            containerStyle={{marginVertical:16}} 
+            company={currentUser.company} 
+            selectedUsers={meta.appointment.retailer.retailer_participants} 
+            main_user={meta.appointment.retailer.organizer}
+            addMethod={inviteTeamRetailer}
+          />
+
+          <View style={{marginTop:16}}>
+            <View style={[styles.row, {justifyContent:'space-between'}]}>
+              <Header>Brands</Header>
+              <Link>Scan QR Code</Link>
+            </View>
+            <FlatList
+              data={meta.appointment.brands}
+              numColumns={1}
+              scrollEnabled={true}
+              renderItem={({item, index}) => 
+                <OptionIconLink key={index} text={item.brand.name} onPress={() => showBrand(item)}><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
+              }
+            />
+            <AddBrands completeAction={inviteBrand}/>
+          </View>
+        
+          <View style={{marginTop:32}}>
+              <Header>Other information</Header>
+              <Text style={{color:theme.colors.grey}}>{meta.appointment.other_information.length > 0 ?
+                meta.appointment.other_information:
+                'No additional information'
+                }
+              </Text>
+            
+          </View>
+      </View>
+      </BackgroundAuth>
+    )
+    } else {
+      return (<BackgroundAuth/>)
     }
-    </BackgroundAuth>
-  )
 }
 
 const styles = StyleSheet.create({

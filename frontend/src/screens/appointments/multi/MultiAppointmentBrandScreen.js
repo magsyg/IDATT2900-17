@@ -61,41 +61,44 @@ export default function MultiAppointmentBrandScreen({ route, navigation }) {
     }
   }, [isFocused]);
   
-
-  return (
-    <BackgroundAuth>
-      {!authIsLoading &&
-      <View style={styles.column}>
-        <View style={styles.row}> 
-          <BackHeader goBack={navigation.goBack}>  
-            <CompanyLogo
-                size={64} 
-                company={brand}
-            />
-          </BackHeader>
+  // Render Method
+  // Only render when authenticatated
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style={styles.column}>
+          <View style={styles.row}> 
+            <BackHeader goBack={navigation.goBack}>  
+              <CompanyLogo
+                  size={64} 
+                  company={brand}
+              />
+            </BackHeader>
+          </View>
+          <HeaderWithSub header={brand.name} subheader={meta.appointment.name} />
+          <View style={{marginTop:32}}>
+            <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
+          </View>
+          <View style={[styles.row, {marginTop:32}]}>
+            <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
+            <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
+          </View>
+          <View style={[styles.row, {marginTop:32}]}>
+            <IconButton size={32} icon='plus' color={theme.colors.grey}/>
+            <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1}}>
+              <View style={styles.imageBoxPlaceholder}/>
+              <View style={styles.imageBoxPlaceholder}/>
+              <View style={styles.imageBoxPlaceholder}/>
+              <View style={styles.imageBoxPlaceholder}/>
+            </ScrollView>
+          </View>
+          <Note company={brand}/>
         </View>
-        <HeaderWithSub header={brand.name} subheader={meta.appointment.name} />
-        <View style={{marginTop:32}}>
-          <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
-        </View>
-        <View style={[styles.row, {marginTop:32}]}>
-          <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
-          <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
-        </View>
-        <View style={[styles.row, {marginTop:32}]}>
-          <IconButton size={32} icon='plus' color={theme.colors.grey}/>
-          <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1}}>
-            <View style={styles.imageBoxPlaceholder}/>
-            <View style={styles.imageBoxPlaceholder}/>
-            <View style={styles.imageBoxPlaceholder}/>
-            <View style={styles.imageBoxPlaceholder}/>
-          </ScrollView>
-        </View>
-        <Note company={brand}/>
-      </View>
-    }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    )
+  } else {
+    return (<BackgroundAuth/>)
+  }
 }
 
 const styles = StyleSheet.create({
