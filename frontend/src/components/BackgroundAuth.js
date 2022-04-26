@@ -12,6 +12,7 @@ export default function BackgroundAuth({ children }) {
   const { authIsLoading, currentUser } = React.useContext(CurrentUserContext);
   const navigation = useNavigation();
   
+  // Checks if user is authenticated, if not return to loginscreen
   useEffect(() => {
     console.log("USER");
     console.log(currentUser);
@@ -24,7 +25,11 @@ export default function BackgroundAuth({ children }) {
   if (authIsLoading  || currentUser === null) {
     return <ActivityIndicator style={styles.loading}size='large' animating={true} color={theme.colors.secondary} />
   } else {
-    return <Background>{children}</Background>
+    return (
+    <Background withBottomBar={true}>
+      {children}
+    </Background>
+    )
   }
 }
 

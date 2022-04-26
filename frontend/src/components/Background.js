@@ -4,7 +4,7 @@ import { theme } from '../core/theme'
 import HoveringBar from './HoveringBar'
 import CurrentUserContext  from '../../Context'
 
-export default function Background({ children }) {
+export default function Background({ withBottomBar, children }) {
   return (
     <View style={styles.background}>
         <ScrollView>
@@ -12,7 +12,7 @@ export default function Background({ children }) {
             {children}
           </KeyboardAvoidingView>
         </ScrollView>
-      <HoveringBar/>
+        {withBottomBar && <HoveringBar/> }
     </View>
   )
 }

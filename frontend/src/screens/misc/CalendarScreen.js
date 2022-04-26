@@ -22,7 +22,7 @@ export default function AppointmentCalendarScreen({ route, navigation }) {
       </BackgroundAuth>
     )
   } else {
-    <BackgroundAuth/>
+    return (<BackgroundAuth/>);
   }
 }
 

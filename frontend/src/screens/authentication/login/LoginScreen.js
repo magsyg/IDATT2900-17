@@ -13,22 +13,57 @@ import { theme } from '../../../core/theme'
 import { emailValidator } from '../../../helpers/emailValidator'
 import { passwordValidator } from '../../../helpers/passwordValidator'
 import api from '../../../../api';
+import CurrentUserContext from '../../../../Context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
+  const { checkLogin } = React.useContext(CurrentUserContext);
   const [email, setEmail] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' });
 
-
-  const loginRequest = () => {
+  
+  const loginRequest = async() => {
     const payload = { username: email.value, password: password.value } 
-    console.log(payload)
-    api
-      .post(`/accounts/api-token-auth/`, payload)
-      .then(response => {
-        const { token, user } = response.data;
-        console.log(response.data)
-        // We set the returned token as the default authorization header
-        axios.defaults.headers.common.Authorization = `Token ${token}`;
+    try {
+      const { data } = await api.post(`/accounts/api-token-auth/`, payload)
+      try {
+        await AsyncStorage.setItem('@key', `Token ${data.token}`)
+      } catch (e) {
+        console.log(e);
+      }
+
+      checkLogin();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
+      })
+
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        // Request made and server responded
+        console.log(error.response.data);
+        if (error.response.data.hasOwnProperty("non_field_errors")) {
+          setEmail({error:error.response.data["non_field_errors"][0]})
+        }
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
+    }
+
+    /**
+     *         axios.defaults.headers.common.Authorization = `Token ${token}`;
+        try {
+          await AsyncStorage.setItem('@key', `Token ${token}`)
+        } catch (e) {
+          // saving error
+        }
         // Navigate to the home screen
         console.log("Success!")
         navigation.reset({
@@ -36,21 +71,7 @@ export default function LoginScreen({ navigation }) {
           routes: [{ name: 'Dashboard' }],
         })
         console.log("Success!")
-      })
-      .catch(function (error) {
-        if (error.response) {
-          // Request made and server responded
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.log(error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
-        }
-      });
+     */
   }
   const onLoginPressed = () => {
     const emailError = emailValidator(email.value)
