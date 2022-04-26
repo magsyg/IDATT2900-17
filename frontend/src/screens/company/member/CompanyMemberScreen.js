@@ -62,35 +62,37 @@ export default function CompanyMemberScreen({ route, navigation }) {
     });
   }, [profile_id]);
 
-  return (
-    <BackgroundAuth>
-      {!authIsLoading &&
-      <View style= {styles.column}>
-        <View style={[styles.row, {flex:0,justifyContent:'flex-end', marginTop:24, marginBottom:0}]}>
-          <IconButton icon="close" size={30} color={theme.colors.grey} onPress={navigation.goBack}></IconButton>
-        </View>
-        <View style={styles.row}>
-          <ProfilePicture 
-              size={96} 
-              user={profile}
-          />
-        </View>
-        <Header style={{textAlign:'center'}}>{profile.first_name} {profile.last_name}</Header>
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style= {styles.column}>
+          <View style={[styles.row, {flex:0,justifyContent:'flex-end', marginTop:24, marginBottom:0}]}>
+            <IconButton icon="close" size={30} color={theme.colors.grey} onPress={navigation.goBack}></IconButton>
+          </View>
+          <View style={styles.row}>
+            <ProfilePicture 
+                size={96} 
+                user={profile}
+            />
+          </View>
+          <Header style={{textAlign:'center'}}>{profile.first_name} {profile.last_name}</Header>
 
-        <OutlinedTouch style={{marginTop:12}}>
-          <Text style={styles.outlinedTouchText}>
-            {profile.email}
-          </Text>
-          </OutlinedTouch>
-        <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}}><Text style={styles.outlinedTouchText}>{profile.phone_number}</Text></OutlinedTouch>
+          <OutlinedTouch style={{marginTop:12}}>
+            <Text style={styles.outlinedTouchText}>
+              {profile.email}
+            </Text>
+            </OutlinedTouch>
+          <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}}><Text style={styles.outlinedTouchText}>{profile.phone_number}</Text></OutlinedTouch>
 
-        <View style={{margin:16, marginTop:32}}>
-          <CalendarAppointments user={profile}/>
+          <View style={{margin:16, marginTop:32}}>
+            <CalendarAppointments user={profile}/>
+          </View>
         </View>
-      </View>
-      }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    ) 
+    } else {
+      return (<BackgroundAuth/>)
+    }
 }
 
 const styles = StyleSheet.create({

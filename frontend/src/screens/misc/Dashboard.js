@@ -61,10 +61,9 @@ export default function Dashboard({ navigation }) {
       
     });
   }, []);
-
-  return (
+  if (!authIsLoading && currentUser !== null) {
+    return (
     <BackgroundAuth>
-      {!authIsLoading &&
       <View style = {styles.column}>
         <View style={[styles.row, {flex:2, paddingTop:32}]}>
           <View style={{flex: 3}}>
@@ -106,9 +105,13 @@ export default function Dashboard({ navigation }) {
           <AppointmentsList data={appointments} ap_type={apType.value}/>
         </View>         
       </View>
-      }
     </BackgroundAuth>
   )
+  } else {
+    return (
+      <BackgroundAuth/>
+    )
+  }
 }
 
 

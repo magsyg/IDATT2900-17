@@ -13,8 +13,12 @@ import { emailValidator } from '../../../helpers/emailValidator'
 import { passwordValidator } from '../../../helpers/passwordValidator'
 import PhoneNumberInput from '../../../components/PhoneNumberInput';
 import api from '../../../../api';
+import CurrentUserContext from '../../../../Context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RegisterScreen({ route, navigation }) {
+  const { checkLogin } = React.useContext(CurrentUserContext);
+
   const { teamType, companyCode, companyName, companyID } = route.params;
   const teamTypeName = {0: "Retailer", 1:"Brand",2:"Multi-label Showroom"}
   const [firstName, setFirstName] = useState({ value: '', error: '' })
@@ -31,7 +35,8 @@ export default function RegisterScreen({ route, navigation }) {
     console.log(route.params)
     console.log(companyCode, companyName, companyID)
   },[])
-  const registerRequest = () => {
+  const registerRequest = async() => {
+
     const payload = { 
         teamType:teamType,
         name: company.value,
@@ -43,46 +48,48 @@ export default function RegisterScreen({ route, navigation }) {
         company_code:companyCode,
         phone_number: countryCode.value+phoneNumber.value
       }
-      console.log(payload)
-      api.post(`/accounts/register/newcompany`, payload)
-      .then(response => {
-        const { token, user } = response.data;
-        console.log(response.data)
-        // We set the returned token as the default authorization header
-        axios.defaults.headers.common.Authorization = `Token ${token}`;
-        // Navigate to the home screen
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Dashboard' }],
-        })
+    console.log(payload);
+    try {
+      const {data} = await  api.post(`/accounts/register/newcompany`, payload)
+      try {
+        await AsyncStorage.setItem('@key', `Token ${data.token}`)
+      } catch (e) {
+        console.log(e);
+      }
+
+      checkLogin();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
       })
-      .catch(function (error) {
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data)
+        // Request made and server responded
         if (error.response) {
-          console.log(error.response.data)
-          // Request made and server responded
-          if (error.response) {
-            if (error.response.data.hasOwnProperty("phone_number")) {
-              setPhoneNumber({error: error.response.data.phone_number[0]})
-            }
-            if (error.response.data.hasOwnProperty("first_name")) {
-              setPhoneNumber({error: error.response.data.first_name[0]})
-            }
-            if (error.response.data.hasOwnProperty("last_name")) {
-              setPhoneNumber({error: error.response.data.last_name[0]})
-            }
-            if (error.response.data.hasOwnProperty("password")) {
-              setPassword({error: error.response.data.password[0]})
-            }
+          if (error.response.data.hasOwnProperty("phone_number")) {
+            setPhoneNumber({error: error.response.data.phone_number[0]})
           }
-        } else if (error.request) {
-          // The request was made but no response was received
-          console.log(error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
+          if (error.response.data.hasOwnProperty("first_name")) {
+            setPhoneNumber({error: error.response.data.first_name[0]})
+          }
+          if (error.response.data.hasOwnProperty("last_name")) {
+            setPhoneNumber({error: error.response.data.last_name[0]})
+          }
+          if (error.response.data.hasOwnProperty("password")) {
+            setPassword({error: error.response.data.password[0]})
+          }
         }
-      });
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
     }
+      
+  }
   const onRegisterPressed = () => {
     const emailError = emailValidator(email.value)
     const passwordError = passwordValidator(password.value)

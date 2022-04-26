@@ -10,8 +10,10 @@ export default function ProfilePicture({style, size, user}) {
     if ((typeof user !== 'undefined' && user.profile_picture)) {
       if(user.profile_picture.charAt(0) === '/') {
         setImageUrl(baseURL+user.profile_picture)
+        console.log(baseURL+user.profile_picture);
       } else {
         setImageUrl(user.profile_picture)
+        console.log(user.profile_picture);
       }
     }
   

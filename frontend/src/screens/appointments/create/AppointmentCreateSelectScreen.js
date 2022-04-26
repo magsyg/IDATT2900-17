@@ -62,49 +62,53 @@ export default function AppointmentCreateSelectScreen({ route, navigation }) {
     }
   }
 
-  return (
-<BackgroundAuth>
-  {!authIsLoading &&
-  <View style= {styles.column}>
-  <View style={{flex:1, marginTop:16}}>
-      <Searchbar placeholder="Search"       
-        style={{backgroundColor:theme.colors.lightgrey, borderRadius:100}}
-      />
-      </View>
-      <View style={{flex:2, marginTop:32}}>
-        <View style={styles.row}>
-          <TouchableOpacity style={styles.box} onPress={() => next_page('SR')}>
-              <Text style={styles.boxText}>Showroom</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.box} onPress={() => next_page('TS')}>
-              <Text style={styles.boxText}>Trade Show</Text>
-          </TouchableOpacity>
+  // Render Method
+  // Only render when authenticatated
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style= {styles.column}>
+        <View style={{flex:1, marginTop:16}}>
+            <Searchbar placeholder="Search"       
+              style={{backgroundColor:theme.colors.lightgrey, borderRadius:100}}
+            />
+            </View>
+            <View style={{flex:2, marginTop:32}}>
+              <View style={styles.row}>
+                <TouchableOpacity style={styles.box} onPress={() => next_page('SR')}>
+                    <Text style={styles.boxText}>Showroom</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.box} onPress={() => next_page('TS')}>
+                    <Text style={styles.boxText}>Trade Show</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.row}>
+                <TouchableOpacity style={styles.box}>
+                    <Text style={styles.boxText}>Runway</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.box} onPress={() => next_page('OT')}>
+                    <Text style={styles.boxText}>Other</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <TeamSelect 
+                containerStyle={{flex:1, paddingVertical:32}} 
+                company={currentUser.company} 
+                selectedUsers={team} 
+                main_user={currentUser.user}
+                addMethod={manageTeam}
+                removeMethod={removeTeam}
+                start={true}
+            />
+              <View style={{flex:3}}>
+              <Availabilty users={team} selectMethod={handleAvailability} date={date} time={time}/>
+            </View>
         </View>
-        <View style={styles.row}>
-          <TouchableOpacity style={styles.box}>
-              <Text style={styles.boxText}>Runway</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.box} onPress={() => next_page('OT')}>
-              <Text style={styles.boxText}>Other</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <TeamSelect 
-          containerStyle={{flex:1, paddingVertical:32}} 
-          company={currentUser.company} 
-          selectedUsers={team} 
-          main_user={currentUser.user}
-          addMethod={manageTeam}
-          removeMethod={removeTeam}
-          start={true}
-      />
-        <View style={{flex:3}}>
-        <Availabilty users={team} selectMethod={handleAvailability} date={date} time={time}/>
-      </View>
-  </View>
+      </BackgroundAuth>
+    )
+  } else {
+    return (<BackgroundAuth/>)
   }
-</BackgroundAuth>
-  )
 }
 
 const styles = StyleSheet.create({

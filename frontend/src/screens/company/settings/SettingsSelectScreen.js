@@ -9,13 +9,14 @@ import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import BackgroundAuth from '../../../components/BackgroundAuth';
 import CurrentUserContext from '../../../../Context';
+import Link from '../../../components/Link';
 
 export default function SettingsSelectScreen({ route, navigation }) {
-  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  const { currentUser, authIsLoading, handleLogout } = React.useContext(CurrentUserContext);
+  if (!authIsLoading && currentUser !== null) {
   return (
     <BackgroundAuth>
       <BackButton goBack={navigation.goBack} />
-      { !authIsLoading && 
       <View style={styles.column}>
         <View style={[styles.row, {flex:1,  marginTop:32}]}>
           <Header>Settings</Header>
@@ -27,10 +28,17 @@ export default function SettingsSelectScreen({ route, navigation }) {
           <OptionIconLink onPress={() => navigation.navigate('SettingsCompanyScreen')} text="Company Settings"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
           <OptionIconLink text="Date and Time Preference"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
         </View>
+        <View>
+          <TouchableOpacity onPress={handleLogout}>
+            <Text  style={styles.logout}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      }
     </BackgroundAuth>
-  )
+  ) 
+  } else {
+    return(<BackgroundAuth/>)
+  }
 }
 
 const styles = StyleSheet.create({
@@ -49,4 +57,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: theme.colors.link,
   },
+  logout: {
+    color:theme.colors.danger,
+    textAlign:'center',
+    padding:32,
+    fontSize:20,
+  }
 })

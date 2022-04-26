@@ -125,65 +125,66 @@ export default function NewContactBrandScreen({ route, navigation }) {
     setSuccessmodal(false);
     toBrandSearch(); //TODO set this to a better
   }
-  return (
-    <BackgroundAuth>
-    {!authIsLoading &&
-      <Modal visible={successModal}>
-        <TouchableOpacity  style={{flex:1}} onPress={nextScreen}>
-          <View style={[styles.row, {margin:32,justifyContent:'flex-end'}]}> 
-            <CompanyLogo
-                size={64} 
-                company={brand}  
-            />
+
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <Modal visible={successModal}>
+          <TouchableOpacity  style={{flex:1}} onPress={nextScreen}>
+            <View style={[styles.row, {margin:32,justifyContent:'flex-end'}]}> 
+              <CompanyLogo
+                  size={64} 
+                  company={brand}  
+              />
+            </View>
+          <View style={{padding:64}}>
+            <Header style={{textAlign:'center'}}>{brand.name}</Header>
+            <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
+              Showroom appointment has been requested. Check your notifications for updates.
+            </Paragraph>
           </View>
-        <View style={{padding:64}}>
-          <Header style={{textAlign:'center'}}>{brand.name}</Header>
-          <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
-            Showroom appointment has been requested. Check your notifications for updates.
-          </Paragraph>
-        </View>
-        </TouchableOpacity>
-      </Modal>
-    }
-    {!authIsLoading &&
-      <View style= {styles.column}>
-        <View style={styles.row}> 
-          <BackHeader goBack={toBrandSearch}>  
-            <CompanyLogo
-                size={64} 
-                company={brand}  
+          </TouchableOpacity>
+        </Modal>
+        <View style= {styles.column}>
+          <View style={styles.row}> 
+            <BackHeader goBack={toBrandSearch}>  
+              <CompanyLogo
+                  size={64} 
+                  company={brand}  
+              />
+            </BackHeader>
+          </View>
+          <HeaderWithSub header={brand.name} subheader={'Showroom Appointment Request'}/>
+          <View style={{marginVertical:32, justifyContent:'flex-start'}}>
+            <Header2>Company Profile</Header2>
+            <Paragraph>{brand.bio}</Paragraph>
+            <PillLink>{brand.homepage}</PillLink>
+          </View>  
+          <View style={[styles.row, {marginTop:16}]}>
+            <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
+            <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
+          </View>
+          <View style={{marginVertical:16}}>
+            <TeamSelect 
+              containerStyle={{marginVertical:16}}
+              company={currentUser.company} 
+              selectedUsers={team} 
+              main_user={currentUser.user}
+              addMethod={manageTeam}
+              removeMethod={removeTeam}
+              start={true}
             />
-          </BackHeader>
+          </View> 
+          <Note containerStyle={{marginVertical:16}} company={brand}/>
+          <View>
+            <Button onPress={requestAppointment}>Request Appointment</Button>
+          </View>
         </View>
-        <HeaderWithSub header={brand.name} subheader={'Showroom Appointment Request'}/>
-        <View style={{marginVertical:32, justifyContent:'flex-start'}}>
-          <Header2>Company Profile</Header2>
-          <Paragraph>{brand.bio}</Paragraph>
-          <PillLink>{brand.homepage}</PillLink>
-        </View>  
-        <View style={[styles.row, {marginTop:16}]}>
-          <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
-          <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
-        </View>
-        <View style={{marginVertical:16}}>
-          <TeamSelect 
-            containerStyle={{marginVertical:16}}
-            company={currentUser.company} 
-            selectedUsers={team} 
-            main_user={currentUser.user}
-            addMethod={manageTeam}
-            removeMethod={removeTeam}
-            start={true}
-          />
-        </View> 
-        <Note containerStyle={{marginVertical:16}} company={brand}/>
-        <View>
-          <Button onPress={requestAppointment}>Request Appointment</Button>
-        </View>
-      </View>
-    }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    )
+  } else {
+    return (<BackgroundAuth/>)
+  }
 }
 
 const styles = StyleSheet.create({

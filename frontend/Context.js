@@ -1,6 +1,8 @@
 
 import React from "react";
 import api from "./api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
 
 const currentUserObject = {
   'user':{        
@@ -35,32 +37,43 @@ export function CurrentUserProvider({children}) {
   }, []);
 
   const checkLogin = async () => {
-    const token = 'Token 71fdc88b4a624e06b28cecd120e1937bcc34b25c'//localStorage.getItem("bottega_workshop_token");
-
-    console.log("CHECKING LOGIN");
-
     setAuthIsLoading(true);
-    //TODO fix token login here
-    if (token) {
-      api.get(`/accounts/current_user/`,{},{headers: {Authorization:token}})
+    console.log("CHECKING LOGIN");
+    try {
+      const value = await AsyncStorage.getItem('@key')
+      if(value !== null) {
+        // value previously stored token
+        api.defaults.headers.common.Authorization = value;
+            //TODO fix token login here
+        api.get(`/accounts/current_user/`,{})
         .then((response) => {
           console.log("CURRENT USER RES", response.data);
           setCurrentUser(response.data);
           setAuthIsLoading(false);
         })
-        .catch((_error) => {
-          console.log(_error.response)
+        .catch((error) => {
+          console.log(error.response)
           setCurrentUser(null);
           setAuthIsLoading(false);
         });
-    } else {
+      } else {
+        console.log("No token found")
+        console.log(e);
+        setCurrentUser(null);
+        setAuthIsLoading(false);
+      }
+    } catch (e) {
+      console.log("No token found")
+      console.log(e);
       setCurrentUser(null);
       setAuthIsLoading(false);
     }
   };
 
   const handleLogout = async () => {
-    //localStorage.removeItem("bottega_workshop_token");
+    setAuthIsLoading(true);
+    await AsyncStorage.removeItem('@key'); 
+    setAuthIsLoading(false);
     setCurrentUser(null);
   };
 

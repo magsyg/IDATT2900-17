@@ -6,6 +6,5 @@ export default axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json; charset=UTF-8",
-    Authorization:'Token 71fdc88b4a624e06b28cecd120e1937bcc34b25c'
   },
 });

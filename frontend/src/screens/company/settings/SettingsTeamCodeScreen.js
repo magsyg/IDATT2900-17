@@ -112,10 +112,10 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
       
     });
   }
-  return (
-    <BackgroundAuth>
-      <BackButton goBack={() => navigation.navigate('SettingsTeamScreen')} />
-      {!authIsLoading && 
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <BackButton goBack={() => navigation.navigate('SettingsTeamScreen')} />
         <View style={styles.column}>
           <View style={[{flex:1,  marginVertical:16}]}>
             <View style={[styles.row, {margin:4}]}>
@@ -161,9 +161,14 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
               </Paragraph>
           </View>
         </View>
-      }
-    </BackgroundAuth>
-  )
+      </BackgroundAuth>
+    ) 
+  } else {
+    return (
+      <BackgroundAuth/>
+    )
+  }
+
 }
 
 const styles = StyleSheet.create({

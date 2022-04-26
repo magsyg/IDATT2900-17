@@ -130,39 +130,38 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   const goBack = () => {
     navigation.navigate('ContactBrand',{brand_id:brand.id});
   }
-  
-  return (
-    <BackgroundAuth>
-    {!authIsLoading &&
-      <View style= {styles.column}>
-        <View style={styles.row}> 
-          <BackHeader goBack={goBack}>  
-            <CompanyLogo
-                size={64} 
-                company={brand}  
-            />
-          </BackHeader>
+  if (!authIsLoading && currentUser !== null) {
+    return (
+      <BackgroundAuth>
+        <View style= {styles.column}>
+          <View style={styles.row}> 
+            <BackHeader goBack={goBack}>  
+              <CompanyLogo
+                  size={64} 
+                  company={brand}  
+              />
+            </BackHeader>
+          </View>
+          <HeaderWithSub header={brand.name} subheader={'Showroom Appointment'} />
+          <LocationInfo item={brand}/>
+          <TeamSelect 
+            containerStyle={{marginVertical:16}}
+            company={currentUser.company} 
+            selectedUsers={team} 
+            main_user={currentUser.user}
+            addMethod={manageTeam}
+            removeMethod={removeTeam}
+            start={true}
+          />
+          <Availabilty users={team} selectMethod={handleAvailability} date={date} time={startTime}/>
+          <Contact user={mainContact} />
         </View>
-        <HeaderWithSub header={brand.name} subheader={'Showroom Appointment'} />
-        <LocationInfo item={brand}/>
-        <TeamSelect 
-          containerStyle={{marginVertical:16}}
-          company={currentUser.company} 
-          selectedUsers={team} 
-          main_user={currentUser.user}
-          addMethod={manageTeam}
-          removeMethod={removeTeam}
-          start={true}
-        />
-        <Availabilty users={team} selectMethod={handleAvailability} date={date} time={startTime}/>
-        <Contact user={mainContact} />
-      </View>
-    }
-    {!authIsLoading &&
-      <DurationModal onFinish={createAppointment} containerStyle={{alignSelf:'flex-end'}}  />
-    }
-    </BackgroundAuth>
-  )
+        <DurationModal onFinish={createAppointment} containerStyle={{alignSelf:'flex-end'}}  />
+      </BackgroundAuth>
+    )
+  } else {
+    return (<BackgroundAuth/>)
+  }
 }
 
 const styles = StyleSheet.create({
