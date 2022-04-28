@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from accounts.serializer import UserSerializer
-from .models import Brand, Company, Retailer, Note
+from .models import Brand, Company, Retailer, Note, ShowRoom
 
 
 
@@ -89,3 +89,12 @@ class CreateNoteSerializer(serializers.ModelSerializer):
             company=self.validated_data['company'],
         )
         return note
+
+class ShowroomSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ShowRoom
+        fields = ['id', 'brand', 'doorcode', 'floor', 'address', 'city', 'country', 'hours_start', 'hours_end', 'date_range_start','date_range_end', 'is_current']
+
+
+

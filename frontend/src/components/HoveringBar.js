@@ -1,8 +1,10 @@
 import React from 'react'
 import FloatingActionBar from 'react-native-floating-action-bar'
 import {useNavigation} from '@react-navigation/native';
+import CurrentUserContext from '../../Context';
 
 export default function HoveringBar({}) {
+  const { currentUser, checkLogin} = React.useContext(CurrentUserContext);
   const navigation = useNavigation();
   const items=[
     {

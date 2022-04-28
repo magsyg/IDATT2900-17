@@ -12,9 +12,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
-from .models import Brand, Company, Retailer, CompanyCode, Note
+from .models import Brand, Company, Retailer, CompanyCode, Note, ShowRoom
 from appointments.models import Appointment
-from .serializer import BrandSerializer, RetailerSerializer,SimpleBrandSerializer, NoteSerializer, CreateNoteSerializer, correct_company_serializer
+from .serializer import BrandSerializer, RetailerSerializer, ShowroomSerializer,SimpleBrandSerializer, NoteSerializer, CreateNoteSerializer, correct_company_serializer
 from appointments.serializer import SimpleAppointmentSerializer
 from accounts.serializer import UserSerializer
 User = get_user_model()
@@ -261,3 +261,93 @@ class CompanyNotes(APIView):
         notes = Note.objects.filter(company=company.id, creator__in=request.user.company.get_correct_model().members.all())
         
         return Response(NoteSerializer(notes, many=True).data)
+
+class Showrooms(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request, format=None):
+        company = request.user.company
+        if not company:
+            raise Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        if company.company_type != Brand.company_type:
+            raise Http404("User is not a part of a brand")
+
+        return Response(ShowroomSerializer(company.showrooms, many=True).data)
+
+class ShowroomCreate(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ShowroomSerializer
+
+    def post(self, request, format=None):
+        company = request.user.company
+        if not company:
+            raise Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        if company.company_type != Brand.company_type:
+            raise Http404("User is not a part of a brand")
+        request.data['brand'] = company.id
+        
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        showroom = serializer.save()
+        company.current_showroom = showroom
+        company.save()
+        return Response(self.serializer_class(showroom).data)
+
+
+class Showroom(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ShowroomSerializer
+
+    def get(self, request, pk, format=None):
+        showroom = get_object_or_404(ShowRoom, id=pk)
+        company = request.user.company
+        if not company:
+            raise Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        if company.company_type != Brand.company_type:
+            raise Http404("User is not a part of a brand")
+        if showroom.brand.id != company.id:
+            raise Http404("Showroom is not owned by this brand")
+        return Response(ShowroomSerializer(showroom).data)
+
+    def post(self, request, pk, format=None):
+        showroom = get_object_or_404(ShowRoom, id=pk)
+        company = request.user.company
+        if not company:
+            raise Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        if company.company_type != Brand.company_type:
+            raise Http404("User is not a part of a brand")
+        if showroom.brand.id != company.id:
+            raise Http404("Showroom is not owned by this brand")
+
+        serializer = self.serializer_class(showroom, data=request.data, context={'request': request}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        if 'set_current' in request.data and request.data['set_current']:
+            company.current_showroom = showroom
+            company.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        showroom = get_object_or_404(ShowRoom, id=pk)
+        company = request.user.company
+        if not company:
+            raise Http404("User is not a part of any company")
+        company = company.get_correct_model()
+        if company.company_type != Brand.company_type:
+            raise Http404("User is not a part of a brand")
+        if showroom.brand.id != company.id:
+            raise Http404("Showroom is not owned by this brand")
+        
+        showroom.delete()
+        company.current_showroom = ShowRoom.objects.filter(brand__id=company.id).last()
+        company.save()
+        return Response(True)

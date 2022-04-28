@@ -48,9 +48,11 @@ class CurrentUserView(APIView):
 
     def get(self, request):
         serializer = UserSerializer(request.user)
+
         return Response({
             'user':serializer.data,
-            'company':correct_company_serializer(request.user.company).data
+            'company':correct_company_serializer(request.user.company).data,
+            'company_type':request.user.company.get_correct_model().company_type
         })
 
 class CalendarUserView(APIView):

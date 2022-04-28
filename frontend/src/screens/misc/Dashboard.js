@@ -16,13 +16,14 @@ import AgendaScreen from '../../components/calendar/Agenda.js'
 import HoveringBar from '../../components/HoveringBar.js'
 import AppointmentsList from '../../components/AppointmentList';
 import ProfilePicture from '../../components/ProfilePicture';
+import CompanyLogo from '../../components/CompanyLogo';
 import Dropdown from '../../components/Dropdown';
 import CurrentUserContext from '../../../Context';
 import BackgroundAuth from '../../components/BackgroundAuth';
 import api from '../../../api'
 
 export default function Dashboard({ navigation }) {
-  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  const { currentUser, authIsLoading, checkLogin} = React.useContext(CurrentUserContext);
   const today = currentDate()
   const [appointments, setAppointments] =useState([]);
   const [apType, setApType] = useState({label:'All', value:'AL'});
@@ -60,6 +61,7 @@ export default function Dashboard({ navigation }) {
       }
       
     });
+    
   }, []);
   if (!authIsLoading && currentUser !== null) {
     return (
@@ -70,12 +72,20 @@ export default function Dashboard({ navigation }) {
             <Header>Hi, {currentUser.user.first_name}</Header>
           </View>
           <View style={{flex: 1}}>
+            { currentUser.company_type === 'RETAILER' ?
             <ProfilePicture
             size={64} 
             user={currentUser.user} />
-
+            :
+            <CompanyLogo
+            size={64} 
+            company={currentUser.company}
+            withQR={true}
+            />
+            }
           </View>
         </View>
+
         <Header>Notifications</Header> 
         <View style={{flex:3}}>
           <PillLink>

@@ -6,6 +6,7 @@ import SettingsTeamCodeScreen  from './SettingsTeamCodeScreen';
 import SettingsCompanyScreen from './SettingsCompanyScreen';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import SettingsShowroom from './showroomsettings/SettingsShowroom';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +18,7 @@ export default function Settings({ navigation }) {
         <Tab.Screen name="SettingsTeamScreen" component={SettingsTeamScreen} />
         <Tab.Screen name="SettingsTeamCodeScreen" component={SettingsTeamCodeScreen} />
         <Tab.Screen name="SettingsCompanyScreen" component={SettingsCompanyScreen} />
+        <Tab.Screen name="SettingsShowroom" component={SettingsShowroom} />
       </Tab.Navigator>
     );
 }
