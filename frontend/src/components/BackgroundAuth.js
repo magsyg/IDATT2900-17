@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import {ScrollView, Text, View, StyleSheet, KeyboardAvoidingView } from 'react-native'
 import { theme } from '../core/theme'
-import HoveringBar from './HoveringBar'
 import CurrentUserContext  from '../../Context'
 import Background from './Background'
 import { ActivityIndicator } from 'react-native-paper'

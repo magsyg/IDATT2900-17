@@ -14,7 +14,7 @@ from rest_framework.authentication import TokenAuthentication
 
 from .models import Brand, Company, Retailer, CompanyCode, Note, ShowRoom
 from appointments.models import Appointment
-from .serializer import BrandSerializer, RetailerSerializer, ShowroomSerializer,SimpleBrandSerializer, NoteSerializer, CreateNoteSerializer, correct_company_serializer
+from .serializer import BrandSerializer, RetailerSerializer, ShowroomSerializer,SimpleBrandSerializer, SimpleRetailerSerializer, NoteSerializer, CreateNoteSerializer, correct_company_serializer
 from appointments.serializer import SimpleAppointmentSerializer
 from accounts.serializer import UserSerializer
 User = get_user_model()
@@ -217,6 +217,20 @@ class BrandProfile(APIView):
         appointments = SimpleAppointmentSerializer(appointments, many=True)
         return Response({
             'brand':serializer.data,
+            'appointments':appointments.data    
+        })
+class RetailerProfile(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk, format=None):
+        retailer = get_object_or_404(Retailer, id=pk)
+        serializer = SimpleRetailerSerializer(retailer) # Does not return the contacts of that company
+
+        appointments = Appointment.objects.filter(retailer__retailer=retailer, brands=request.user.company)
+        appointments = SimpleAppointmentSerializer(appointments, many=True)
+        return Response({
+            'retailer':serializer.data,
             'appointments':appointments.data    
         })
 

@@ -13,7 +13,6 @@ import { placeholder } from '../../core/placeholders'
 import { theme } from '../../core/theme'
 import CalendarFull from '../../components/calendar/Calendar.js'
 import AgendaScreen from '../../components/calendar/Agenda.js'
-import HoveringBar from '../../components/HoveringBar.js'
 import AppointmentsList from '../../components/AppointmentList';
 import ProfilePicture from '../../components/ProfilePicture';
 import CompanyLogo from '../../components/CompanyLogo';
