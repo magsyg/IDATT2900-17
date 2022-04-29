@@ -19,7 +19,7 @@ import api from '../../../../../api'
 import Link from '../../../../components/Link';
 
 export default function SettingsShowroomEdit({ route, navigation }) {
-  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  const { currentUser, authIsLoading, checkLogin } = React.useContext(CurrentUserContext);
 
   const {showroom_id} = route.params
 
@@ -84,7 +84,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
 
   }
 
-  const onUpdatePressed = (setCurrent) => {
+  const onUpdatePressed = () => {
   // Fetches details about user
   const payload = {
     'doorcode':doorCode.value,
@@ -120,7 +120,8 @@ export default function SettingsShowroomEdit({ route, navigation }) {
 
   const setCurrentShowroom = () => {
     api.post(`/companies/showrooms/${showroom_id}/`, {'set_current':true}).then((response) => {
-      setShowroom(response.data)
+      setShowroom(response.data);
+      checkLogin();
      })  .catch(function (error) {
        
        if (error.response) {

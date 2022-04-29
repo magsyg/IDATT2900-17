@@ -38,11 +38,18 @@ class SimpleRetailerSerializer(CompanySerializer):
         model = Retailer
         exclude = ('brands',)
 
+class ShowroomSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ShowRoom
+        fields = ['id', 'brand', 'doorcode', 'floor', 'address', 'city', 'country', 'hours_start', 'hours_end', 'date_range_start','date_range_end', 'is_current']
+
 class BrandSerializer(CompanySerializer):
     contacts = SimpleRetailerSerializer(read_only=True, many=True, source='retailers')
+    current_showroom = ShowroomSerializer()
     class Meta:
         model = Brand
-        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts','logo')
+        fields = ('id', 'name', 'members', 'bio', 'homepage', 'contacts', 'logo', 'current_showroom')
 
 class RetailerSerializer(CompanySerializer):
     contacts = SimpleBrandSerializer(read_only=True, many=True, source='brands')
@@ -52,14 +59,14 @@ class RetailerSerializer(CompanySerializer):
         
 def correct_company_serializer(company, *args, **kwargs):
     company = company.get_correct_model()
-    if type(Company) == Brand:
+    if company.company_type == 'BRAND':
         return BrandSerializer(company, *args, **kwargs)
     else:
         return RetailerSerializer(company, *args, **kwargs)
 
 def correct_simple_company_serializer(company, *args, **kwargs):
     company = company.get_correct_model()
-    if type(Company) == Brand:
+    if company.company_type == 'BRAND':
         return SimpleBrandSerializer(company, *args, **kwargs)
     else:
         return SimpleRetailerSerializer(company, *args, **kwargs)
@@ -89,12 +96,6 @@ class CreateNoteSerializer(serializers.ModelSerializer):
             company=self.validated_data['company'],
         )
         return note
-
-class ShowroomSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = ShowRoom
-        fields = ['id', 'brand', 'doorcode', 'floor', 'address', 'city', 'country', 'hours_start', 'hours_end', 'date_range_start','date_range_end', 'is_current']
 
 
 

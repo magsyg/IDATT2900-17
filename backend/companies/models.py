@@ -83,8 +83,8 @@ class BrandRetailerRelation(models.Model):
 class ShowRoom(models.Model):
     brand = models.ForeignKey(Company, null=False, blank=False, on_delete=models.CASCADE, related_name="showrooms", verbose_name="Brand")
 
-    doorcode = models.CharField(max_length=32, null=True, blank=True, verbose_name="Door code")
-    floor = models.CharField(max_length=10, null=True, blank=True, verbose_name="Floor")
+    doorcode = models.CharField(max_length=32, null=True, blank=False, verbose_name="Door code")
+    floor = models.CharField(max_length=10, null=True, blank=False, verbose_name="Floor")
 
     # Location info
     address = models.CharField(max_length=100, null=False, blank=False, verbose_name="Address")

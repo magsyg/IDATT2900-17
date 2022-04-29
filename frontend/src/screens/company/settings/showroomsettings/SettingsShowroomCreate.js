@@ -18,7 +18,7 @@ import CurrentUserContext from '../../../../../Context'
 import api from '../../../../../api'
 
 export default function SettingsShowroomCreate({ route, navigation }) {
-  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  const { currentUser, authIsLoading, checkLogin } = React.useContext(CurrentUserContext);
   const [ doorCode, setDoorCode ] = useState({value:'', error:''})
   const [floor, setFloor] = useState({value:'', error:''})
 
@@ -94,6 +94,7 @@ export default function SettingsShowroomCreate({ route, navigation }) {
   api.post('/companies/showroom/create/', payload).then((response) => {
    clearFields();
    navigation.navigate('SettingsShowroomSelect')
+   checkLogin();
   })  .catch(function (error) {
     
     if (error.response) {

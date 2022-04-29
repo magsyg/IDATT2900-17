@@ -48,7 +48,7 @@ class CurrentUserView(APIView):
 
     def get(self, request):
         serializer = UserSerializer(request.user)
-
+        print(correct_company_serializer(request.user.company).__class__.__name__)
         return Response({
             'user':serializer.data,
             'company':correct_company_serializer(request.user.company).data,

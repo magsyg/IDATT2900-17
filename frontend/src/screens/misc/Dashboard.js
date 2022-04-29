@@ -21,6 +21,7 @@ import Dropdown from '../../components/Dropdown';
 import CurrentUserContext from '../../../Context';
 import BackgroundAuth from '../../components/BackgroundAuth';
 import api from '../../../api'
+import LocationInfo from '../../components/LocationInfo'
 
 export default function Dashboard({ navigation }) {
   const { currentUser, authIsLoading, checkLogin} = React.useContext(CurrentUserContext);
@@ -113,6 +114,18 @@ export default function Dashboard({ navigation }) {
             </Modal>
           </Portal>
           <AppointmentsList data={appointments} ap_type={apType.value}/>
+          { currentUser.company_type === 'BRAND' &&
+          <View>
+            <Header>Showroom Info</Header>  
+            { currentUser.company.current_showroom ?
+              <LocationInfo item={currentUser.company.current_showroom}/>
+              :
+              <View>
+                <Link onPress={() => navigation.navigate('Settings',{screen:'SettingsShowroom'})}>Create Showroom</Link>
+              </View>
+            }
+          </View>
+          }
         </View>         
       </View>
     </BackgroundAuth>
