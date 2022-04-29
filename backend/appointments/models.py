@@ -77,16 +77,25 @@ class Appointment(models.Model):
 
     @staticmethod
     def get_user_appointments(user: User, date: datetime = timezone.now(), month: bool = False):
-        # TODO add params for upcomming, and specific dates
-        participating_appointments = Appointment.objects.filter(is_request=False).filter(
-            Q(retailer__organizer=user)|
-            Q(retailer__retailer_participants=user))
-        
-        # Filtering by date:
-        participating_appointments = participating_appointments.filter(date__year=date.year, date__month=date.month)
-        if not month:
-            participating_appointments = participating_appointments.filter(date__day=date.day)
-        return participating_appointments.distinct().order_by('date','start_time')
+        if user.company.get_correct_model().company_type == 'RETAILER':
+            participating_appointments = Appointment.objects.filter(is_request=False).filter(
+                Q(retailer__organizer=user)|
+                Q(retailer__retailer_participants=user))
+            # Filtering by date:
+            participating_appointments = participating_appointments.filter(date__year=date.year, date__month=date.month)
+            if not month:
+                participating_appointments = participating_appointments.filter(date__day=date.day)
+            return participating_appointments.distinct().order_by('date','start_time')
+        # Brands should be able to view all their brands appointments
+        if user.company.get_correct_model().company_type == 'BRAND':
+            participating_appointments = Appointment.objects.filter(is_request=False).filter(brands=user.company).exclude(appointment_type=Appointment.AppointmentType.TRADESHOW)
+            
+            # Filtering by date:
+            participating_appointments = participating_appointments.filter(date__year=date.year, date__month=date.month)
+            if not month:
+                participating_appointments = participating_appointments.filter(date__day=date.day)
+            return participating_appointments.distinct().order_by('date','start_time')
+        return []
 
     @staticmethod
     def get_available_times(users: QuerySet, date: datetime = timezone.now(), days: int = 4):

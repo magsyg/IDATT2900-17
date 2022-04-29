@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 
-from .models import Appointment, ParticipatingBrand
+from .models import Appointment, ParticipatingBrand, HostRetailer
 from companies.models import Brand
 from .serializer import AppointmentCreateSerializer, ParticipatingBrandCreateSerializer, SimpleAppointmentSerializer, AppointmentSerializer, HostRetailerSerializer, ParticipatingBrandSerializer
 from companies.serializer import correct_company_serializer
@@ -53,7 +53,7 @@ class AppointmentCurrentUserListView(APIView):
         date = timezone.datetime.strptime(date,'%Y-%m-%d') if date else timezone.now()
 
         appointments = Appointment.get_user_appointments(user=request.user, date = date)
-
+        print(appointments)
         return Response(self.serializer_class(appointments,many=True).data)
 
 class AppointmentUserListView(APIView):
@@ -70,7 +70,7 @@ class AppointmentUserListView(APIView):
         date = timezone.datetime.strptime(date,'%Y-%m-%d') if date else timezone.now()
 
         appointments = Appointment.get_user_appointments(user=profile_user, date = date)
-
+        print(appointments)
         return Response(self.serializer_class(appointments,many=True).data)
 
 class AvailabilityView(APIView):
@@ -182,7 +182,8 @@ class ShowroomView(APIView):
 
     def get(self, request, pk, format=None):
         showroom = get_object_or_404(Appointment, id=pk)
-        if request.user not in showroom.retailer.retailer.members.all():
+
+        if request.user not in showroom.retailer.retailer.members.all() and request.user not in showroom.brands.first().brand.members.all():
             raise PermissionDenied('You dont have permission to view this showroom')
         if showroom.appointment_type != Appointment.AppointmentType.SHOWROOM:
             return Http404('No showroom with this ID')

@@ -321,13 +321,17 @@ class Showroom(APIView):
     def get(self, request, pk, format=None):
         showroom = get_object_or_404(ShowRoom, id=pk)
         company = request.user.company
+        print("1")
         if not company:
             raise Http404("User is not a part of any company")
         company = company.get_correct_model()
+        print("1")
         if company.company_type != Brand.company_type:
             raise Http404("User is not a part of a brand")
+        print("1")
         if showroom.brand.id != company.id:
             raise Http404("Showroom is not owned by this brand")
+        print("1")
         return Response(ShowroomSerializer(showroom).data)
 
     def post(self, request, pk, format=None):
