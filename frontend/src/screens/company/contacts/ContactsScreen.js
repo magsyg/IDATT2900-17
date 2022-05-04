@@ -19,10 +19,17 @@ export default function CompanyContactsScreen({ route, navigation }) {
     navigation.navigate('Members', {screen:'CompanyMember', params:{profile_id:id}});
   }
   const goToContact = id => {
-    navigation.navigate('Brand',{ 
-      screen: 'ContactBrand',
-      params:{brand_id:id}
-    });
+    if (currentUser.company_type == 'RETAILER') {
+      navigation.navigate('Contact',{ 
+        screen: 'ContactBrand',
+        params:{brand_id:id}
+      });
+    } else {
+      navigation.navigate('Contact',{ 
+        screen: 'ContactRetailer',
+        params:{retailer_id:id}
+      });
+    }
   }
   if (!authIsLoading && currentUser !== null) {
   return (
@@ -58,10 +65,16 @@ export default function CompanyContactsScreen({ route, navigation }) {
           </ScrollView>
         </View>
         <View style={{marginTop:16}}>
-          <View style={[styles.row,{marginTop:16, justifyContent:'space-between'}]}>
-            <Header>OUR BRANDS</Header>
-            <PillLink>Scan QR Code</PillLink>
-          </View>
+          { currentUser.company_type == 'RETAILER' ? 
+            <View style={[styles.row,{marginTop:16, justifyContent:'space-between'}]}>
+              <Header>OUR BRANDS</Header>
+              <PillLink>Scan QR Code</PillLink>
+            </View>
+            :
+            <View style={[styles.row,{marginTop:16, justifyContent:'space-between'}]}>
+              <Header>OUR STOCKISTS</Header>
+            </View>
+          }
           <FlatList
             data={currentUser.company.contacts}
             numColumns={1}

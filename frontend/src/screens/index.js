@@ -16,6 +16,6 @@ export {default as Authentication } from './authentication/Authentication'
 export { default as Settings } from './company/settings/Settings'
 export { default as Contacts } from './company/contacts/Contacts'
 export { default as Members } from './company/member/Members'
-export { default as Brand } from './company/brand/Brand'
+export { default as Contact } from './company/contact/Contact'
 
 

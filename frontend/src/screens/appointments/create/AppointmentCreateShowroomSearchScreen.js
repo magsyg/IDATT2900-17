@@ -10,7 +10,6 @@ import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import { currentDate } from '../../../utils/date_management';
 import Availabilty from '../../../components/Availability'
-import HoveringBar from '../../../components/HoveringBar'
 import BackHeader from '../../../components/BackHeader'
 import BrandSearch from '../../../components/BrandSearch'
 import OutlinedButton from '../../../components/OutlinedButton'
@@ -23,12 +22,12 @@ export default function AppointmentCreateShowroomSearchScreen({ route, navigatio
   
   const selectBrand = brand => {
     if (currentUser.company.contacts.map(x => x.id).includes(brand.id)) {
-      navigation.navigate('Brand',{
+      navigation.navigate('Contact',{
           screen: 'ScheduleContactBrand',
           params:{brand_id:brand.id, passed_team:passed_team}
         });
     } else {
-      navigation.navigate('Brand',{
+      navigation.navigate('Contact',{
         screen: 'NewContactBrand',
         params:{brand_id:brand.id, passed_team:passed_team}
       });

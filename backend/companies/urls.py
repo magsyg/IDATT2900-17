@@ -24,6 +24,14 @@ urlpatterns = [
 
     # Retailers
     path('retailer/<int:pk>/', view=company_views.RetailerDetail.as_view(), name="retailer"),
+    path('retailer/<int:pk>/profile/', view=company_views.RetailerProfile.as_view(), name="retailer_profile"),
+
+    # Showroom
+    path('showrooms/', view=company_views.Showrooms.as_view(), name="showrooms"),
+    path('showrooms/<int:pk>/', view=company_views.Showroom.as_view(), name="showrooms"),
+    path('showroom/create/', view=company_views.ShowroomCreate.as_view(), name="showroom_create"),
+    # Retailers
+    path('retailer/<int:pk>/', view=company_views.RetailerDetail.as_view(), name="retailer"),
     path('retailer/create/', view=company_views.CreateRetailer.as_view(), name="create_retailer"),
 
     # Codes

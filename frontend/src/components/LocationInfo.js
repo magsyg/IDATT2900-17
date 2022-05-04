@@ -8,11 +8,11 @@ export default function LocationInfo({containerStyle, item}) {
   return (
     <View style={containerStyle}>
         <View style={{marginTop:16}}>
-          <OutlinedButton style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined">Address</OutlinedButton>
+          <OutlinedButton style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined">{item.address} {item.city}</OutlinedButton>
         </View>
         <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
-          <Text>Door Code: 952</Text>
-          <Text>Floor: Ground</Text>
+          {(item.doorcode != null && item.doorcode.length > 0) && <Text>Door Code: {item.doorcode}</Text> }
+          {(item.floor != null && item.floor.length > 0) && <Text>Floor: {item.floor}</Text> }
         </View>
     </View>
   )

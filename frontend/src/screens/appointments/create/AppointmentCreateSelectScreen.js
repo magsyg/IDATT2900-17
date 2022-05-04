@@ -9,7 +9,6 @@ import BackButton from '../../../components/BackButton'
 import { theme } from '../../../core/theme'
 import { currentDate } from '../../../utils/date_management';
 import Availabilty from '../../../components/Availability'
-import HoveringBar from '../../../components/HoveringBar'
 import TeamSelect from '../../../components/TeamSelect'
 import CurrentUserContext from '../../../../Context'
 import BackgroundAuth from '../../../components/BackgroundAuth'

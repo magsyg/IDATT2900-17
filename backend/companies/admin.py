@@ -8,7 +8,7 @@ User = get_user_model()
 # Register your models here.
 @admin.register(Retailer)
 class RetailerModelAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['id','name']
     # list_filter = []
     search_fields = ['name']
     ordering = ['id']
@@ -17,7 +17,7 @@ class RetailerModelAdmin(admin.ModelAdmin):
     # actions = []
 @admin.register(Brand)
 class BrandModelAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['id','name']
     # list_filter = []
     search_fields = ['name']
     ordering = ['id']

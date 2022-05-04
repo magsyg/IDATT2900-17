@@ -137,7 +137,9 @@ export default function SettingsCompanyScreen({ route, navigation }) {
       </BackgroundAuth>
     )
   } else {
-    <BackgroundAuth/>
+    return(
+      <BackgroundAuth/>
+    )
   }
 }
 

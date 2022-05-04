@@ -1,29 +1,23 @@
 import React from 'react'
 import FloatingActionBar from 'react-native-floating-action-bar'
 import {useNavigation} from '@react-navigation/native';
+import CurrentUserContext from '../../Context';
 
-export default function HoveringBar({}) {
+export default function HoveringBarBrand({}) {
+  const { currentUser, checkLogin} = React.useContext(CurrentUserContext);
   const navigation = useNavigation();
   const items=[
     {
       icon: 'group',
-      id: 1,
+      id: 0,
       name: 'Team',
       color: 'rgb(130, 130, 130)',
       activeColor: 'rgb(3, 137, 253)',
       activeBackgroundColor: 'rgb(224, 243, 255)',
     },
     {
-      icon: 'plus-circle',
-      id: 2,
-      name: 'Appointment',
-      color: 'rgb(130, 130, 130)',
-      activeColor: 'rgb(3, 137, 253)',
-      activeBackgroundColor: 'rgb(224, 243, 255)',
-    },
-    {
       icon: 'square',
-      id: 3,
+      id: 1,
       name: 'square',
       color: 'rgb(130, 130, 130)',
       activeColor: 'rgb(3, 137, 253)',
@@ -31,7 +25,7 @@ export default function HoveringBar({}) {
     },
     {
       icon: 'circle',
-      id: 4,
+      id: 2,
       name: 'Dashboard',
       color: 'rgb(130, 130, 130)',
       activeColor: 'rgb(3, 137, 253)',
@@ -51,21 +45,17 @@ export default function HoveringBar({}) {
             console.log('Navigate to Contacts');
             break;
           case 1:
-            navigation.navigate('AppointmentCreate')
-            console.log('Navigate to AppointmentCreate')
-            break;
-          case 2:
             navigation.navigate('Calendar')
             console.log('Navigate to Calendar')
             break;
-          case 3:
+          case 2:
             navigation.navigate('Dashboard')
             console.log('Navigate to Dashboard')
             break;
         }
       } }
       position="bottom"
-      selectedIndex={3}
+      selectedIndex={2}
 />
   )
 }

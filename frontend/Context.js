@@ -47,7 +47,7 @@ export function CurrentUserProvider({children}) {
             //TODO fix token login here
         api.get(`/accounts/current_user/`,{})
         .then((response) => {
-          console.log("CURRENT USER RES", response.data);
+          console.log("CURRENT USER RES", response.data.company);
           setCurrentUser(response.data);
           setAuthIsLoading(false);
         })

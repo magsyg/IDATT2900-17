@@ -13,16 +13,17 @@ import { placeholder } from '../../core/placeholders'
 import { theme } from '../../core/theme'
 import CalendarFull from '../../components/calendar/Calendar.js'
 import AgendaScreen from '../../components/calendar/Agenda.js'
-import HoveringBar from '../../components/HoveringBar.js'
 import AppointmentsList from '../../components/AppointmentList';
 import ProfilePicture from '../../components/ProfilePicture';
+import CompanyLogo from '../../components/CompanyLogo';
 import Dropdown from '../../components/Dropdown';
 import CurrentUserContext from '../../../Context';
 import BackgroundAuth from '../../components/BackgroundAuth';
 import api from '../../../api'
+import LocationInfo from '../../components/LocationInfo'
 
 export default function Dashboard({ navigation }) {
-  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  const { currentUser, authIsLoading, checkLogin} = React.useContext(CurrentUserContext);
   const today = currentDate()
   const [appointments, setAppointments] =useState([]);
   const [apType, setApType] = useState({label:'All', value:'AL'});
@@ -60,6 +61,7 @@ export default function Dashboard({ navigation }) {
       }
       
     });
+    
   }, []);
   if (!authIsLoading && currentUser !== null) {
     return (
@@ -70,12 +72,20 @@ export default function Dashboard({ navigation }) {
             <Header>Hi, {currentUser.user.first_name}</Header>
           </View>
           <View style={{flex: 1}}>
+            { currentUser.company_type === 'RETAILER' ?
             <ProfilePicture
             size={64} 
             user={currentUser.user} />
-
+            :
+            <CompanyLogo
+            size={64} 
+            company={currentUser.company}
+            withQR={true}
+            />
+            }
           </View>
         </View>
+
         <Header>Notifications</Header> 
         <View style={{flex:3}}>
           <PillLink>
@@ -103,6 +113,18 @@ export default function Dashboard({ navigation }) {
             </Modal>
           </Portal>
           <AppointmentsList data={appointments} ap_type={apType.value}/>
+          { currentUser.company_type === 'BRAND' &&
+          <View>
+            <Header>Showroom Info</Header>  
+            { currentUser.company.current_showroom ?
+              <LocationInfo item={currentUser.company.current_showroom}/>
+              :
+              <View>
+                <Link onPress={() => navigation.navigate('Settings',{screen:'SettingsShowroom'})}>Create Showroom</Link>
+              </View>
+            }
+          </View>
+          }
         </View>         
       </View>
     </BackgroundAuth>
