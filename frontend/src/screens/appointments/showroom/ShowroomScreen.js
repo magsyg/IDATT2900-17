@@ -35,7 +35,8 @@ export default function ShowroomScreen({ route, navigation }) {
     'appointment':{
       'retailer': {
         'organizer':{'id':-1},
-        'retailer_participants':[]
+        'retailer_participants':[],
+        'retailer':{'name':'SHOP NAME'}
       },
       'name':'Tradeshow Name','id':-1, 'start_time':'09:00','end_time':'09:00', 'date':'2022-10-10',
     },
@@ -46,7 +47,6 @@ export default function ShowroomScreen({ route, navigation }) {
     // Trigger only on enter
     if (isFocused) {
       api.get(`/appointments/showroom/${appointment_id}`).then((response) => {
-        console.log(response.data.brand.main_contact)
         setMeta(response.data);
       })  .catch(function (error) {
         
@@ -98,28 +98,33 @@ export default function ShowroomScreen({ route, navigation }) {
             <BackHeader goBack={navigation.goBack}>  
               <CompanyLogo
                   size={64} 
-                  company={meta.brand.brand}
+                  company={currentUser.company_type =='RETAILER' ? meta.brand.brand : meta.appointment.retailer.retailer}
               />
             </BackHeader>
           </View>
-          <HeaderWithSub header={meta.brand.brand.name} subheader='Showroom appointment' />
+          <HeaderWithSub header={currentUser.company_type =='RETAILER' ? meta.brand.brand.name : meta.appointment.retailer.retailer.name} subheader='Showroom appointment' />
           <AppointmentInfo containerStyle ={{marginVertical:32}}appointment={meta.appointment}/>
-          <TeamSelect 
-            containerStyle={{marginVertical:16}} 
-            company={currentUser.company} 
-            selectedUsers={meta.appointment.retailer.retailer_participants} 
-            main_user={meta.appointment.retailer.organizer}
-            addMethod={inviteTeamRetailer}
-          />
+          {currentUser.company_type =='RETAILER' &&
+            <TeamSelect 
+              containerStyle={{marginVertical:16}} 
+              company={currentUser.company} 
+              selectedUsers={meta.appointment.retailer.retailer_participants} 
+              main_user={meta.appointment.retailer.organizer}
+              addMethod={inviteTeamRetailer}
+            />
+          }
           { meta.brand.main_contact !== null &&
           <View style={{marginTop:32}}>
             <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
           </View>
           } 
+          { currentUser.company_type =='RETAILER' &&
           <View style={[styles.row, {marginTop:32}]}>
             <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
             <OutlinedButton style={{flex:1, margin:4}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
           </View>
+          }
+          { currentUser.company_type =='RETAILER' &&
           <View style={[styles.row, {marginTop:32}]}>
             <IconButton size={32} icon='plus' color={theme.colors.grey}/>
             <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1}}>
@@ -129,7 +134,19 @@ export default function ShowroomScreen({ route, navigation }) {
               <View style={styles.imageBoxPlaceholder}/>
             </ScrollView>
           </View>
+          }
+
           <Note company={meta.company} />
+          {currentUser.company_type =='BRAND' &&
+            <TeamSelect 
+              containerStyle={{marginVertical:16}} 
+              company={currentUser.company} 
+              selectedUsers={meta.appointment.retailer.retailer_participants} 
+              main_user={meta.appointment.retailer.organizer}
+              addMethod={inviteTeamRetailer}
+              start={true}
+            />
+          }
         </View>
       </BackgroundAuth>
     ) 

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
-import { Text } from 'react-native-paper'
+import { Subheading, Text } from 'react-native-paper'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {useNavigation} from '@react-navigation/native';
 import { theme } from '../core/theme'
@@ -65,15 +65,24 @@ export default function AppointmentsList({ data, mode, ap_type }) {
         return <BasicRow item={props.item} index={props.index}/>
     }
   }
-  return (
-    <FlatList
-      data={filteredData(data)}
-      numColumns={1}
-      scrollEnabled={true}
-      renderItem={({item, index}) => 
-        <RenderRow item={item} index={index}/>
-     }/>
-  )
+  if (filteredData(data).length > 0) {
+    return (
+
+      <FlatList
+        data={filteredData(data)}
+        numColumns={1}
+        scrollEnabled={true}
+        renderItem={({item, index}) => 
+          <RenderRow item={item} index={index}/>
+      }/>
+    ) 
+  } else {
+    return(
+    <View style={[styles.row, {justifyContent:'center', padding:4}]}>
+      <Subheading style={{color:theme.colors.grey}}>No appointments</Subheading>
+
+    </View>)
+  }
 }
 const styles = StyleSheet.create({
   row: {

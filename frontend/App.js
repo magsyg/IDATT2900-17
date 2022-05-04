@@ -15,7 +15,7 @@ import {
   Calendar,
   Contacts,
   Members,
-  Brand,
+  Contact,
 } from './src/screens';
 import { Provider } from 'react-native-paper';
 
@@ -39,7 +39,7 @@ export default class App extends Component {
             <Stack.Screen name="Contacts" component={Contacts} />
             <Stack.Screen name="Members" component={Members} />
             <Stack.Screen name="Settings" component={Settings} />
-            <Stack.Screen name="Brand" component={Brand} />
+            <Stack.Screen name="Contact" component={Contact} />
             <Stack.Screen name="AppointmentCreate" component={AppointmentCreate} />
             <Stack.Screen name="Showroom" component={Showroom} />
             <Stack.Screen name="MultiAppointment" component={MultiAppointment} />

@@ -27,6 +27,7 @@ import api from '../../../../api';
 export default function ContactBrandScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
   const {brand_id} = route.params
+  
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
   const [appointments, setAppointments] = useState([]);
 
