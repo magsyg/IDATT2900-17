@@ -60,6 +60,7 @@ export default function NewContactBrandScreen({ route, navigation }) {
     setSuccessmodal(false);
     api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
+      console.log(response.data.brand.current_showroom)
       setAppointments(response.data.appointments)
     }).catch(function (error) {
       

@@ -70,7 +70,7 @@ class Command(BaseCommand):
         seeder.add_entity(companies_models.Brand, 5, {
             'name': lambda x: seeder.faker.word(),
         })
-        
+
         companies = companies_models.Company.objects.all()
 
         seeder.execute()
@@ -83,6 +83,7 @@ class Command(BaseCommand):
             random_logo = random.choice(logos)
             image_path = (placeholder_logo_path / random_logo).resolve()
             company.logo = ImageFile(open(image_path, mode='rb'), name=random_logo)
+            
             company.save()    
         for user in User.objects.all():
             # Set random profile picture and company

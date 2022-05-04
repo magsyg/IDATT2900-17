@@ -50,6 +50,9 @@ export default function ContactBrandScreen({ route, navigation }) {
   useEffect(() => {
     api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
+      console.log("-------------------------")
+      console.log(response.data.brand.current_showroom)
+      console.log("-------------------------")
       setAppointments(response.data.appointments)
     }).catch(function (error) {
       
@@ -84,7 +87,7 @@ export default function ContactBrandScreen({ route, navigation }) {
             </BackHeader>
           </View>
           <Header style={{textAlign:'center'}}>{brand.name}</Header>
-          <LocationInfo item={brand}/>
+          <LocationInfo item={brand.current_showroom}/>
           <View style={[styles.row, {marginTop:16}]}>
             <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
             <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>

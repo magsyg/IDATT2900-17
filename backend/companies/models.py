@@ -83,8 +83,8 @@ class BrandRetailerRelation(models.Model):
 class ShowRoom(models.Model):
     brand = models.ForeignKey(Company, null=False, blank=False, on_delete=models.CASCADE, related_name="showrooms", verbose_name="Brand")
 
-    doorcode = models.CharField(max_length=32, null=True, blank=False, verbose_name="Door code")
-    floor = models.CharField(max_length=10, null=True, blank=False, verbose_name="Floor")
+    doorcode = models.CharField(max_length=10, null=True, blank=True, verbose_name="Door code")
+    floor = models.CharField(max_length=10, null=True, blank=True, verbose_name="Floor")
 
     # Location info
     address = models.CharField(max_length=100, null=False, blank=False, verbose_name="Address")
@@ -103,9 +103,17 @@ class ShowRoom(models.Model):
 
     def clean(self):
         cleaned_data = super().clean()
+        errors = {}
         if self.brand.get_correct_model().company_type != Brand.company_type:
-            raise ValidationError("Company is not of type brand")
-       
+            errors['brand'] = 'Company is not of type brand'
+        if self.doorcode and not self.doorcode.isnumeric():
+            errors['doorcode'] = "Door code is not numeric"
+        if self.date_range_start > self.date_range_end:
+            errors['date_range_start'] = 'Start date can not be after end date'
+        if self.hours_start > self.hours_end:
+            errors['hours_start'] = 'Start time can not be after end time'
+        if errors:
+            raise ValidationError(errors)
 
     def is_current(self):
         return self.brand.get_correct_model().current_showroom == self
