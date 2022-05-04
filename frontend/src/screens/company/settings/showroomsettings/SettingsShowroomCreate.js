@@ -100,8 +100,24 @@ export default function SettingsShowroomCreate({ route, navigation }) {
     if (error.response) {
       // Request made and server responded
       console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
+      if (error.response.data.hasOwnProperty("address")) {
+        setAddress({value:address.value, error:error.response.data.address[0]})
+      }
+      if (error.response.data.hasOwnProperty("city")) {
+        setCity({value:city.value, error:error.response.data.city[0]})
+      }
+      if (error.response.data.hasOwnProperty("country")) {
+        setCountry({value:country.value, error:error.response.data.country[0]})
+      }
+      if (error.response.data.hasOwnProperty("doorcode")) {
+        setDoorCode({value:doorCode.value, error:error.response.data.doorcode[0]})
+      }
+      if (error.response.data.hasOwnProperty("start_hours")) {
+        setStartTime({value:startTime.value, error:error.response.data.start_hours[0]})
+      }
+      if (error.response.data.hasOwnProperty("date_range_start")) {
+        setStartDate({value:startDate.value, error:error.response.data.date_range_start[0]})
+      }
     } else if (error.request) {
       // The request was made but no response was received
       console.log(error.request);
