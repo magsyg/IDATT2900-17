@@ -211,7 +211,7 @@ class BrandProfile(APIView):
 
     def get(self, request, pk, format=None):
         brand = self.get_object(pk)
-        serializer = SimpleBrandSerializer(brand) # Does not return the contacts of that company
+        serializer = BrandSerializer(brand) # Does not return the contacts of that company
 
         appointments = Appointment.objects.filter(retailer__retailer=request.user.company, brands=brand)
         appointments = SimpleAppointmentSerializer(appointments, many=True)

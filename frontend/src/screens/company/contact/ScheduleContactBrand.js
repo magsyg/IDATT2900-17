@@ -143,7 +143,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
             </BackHeader>
           </View>
           <HeaderWithSub header={brand.name} subheader={'Showroom Appointment'} />
-          <LocationInfo item={brand}/>
+          <LocationInfo item={brand.current_showroom}/>
           <TeamSelect 
             containerStyle={{marginVertical:16}}
             company={currentUser.company} 

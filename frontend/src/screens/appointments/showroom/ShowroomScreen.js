@@ -23,6 +23,7 @@ import CompanyLogo from '../../../components/CompanyLogo';
 import CurrentUserContext from '../../../../Context';
 import BackgroundAuth from '../../../components/BackgroundAuth';
 import api from '../../../../api';
+import LocationInfo from '../../../components/LocationInfo';
 
 
 export default function ShowroomScreen({ route, navigation }) {
