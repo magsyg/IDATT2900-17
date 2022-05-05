@@ -45,7 +45,6 @@ export default function ContactRetailerScreen({ route, navigation }) {
 
   useEffect(() => {
     api.get(`/companies/retailer/${retailer_id}/profile/`).then((response) => {
-      console.log(response.data.retailer)
       setRetailer(response.data.retailer)
       setAppointments(response.data.appointments)
     }).catch(function (error) {

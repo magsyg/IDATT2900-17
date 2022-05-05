@@ -8,8 +8,14 @@ import Header2 from './Header2'
 
 export default function DurationModal({containerStyle, onFinish}) {
   const [visible, setVisible] = useState(false);
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
+  const showModal = () => {
+    setVisible(true)
+    console.log("pressed")
+  };
+  const hideModal = () => {
+    setVisible(false);
+    console.log("eited")
+  };
     
   return <View style={containerStyle}>
       <Modal visible={visible} onDismiss={hideModal}>

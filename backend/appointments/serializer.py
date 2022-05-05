@@ -104,7 +104,6 @@ class AppointmentCreateSerializer(serializers.Serializer):
 
 
     def create(self):  
-
         host_retailer = HostRetailer.objects.create(
             retailer=self.validated_data['retailer']['retailer'],
             organizer=self.validated_data['retailer']['organizer'],
@@ -112,9 +111,6 @@ class AppointmentCreateSerializer(serializers.Serializer):
         if 'retailer_participants' in self.validated_data['retailer']:
             host_retailer.retailer_participants.set(self.validated_data['retailer']['retailer_participants'])
         print(self.validated_data['appointment'].keys(), 'is_request' in self.validated_data['appointment'].keys())
-        is_request = False 
-        if ('is_request' in self.validated_data['appointment'].keys()):
-            is_request = self.validated_data['appointment']['is_request']
         appointment = Appointment.objects.create(
             name=self.validated_data['appointment']['name'],
             retailer=host_retailer,
@@ -122,7 +118,7 @@ class AppointmentCreateSerializer(serializers.Serializer):
             start_time=self.validated_data['appointment']['start_time'],
             end_time=self.validated_data['appointment']['end_time'],
             date=self.validated_data['appointment']['date'],
-            is_request=is_request,
+            is_request=True,
             other_information=self.validated_data['appointment']['other_information'],
             )
         for brand in self.validated_data['brands']:

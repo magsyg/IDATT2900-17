@@ -36,7 +36,6 @@ export default function MultiAppointmentScreen({ route, navigation }) {
       let temp_meta = meta
       temp_meta.appointment.retailer.retailer_participants = response.data.retailer_participants
       setMeta(temp_meta);
-      console.log(response.data.retailer);
     })  .catch(function (error) {
       
       if (error.response) {

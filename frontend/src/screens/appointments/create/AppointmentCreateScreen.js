@@ -18,12 +18,17 @@ import TeamSelect from '../../../components/TeamSelect'
 import CurrentUserContext from '../../../../Context';
 import BackgroundAuth from '../../../components/BackgroundAuth';
 import api from '../../../../api';
+import Header from '../../../components/Header';
+import Paragraph from '../../../components/Paragraph';
 
 export default function AppointmentCreateScreen({ route, navigation }) {
   const { ap_type, passed_team, passed_date, passed_time } = route.params; // passes params from previous
+  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  const [successModal, setSuccessmodal] = useState(false);
+
   const [availability, setAvailability] = useState({dates: []}) //TODO add availbility
   const [team, setTeam] = useState([])
-  const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
+  
   
 
   // Form values
@@ -176,10 +181,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
           params:{appointment_id:response.data.id}
         });
       } else {
-        navigation.navigate('Showroom',{ 
-          screen: 'ShowroomScreen',
-          params:{appointment_id:response.data.id}
-        });
+        setSuccessmodal(true);
       }
     })  .catch(function (error) {
       
@@ -221,6 +223,14 @@ export default function AppointmentCreateScreen({ route, navigation }) {
     });
   }
 
+  const nextScreen = () => {
+    setSuccessmodal(false);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'AppointmentCreate' }],
+    })
+  }
+
   const clearFields = () => {
     setName({ value: '', error: '' });
     setOtherInfo({ value: '', error: '' });
@@ -236,6 +246,15 @@ export default function AppointmentCreateScreen({ route, navigation }) {
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
+        <Modal visible={successModal}>
+          <TouchableOpacity  style={{flex:1, justifyContent:'center', alignItems:'center'}} onPress={nextScreen}>
+            <View style={{padding:64}}>
+              <Paragraph style={{textAlign:'center', color:theme.colors.primary}}>
+                Showroom appointment has been requested. Check your notifications for updates.
+              </Paragraph>
+            </View>
+          </TouchableOpacity>
+        </Modal>
         <View style= {styles.column}>
             <BackHeader goBack={navigation.goBack}>
                 <Text style={{color:theme.colors.grey}}>

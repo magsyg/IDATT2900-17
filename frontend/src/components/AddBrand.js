@@ -27,7 +27,6 @@ export default function AddBrands({completeAction}) {
       
       api.get(`companies/brands?name=${text}`).then((response) => {
         setBrandSearchResults(response.data);
-        console.log(response.data);
       })  .catch(function (error) {
         
         if (error.response) {

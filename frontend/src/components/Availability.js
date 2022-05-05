@@ -49,9 +49,8 @@ export default function Availabilty({users, date, time, selectMethod}) {
       return testDate === temp_date && testTime.substring(0, 5) === temp_time
     } return false
   }
-
   return (
-    <View>
+    <View style={{height:300}}>
       <Subheading style={styles.header}>AVAILABILITY</Subheading>
       <View style={styles.row}>
       
@@ -124,6 +123,7 @@ const styles = StyleSheet.create({
   hoursCol: {
     padding:4,
     height:164,
+
   },
   pageSwitch: {
     flexDirection:'column',

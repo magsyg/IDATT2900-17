@@ -27,7 +27,6 @@ export default function SettingsShowroomSelect({ route, navigation }) {
     // Fetches details about user
     api.get('/companies/showrooms/').then((response) => {
       setShowrooms(response.data)
-      console.log(response.data)
     })  .catch(function (error) {
       
       if (error.response) {

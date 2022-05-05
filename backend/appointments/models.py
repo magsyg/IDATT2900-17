@@ -98,13 +98,20 @@ class Appointment(models.Model):
         return []
 
     @staticmethod
+    def get_requested_appointments(user: User):
+        # Currently only allows brands to get requests
+        if user.company.get_correct_model().company_type == Brand.company_type:
+            return Appointment.objects.filter(brands=user.company, is_request=True)
+        return []
+
+    @staticmethod
     def get_available_times(users: QuerySet, date: datetime = timezone.now(), days: int = 4):
         availability = list()
         work_hours = Appointment.get_workhours()
         for i in range(days):
             users_work_hours = work_hours.copy()
             for user in users:
-                for appointment in Appointment.get_user_appointments(user=user,date=date):
+                for appointment in Appointment.get_user_appointments(user=user,date=date).filter(is_request=False):
                     for hour in work_hours:
                         if hour in users_work_hours and appointment.end_time > hour  >= appointment.start_time:
                             users_work_hours.remove(hour)

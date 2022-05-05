@@ -47,7 +47,6 @@ export function CurrentUserProvider({children}) {
             //TODO fix token login here
         api.get(`/accounts/current_user/`,{})
         .then((response) => {
-          console.log("CURRENT USER RES", response.data.company);
           setCurrentUser(response.data);
           setAuthIsLoading(false);
         })
@@ -111,7 +110,6 @@ export default function CurrentUserProvider({ children }) {
     if (token) {
       api.get(`/accounts/current_user/`,{},{headers: {'Authorization':token}})
         .then((response) => {
-          console.log("CURRENT USER RES", response.data.user);
           setCurrentUser(response.data.user);
           setAuthIsLoading(false);
         })
