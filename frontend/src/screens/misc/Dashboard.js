@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, StyleSheet, View, ScrollView, Text} from 'react-native'
 import {  DataTable, Modal, Portal } from 'react-native-paper'
 import Background from '../../components/Background'
@@ -21,6 +21,7 @@ import CurrentUserContext from '../../../Context';
 import BackgroundAuth from '../../components/BackgroundAuth';
 import api from '../../../api'
 import LocationInfo from '../../components/LocationInfo'
+import ShowroomRequests from '../../components/ShowroomRequests'
 
 export default function Dashboard({ navigation }) {
   const { currentUser, authIsLoading, checkLogin} = React.useContext(CurrentUserContext);
@@ -88,12 +89,7 @@ export default function Dashboard({ navigation }) {
 
         <Header>Notifications</Header> 
         <View style={{flex:3}}>
-          <PillLink>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </PillLink>
-          <PillLink>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </PillLink>
+            <ShowroomRequests/>
         </View>
         <View style={[styles.column, {flex:3}]}>
           <View style={[styles.row, {flex:0, justifyContent: 'space-between'}]}>

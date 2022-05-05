@@ -14,7 +14,6 @@ export default function BackgroundAuth({ children }) {
   // Checks if user is authenticated, if not return to loginscreen
   useEffect(() => {
     console.log("USER");
-    console.log(currentUser);
     if(!authIsLoading && currentUser === null) {
       console.log("lolololo");
       navigation.navigate('Authentication');

@@ -17,7 +17,6 @@ export default function RegisterGetCompanyScreen({ route, navigation }) {
     const payload = { 
         company_code:companyCode.value
       } 
-    console.log(payload)
     api
       .post(`/companies/code/`, payload)
       .then(response => {

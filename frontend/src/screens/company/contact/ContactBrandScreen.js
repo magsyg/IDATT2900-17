@@ -50,9 +50,6 @@ export default function ContactBrandScreen({ route, navigation }) {
   useEffect(() => {
     api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
-      console.log("-------------------------")
-      console.log(response.data.brand.current_showroom)
-      console.log("-------------------------")
       setAppointments(response.data.appointments)
     }).catch(function (error) {
       

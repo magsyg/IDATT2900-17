@@ -84,6 +84,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   }, [brand_id]);
 
   const createAppointment = duration => {
+    console.log(duration);
     console.log(startTime.toTimeString().slice(0,5));
     console.log((new Date(startTime.getTime() + duration*60000)).toTimeString().slice(0,5));
     const payload = {

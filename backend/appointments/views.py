@@ -5,7 +5,7 @@ from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.http import JsonResponse, HttpResponse, Http404
-from django.core.exceptions import PermissionDenied, FieldError
+from django.core.exceptions import PermissionDenied, FieldError,ValidationError
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -73,18 +73,64 @@ class AppointmentUserListView(APIView):
         print(appointments)
         return Response(self.serializer_class(appointments,many=True).data)
 
+class AppointmentRequests(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = AppointmentSerializer
+
+    def get(self, request, format=None):
+        appointments = Appointment.get_requested_appointments(user=request.user)
+        return Response(self.serializer_class(appointments,many=True).data)
+
+class AppointmentRequestsDecline(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk, format=None):
+        appointment = get_object_or_404(Appointment, id=pk)
+        if request.user not in appointment.brands.first().members.all():
+            raise PermissionDenied('You cant delete this request')
+        appointment.delete()
+        return Response(True)
+
+class AppointmentRequestsAccept(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = SimpleAppointmentSerializer
+
+    def post(self, request, pk, format=None):
+        appointment = get_object_or_404(Appointment, id=pk)
+        if request.user not in appointment.brands.first().members.all():
+            raise PermissionDenied('You cant accept this request')
+        serializer = self.serializer_class(Appointment, data=request.data, context={'request': request}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        if not  serializer.validated_data['date']:
+            raise ValidationError("date not set")
+        # Should be improved
+        brand = appointment.participatingbrand_set.first()
+        brand.main_contact = request.user        
+        brand.save() 
+        appointment.date = serializer.validated_data['date']
+        appointment.start_time = serializer.validated_data['start_time']
+        appointment.end_time = serializer.validated_data['end_time']
+        appointment.is_request = False
+        appointment.save()
+        
+        return Response(AppointmentSerializer(appointment).data)
+
 class AvailabilityView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         users = User.objects.filter(id=request.user.id)
+        print(users)
         availability = Appointment.get_available_times(users)
+        print(availability)
         return Response(availability)
 
     def post(self, request, format=None):
         user_ids = [request.user.id]
-        print(user_ids)
         if 'users' in request.data:
             user_ids.extend(request.data['users'])
         users = User.objects.filter(id__in=user_ids)
