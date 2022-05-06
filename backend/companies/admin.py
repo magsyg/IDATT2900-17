@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 
 
-from .models import Brand, BrandRetailerRelation, Retailer, CompanyCode, Note
+from .models import Brand, BrandRetailerRelation, Retailer, CompanyCode, Note, ShowRoom
 
 User = get_user_model()
 # Register your models here.
@@ -46,3 +46,10 @@ class NoteAdmin(admin.ModelAdmin):
     list_display = ['company', 'creator','timestamp']    
     search_fields = ['company', 'creator']
     ordering = ['id','timestamp']  
+
+
+@admin.register(ShowRoom)
+class ShowRoomAdmin(admin.ModelAdmin):
+    list_display = ['brand', 'address','city','country']    
+    search_fields = ['brand', 'address','city','country']   
+    ordering = ['id']  

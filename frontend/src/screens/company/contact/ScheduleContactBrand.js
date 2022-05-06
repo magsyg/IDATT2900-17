@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import { Text, Subheading, Badge } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -32,8 +32,9 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   const {brand_id} = route.params
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
+  const [successModal, setSuccessmodal] = useState(false);
+
   const [brand, setBrand] = useState({'name':"BRAND NAME", "members":[], "bio":"COMPANY BIO","homepage":"www.gleu.app"});
-  const [appointments, setAppointments] = useState([]);
 
   // TEAM
   const [team, setTeam] = useState([])
@@ -84,6 +85,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   }, [brand_id]);
 
   const createAppointment = duration => {
+    console.log(duration);
     console.log(startTime.toTimeString().slice(0,5));
     console.log((new Date(startTime.getTime() + duration*60000)).toTimeString().slice(0,5));
     const payload = {
@@ -106,8 +108,8 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
     
     api.post('/appointments/create/', payload).then((response) => {
       clearFields();
-      console.log(response.data.brand);
-      navigation.navigate('Showroom',{appointment_id:response.data.id});
+      setSuccessmodal(true);
+      
     }).catch(function (error) {
       
       if (error.response) {
@@ -130,9 +132,29 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
   const goBack = () => {
     navigation.navigate('ContactBrand',{brand_id:brand.id});
   }
+  const nextScreen = () => {
+    setSuccessmodal(false);
+    goBack();
+  }
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
+        <Modal visible={successModal}>
+          <TouchableOpacity  style={{flex:1}} onPress={nextScreen}>
+            <View style={[styles.row, {margin:32,justifyContent:'flex-end'}]}> 
+              <CompanyLogo
+                  size={64} 
+                  company={brand}  
+              />
+            </View>
+          <View style={{padding:64}}>
+            <Header style={{textAlign:'center'}}>{brand.name}</Header>
+            <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
+              Showroom appointment has been requested. Check your notifications for updates.
+            </Paragraph>
+          </View>
+          </TouchableOpacity>
+        </Modal>
         <View style= {styles.column}>
           <View style={styles.row}> 
             <BackHeader goBack={goBack}>  
@@ -143,7 +165,7 @@ export default function ScheduleContactBrandScreen({ route, navigation }) {
             </BackHeader>
           </View>
           <HeaderWithSub header={brand.name} subheader={'Showroom Appointment'} />
-          <LocationInfo item={brand}/>
+          <LocationInfo item={brand.current_showroom}/>
           <TeamSelect 
             containerStyle={{marginVertical:16}}
             company={currentUser.company} 

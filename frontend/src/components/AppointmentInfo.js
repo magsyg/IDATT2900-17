@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
 import { theme } from '../core/theme'
 import { transformNiceDate } from '../utils/date_management'
+import LocationInfo from './LocationInfo'
 import OutlinedButton from './OutlinedButton'
 export default function AppointmentInfo({containerStyle, appointment}) {
 
@@ -11,16 +12,12 @@ export default function AppointmentInfo({containerStyle, appointment}) {
           <Text>{appointment.start_time.slice(0,5)} - {appointment.end_time.slice(0,5)}</Text>
           <Text>{transformNiceDate(appointment.date)}</Text>
         </View>
+        {appointment.appointment_type === 'SR' &&
+          <LocationInfo item={appointment.brands[0].brand.current_showroom}/>
+        }
         <View style={{marginTop:16}}>
-          <OutlinedButton style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined">{appointment.address}</OutlinedButton>
           {appointment.appointment_type === 'TR' && <OutlinedButton  style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined"> Pass </OutlinedButton> }
         </View>
-        {appointment.appointment_type === 'SR' &&
-        <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
-          <Text>Door Code: 952</Text>
-          <Text>Floor: Ground</Text>
-        </View>
-        }
     </View>
   )
 }
