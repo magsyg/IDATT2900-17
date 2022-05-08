@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { TouchableOpacity, StyleSheet, View, Dimensions } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Logo from '../../../components/Logo'
@@ -80,15 +80,17 @@ export default function LoginScreen({ navigation }) {
       setEmail({ ...email, error: emailError })
       setPassword({ ...password, error: passwordError })
       return
-    }
+    } 
     loginRequest()
   }
 
   return (
-    <Background>
-      <Header>Hello There</Header>
+    <Background >
+      <View style={styles.center}>
+        <Header>Hello There</Header>
+      </View>
       <TextInput
-        label="Email"
+        label="Email Address"
         returnKeyType="next"
         value={email.value}
         onChangeText={(text) => setEmail({ value: text, error: '' })}
@@ -122,6 +124,8 @@ export default function LoginScreen({ navigation }) {
       <Button mode="contained" style = {styles.button} onPress={() => navigation.navigate('Register')}>
         Create Account
       </Button>
+          
+
     </Background>
   )
 }
@@ -146,6 +150,10 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: theme.colors.grey,
-    color: theme.colors.primary
-  }
+    color: theme.colors.primary,
+  },
+  center: {
+    flex: 1,
+    paddingTop: '50%',
+    }
 })
