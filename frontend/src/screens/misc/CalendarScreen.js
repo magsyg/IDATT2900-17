@@ -19,7 +19,10 @@ export default function AppointmentCalendarScreen({ route, navigation }) {
     return (
       <BackgroundAuth>
         <CalendarAppointments user={currentUser.user}/>
-        <MapView style={ styles.map } />
+        <TouchableOpacity
+          onPress={ navigation.navigate('FullMap') }>
+          <MapView style={ styles.map } />
+        </TouchableOpacity>
       </BackgroundAuth>
     )
   } else {

@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react'
 import axios from 'axios';
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Text,  Subheading } from 'react-native-paper'
+import { Text,  Subheading, ProgressBar, Colors } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Link from '../../../components/Link'
 import Header from '../../../components/Header'
@@ -30,6 +30,15 @@ export default function RegisterScreen({ route, navigation }) {
 
   const [countryCode, setCountryCode] = useState({ value: '+47', error: '' })
   const [phoneNumber, setPhoneNumber] = useState({ value: '', error: '' })
+  const progressValue = () => {
+    console.log('proggressValue')
+    if (password.length >= 8) {
+      return 1;
+    } else {
+      console.log(password.length)
+      return password.length / 8
+    }
+  }
 
   useEffect(() => {
     console.log(route.params)
@@ -151,7 +160,7 @@ export default function RegisterScreen({ route, navigation }) {
         setPhoneNumber={setPhoneNumber}
         countryCode={countryCode}
         setCountryCode={setCountryCode}
-        />
+      />
       <TextInput
         label="Password"
         returnKeyType="done"
@@ -161,6 +170,12 @@ export default function RegisterScreen({ route, navigation }) {
         errorText={password.error}
         secureTextEntry
       />
+      <View>
+        <ProgressBar 
+          progress={progressValue} 
+          color={Colors.red800} 
+        />
+      </View>
       <TextInput
         label="Confirm Password"
         returnKeyType="done"
