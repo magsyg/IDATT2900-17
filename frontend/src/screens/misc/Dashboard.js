@@ -86,11 +86,22 @@ export default function Dashboard({ navigation }) {
             }
           </View>
         </View>
-
-        <Header>Notifications</Header> 
-        <View style={{flex:3}}>
-            <ShowroomRequests/>
+        { currentUser.company_type === 'RETAILER' ?
+          <View>
+            <Header>Notifications</Header> 
+            <View style={{flex:3}}>
+                <PillLink>lorem</PillLink>
+                <PillLink>lorem</PillLink>
+            </View>
+          </View>
+        :
+        <View>
+          <Header>Requests</Header> 
+          <View style={{flex:3}}>
+              <ShowroomRequests/>
+          </View>
         </View>
+        }
         <View style={[styles.column, {flex:3}]}>
           <View style={[styles.row, {flex:0, justifyContent: 'space-between'}]}>
               <Header style={{fontSize: 24}}>Today, {today}</Header>
@@ -142,6 +153,8 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
     flexDirection: "column",
+    width:'100%',
+    padding:8, 
   },
   notification: {
     backgroundColor:theme.colors.grey,
