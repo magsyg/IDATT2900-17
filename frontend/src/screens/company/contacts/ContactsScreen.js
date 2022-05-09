@@ -37,7 +37,7 @@ export default function CompanyContactsScreen({ route, navigation }) {
       <View style={styles.column}>
         <View style={[styles.row,{marginTop:16}]}>
           <Searchbar placeholder='Search' style={{backgroundColor:theme.colors.grey, flex:1, borderRadius:100}}/>
-          <IconButton size={24} color={theme.colors.primary}style={{marginLeft:32}} icon='dots-horizontal' onPress={() => navigation.navigate('Settings')}/>
+          <IconButton size={32} color={theme.colors.primary}style={{marginLeft:16}} icon='cog' onPress={() => navigation.navigate('Settings')}/>
         </View>
         <View style={{marginTop:16}}>
           <Header>MY TEAM</Header>
