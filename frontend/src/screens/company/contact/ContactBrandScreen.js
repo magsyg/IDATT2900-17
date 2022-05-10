@@ -42,6 +42,7 @@ export default function ContactBrandScreen({ route, navigation }) {
       navigation.navigate('Showroom',{appointment_id:item.id});
     }
   }
+  
   const goToScheduleContact = () => {
     navigation.navigate('ScheduleContactBrand',{brand_id:brand_id}
     );

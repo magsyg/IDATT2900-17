@@ -18,6 +18,7 @@ import CurrentUserContext from '../../../../../Context'
 import api from '../../../../../api'
 import Link from '../../../../components/Link';
 import OutlinedButton from '../../../../components/OutlinedButton';
+import BackHeader from '../../../../components/BackHeader';
 
 export default function SettingsShowroomEdit({ route, navigation }) {
   const { currentUser, authIsLoading, checkLogin } = React.useContext(CurrentUserContext);
@@ -138,7 +139,6 @@ export default function SettingsShowroomEdit({ route, navigation }) {
   const setCurrentShowroom = () => {
     api.post(`/companies/showrooms/${showroom_id}/`, {'set_current':true}).then((response) => {
       setShowroom(response.data);
-      checkLogin();
      })  .catch(function (error) {
        
        if (error.response) {
@@ -212,22 +212,16 @@ export default function SettingsShowroomEdit({ route, navigation }) {
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
-        <BackButton goBack={navigation.goBack} />
+        <BackHeader goBack={navigation.goBack}>               
+          <CompanyLogo
+            size={48} 
+            company={currentUser.company}  
+          />
+        </BackHeader>
         <View style={styles.column}>
           <View style={[{flex:1,  marginVertical:8}]}>
             <View style={styles.row}>
               <Header>Edit Showroom</Header>
-            </View>
-            <View style={styles.row}>
-              <CompanyLogo
-                size={64} 
-                company={currentUser.company}  
-              />
-            </View>
-            <View style={[styles.row, {margin:4}]}>
-              <Subheading style={{color:theme.colors.secondary}}>
-                {currentUser.company.name}
-              </Subheading>
             </View>
             <View style={[styles.row, {margin:4}]}>
               {showroom.is_current ? 
@@ -240,7 +234,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
           </View>
           
           <View style={{flex:3, marginTop:8}}>
-            <View style={styles.row}>  
+          <View style={styles.row}>  
               <TextInput
                 label="Doorcode"
                 returnKeyType="next"
@@ -248,6 +242,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
                 onChangeText={(text) => setDoorCode({ value: text, error: '' })}
                 error={!!doorCode.error}
                 errorText={doorCode.error}
+                description={'If your location has a doorcode, write it here'}
               />
             </View>
             <View style={styles.row}>  
@@ -258,6 +253,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
                 onChangeText={(text) => setFloor({ value: text, error: '' })}
                 error={!!floor.error}
                 errorText={floor.error}
+                description={'The floor of your showroom. Example: ground, -1, 2'}
               />
             </View>
             <View style={styles.row}>  
@@ -353,20 +349,15 @@ export default function SettingsShowroomEdit({ route, navigation }) {
           </View>
           <View style={[styles.row,{marginBottom:16}]}>  
             <Button
-              mode="contained"
-              style={styles.button}
               onPress={onUpdatePressed}
             >
-              Update Showroom
+              Update
             </Button>
           </View>
           <View style={[styles.row,{marginBottom:16}]}>  
-            <Link
-              style={{color:theme.colors.danger}}
-              onPress={onDeletePressed}
-            >
-              Delete
-            </Link>
+              <TouchableOpacity onPress={onDeletePressed}>
+                <Text style={{color:theme.colors.danger}}>Delete</Text>
+              </TouchableOpacity>
           </View>
         </View>
       </BackgroundAuth>
@@ -377,6 +368,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
     )
   }
 }
+
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',

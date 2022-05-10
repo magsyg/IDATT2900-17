@@ -16,6 +16,7 @@ import Button from '../../../../components/Button'
 import BackgroundAuth from '../../../../components/BackgroundAuth'
 import CurrentUserContext from '../../../../../Context'
 import api from '../../../../../api'
+import BackHeader from '../../../../components/BackHeader';
 
 export default function SettingsShowroomSelect({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -48,23 +49,15 @@ export default function SettingsShowroomSelect({ route, navigation }) {
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
-        <BackButton goBack={navigation.goBack} />
+          <BackHeader goBack={navigation.goBack}>               
+            <CompanyLogo
+              size={48} 
+              company={currentUser.company}  
+            />
+          </BackHeader>
         <View style={styles.column}>
-          <View style={[{flex:1,  marginVertical:16}]}>
-            <View style={styles.row}>
-              <Header>Showrooms</Header>
-            </View>
-            <View style={styles.row}>
-              <CompanyLogo
-                size={64} 
-                company={currentUser.company}  
-              />
-            </View>
-            <View style={[styles.row, {margin:4}]}>
-              <Subheading style={{color:theme.colors.secondary}}>
-                {currentUser.company.name}
-              </Subheading>
-            </View>
+          <View style={styles.row}>
+            <Header>Showrooms</Header>
           </View>
           <FlatList
             data={showrooms}
@@ -82,10 +75,9 @@ export default function SettingsShowroomSelect({ route, navigation }) {
             }
           />
         
-          <View style={[styles.row,{marginBottom:16}]}>  
+          <View style={[styles.row,{marginTop:16}]}>  
             <Button
               mode="contained"
-              style={styles.button}
               onPress={() => navigation.navigate('SettingsShowroomCreate')}
             >
               Create Showroom
@@ -105,7 +97,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent:'center',
-    marginTop: 4,
+    marginBottom:8,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -129,9 +121,12 @@ const styles = StyleSheet.create({
   showroomRow: {
     flexDirection: 'row',
     alignItems:'center',
-    borderBottomWidth: 1,
-    marginBottom: 8, 
-    padding:8,
-    borderColor: theme.colors.grey
+    borderRadius:2, 
+    borderWidth:1,
+    marginVertical:8, 
+    paddingHorizontal:8,
+    paddingVertical:4,
+    borderColor:theme.colors.lightgrey,
+    justifyContent:'space-between',
   }
 })

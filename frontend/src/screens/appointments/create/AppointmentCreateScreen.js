@@ -360,7 +360,7 @@ export default function AppointmentCreateScreen({ route, navigation }) {
                 errorText={otherInfo.error}
               />
 
-            <Button mode="contained" style = {{backgroundColor: theme.colors.grey, color: theme.colors.primary, marginTop:32}} onPress={createAppointment}>
+            <Button style = {{marginTop:32}} onPress={createAppointment}>
               Create Appointment
             </Button>
             </View>

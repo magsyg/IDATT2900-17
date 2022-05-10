@@ -18,7 +18,8 @@ export default function BackHeader({ goBack , children}) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop:16,
+    paddingTop:24,
+    marginBottom:32, 
     borderColor:theme.colors.grey,
     width:'100%',
     flexDirection: 'row',

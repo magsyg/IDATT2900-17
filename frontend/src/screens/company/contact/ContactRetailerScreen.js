@@ -23,6 +23,7 @@ import CompanyLogo from '../../../components/CompanyLogo'
 import CurrentUserContext from '../../../../Context'
 import BackgroundAuth from '../../../components/BackgroundAuth'
 import api from '../../../../api';
+import UserRow from '../../../components/UserRow';
 
 export default function ContactRetailerScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -80,28 +81,22 @@ export default function ContactRetailerScreen({ route, navigation }) {
             </BackHeader>
           </View>
           <Header style={{textAlign:'center'}}>{retailer.name}</Header>
-  
-          <View style={[styles.row, {marginTop:16}]}>
-            <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
-            <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
-          </View>
           <View>
             <Button>Send Scheduling Reminder</Button>
           </View>
           <View style={{marginVertical:16}}>
             <Header2>BUYERS</Header2>
-            <Avatar.Image 
-                  size={48} 
-                  source={require('../../../assets/default_profile.png')}  
-            />
+            <UserRow users={retailer.members}/>
           </View> 
 
           <View style={{marginVertical:16}}>
             <Header2>APPOINTMENT HISTORY</Header2>
+            <View style={{height:256}}>
             <FlatList
               data={appointments}
               numColumns={1}
               scrollEnabled={true}
+              
               renderItem={({item, index}) =>  
                 <OutlinedTouch key={index} style={styles.appointmentButton} onPress={() => goToAppointment(item)}>
                   <Text style={styles.appointmentButtonText}>{item.date}</Text>
@@ -109,9 +104,7 @@ export default function ContactRetailerScreen({ route, navigation }) {
                 </OutlinedTouch>
               }
             />
-          </View>
-          <View style={{marginVertical:16}}>
-            <Header2>Retail Information</Header2>
+            </View>
           </View>
           <View style={{marginVertical:32, justifyContent:'flex-start'}}>
             <Header2>Company Profile</Header2>

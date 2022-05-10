@@ -1,23 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
+import { Tooltip } from 'react-native-elements'
 import { TextInput as Input } from 'react-native-paper'
 import { theme } from '../core/theme'
 
-export default function TextInput({ errorText, description, ...props }) {
-  return (
-    <View style={styles.container}>
-      <Input
-        style={styles.input}
-        selectionColor={theme.colors.primary}
-        underlineColor={theme.colors.grey}
-        {...props}
-      />
-      {description && !errorText ? (
-        <Text style={styles.description}>{description}</Text>
-      ) : null}
-      {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
-    </View>
-  )
+export default function TextInput({ errorText, description, tooltip, ...props }) {
+    const [focused, setFocused] = useState(false);
+    const focus = () => setFocused(true);
+    const unFocus = () => setFocused(false);
+    return (
+      <View style={styles.container}>
+        <Input
+          style={styles.input}
+          selectionColor={theme.colors.primary}
+          underlineColor={theme.colors.grey}
+          onFocus={focus}
+          onBlur={unFocus}
+          {...props}
+        />
+        {description && !errorText && focused? (
+          <Text style={styles.description}>{description}</Text>
+        ) : null}
+        {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
+      </View>
+    )
 }
 
 const styles = StyleSheet.create({

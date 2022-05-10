@@ -17,6 +17,7 @@ import PhoneNumberInput from '../../../components/PhoneNumberInput';
 import BackgroundAuth from '../../../components/BackgroundAuth';
 import CurrentUserContext from '../../../../Context';
 import api from '../../../../api';
+import BackHeader from '../../../components/BackHeader';
 
 export default function SettingsProfileScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -119,6 +120,11 @@ export default function SettingsProfileScreen({ route, navigation }) {
     });
   }, []);
 
+  const nextScreen = () => {
+    setSuccessModal(false);
+    navigation.goBack();
+  }
+
   const onUpdatePressed = () => {
     const payload = {
       first_name: firstName.value,
@@ -159,16 +165,18 @@ export default function SettingsProfileScreen({ route, navigation }) {
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
-        <BackButton goBack={navigation.goBack} />
+        <BackHeader goBack={navigation.goBack}>
+          <Subheading style={{color:theme.colors.grey}}>
+            Edit Profile
+          </Subheading>
+        </BackHeader>
         <View style={styles.column}>
           <Modal visible={successModal}>
-          <TouchableOpacity  style={{flex:1}} onPress={hideSuccessModal}>
-          <View style={{padding:64}}>
-            <Header style={{textAlign:'center'}}>User updated successfully!</Header>
+          <TouchableOpacity  style={{flex:1, justifyContent:'center', alignItems:'center'}} onPress={nextScreen}>
+            <Subheading style={{textAlign:'center', fontSize:18}}>User updated successfully!</Subheading>
             <Paragraph style={{textAlign:'center', color:theme.colors.grey}}>
               Click anywhere to return
             </Paragraph>
-          </View>
           </TouchableOpacity>
         </Modal>
         
@@ -200,10 +208,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
             </View>
           </View>
         </Modal>
-          <View style={[{flex:1,  marginVertical:16}]}>
-            <View style={styles.row}>
-              <Header>Profile</Header>
-            </View>
+          <View style={{flex:1}}>
             <View>
               <View style={styles.row}>
                   <ProfilePicture
@@ -214,7 +219,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
               <PillLink onPress={showPPModal} style={{flex:0}}>Edit</PillLink>
             </View>
             <View style={[styles.row, {margin:4}]}>
-              <Subheading style={{color:theme.colors.secondary}}>
+              <Subheading style={{color:theme.colors.primary}}>
                 {user.email}
               </Subheading>
             </View>
@@ -238,6 +243,7 @@ export default function SettingsProfileScreen({ route, navigation }) {
                 onChangeText={(text) => setLastName({ value: text, error: '' })}
                 error={!!lastName.error}
                 errorText={lastName.error}
+                tooltip={'hello'}
               />
             </View>
             <PhoneNumberInput 
@@ -252,7 +258,6 @@ export default function SettingsProfileScreen({ route, navigation }) {
           <View style={[styles.row,{marginBottom:16}]}>  
             <Button
               mode="contained"
-              style={styles.button}
               onPress={onUpdatePressed}
             >
               Update Profile
