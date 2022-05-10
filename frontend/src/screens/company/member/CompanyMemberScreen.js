@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, FlatList} from 'react-native'
 import { Text, Subheading, Searchbar, IconButton } from 'react-native-paper'
+import * as Clipboard from 'expo-clipboard';
 import Background from '../../../components/Background'
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Header from '../../../components/Header'
@@ -23,6 +24,12 @@ export default function CompanyMemberScreen({ route, navigation }) {
   const {profile_id} = route.params
   const [profile, setProfile] = useState({'first_name':'First Name', 'last_name':'Last Name','phone_number':'3333 6666', 'email':'email@email.com'});
   const [appointments, setAppointments] = useState([])
+  
+  const copyToClipboard = async (text) => {
+    await Clipboard.setStringAsync(text);
+  };
+
+  
   useEffect(() => {
     api.get(`/accounts/profile/${profile_id}/`).then((response) => {
       setProfile(response.data)
@@ -77,12 +84,16 @@ export default function CompanyMemberScreen({ route, navigation }) {
           </View>
           <Header style={{textAlign:'center'}}>{profile.first_name} {profile.last_name}</Header>
 
-          <OutlinedTouch style={{marginTop:12}}>
-            <Text style={styles.outlinedTouchText}>
-              {profile.email}
-            </Text>
+          <OutlinedTouch style={{marginTop:12}} onPress={copyToClipboard(profile.email)}>
+              <Text style={styles.outlinedTouchText}>
+                {profile.email}
+              </Text>
             </OutlinedTouch>
-          <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}}><Text style={styles.outlinedTouchText}>{profile.phone_number}</Text></OutlinedTouch>
+          <OutlinedTouch style={{marginTop:12}} labelStyle={{margin:6, fontSize:14}} onPress={copyToClipboard(profile.phone_number)}>
+            <Text style={styles.outlinedTouchText}>
+              {profile.phone_number}
+            </Text>
+          </OutlinedTouch>
 
           <View style={{margin:16, marginTop:32}}>
             <CalendarAppointments user={profile}/>

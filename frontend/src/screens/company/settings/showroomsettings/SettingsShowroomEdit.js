@@ -17,6 +17,7 @@ import BackgroundAuth from '../../../../components/BackgroundAuth'
 import CurrentUserContext from '../../../../../Context'
 import api from '../../../../../api'
 import Link from '../../../../components/Link';
+import OutlinedButton from '../../../../components/OutlinedButton';
 
 export default function SettingsShowroomEdit({ route, navigation }) {
   const { currentUser, authIsLoading, checkLogin } = React.useContext(CurrentUserContext);
@@ -213,7 +214,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
       <BackgroundAuth>
         <BackButton goBack={navigation.goBack} />
         <View style={styles.column}>
-          <View style={[{flex:1,  marginVertical:16}]}>
+          <View style={[{flex:1,  marginVertical:8}]}>
             <View style={styles.row}>
               <Header>Edit Showroom</Header>
             </View>
@@ -232,13 +233,13 @@ export default function SettingsShowroomEdit({ route, navigation }) {
               {showroom.is_current ? 
                 <Text style={{color:theme.colors.secondary}}>Current showroom</Text>
                 :
-                <TouchableOpacity onPress={setCurrentShowroom}><Text style={{color:theme.colors.secondary}}>Set Current showroom</Text></TouchableOpacity>
+                <OutlinedButton onPress={setCurrentShowroom}>Set Current</OutlinedButton>
               }
   
             </View>
           </View>
           
-          <View style={{flex:3, marginTop:16}}>
+          <View style={{flex:3, marginTop:8}}>
             <View style={styles.row}>  
               <TextInput
                 label="Doorcode"
@@ -261,7 +262,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
             </View>
             <View style={styles.row}>  
               <TextInput
-                label="Address"
+                label="Address *"
                 returnKeyType="next"
                 value={address.value}
                 onChangeText={(text) => setAddress({ value: text, error: '' })}
@@ -271,7 +272,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
             </View>
             <View style={styles.row}>  
               <TextInput
-                label="City"
+                label="City *"
                 returnKeyType="next"
                 value={city.value}
                 onChangeText={(text) => setCity({ value: text, error: '' })}
@@ -281,7 +282,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
             </View>
             <View style={styles.row}>  
               <TextInput
-                label="Country"
+                label="Country *"
                 returnKeyType="next"
                 value={country.value}
                 onChangeText={(text) => setCountry({ value: text, error: '' })}
@@ -293,7 +294,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
           <View style={styles.row}>
                 <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1, flex:1}} onPress={showStartTime}>
                   <TextInput
-                    label="Start Hours"
+                    label="Start Hours *"
                     returnKeyType="next"
                     value={startTime.toTimeString().slice(0,5)}
                     disabled={true}
@@ -307,7 +308,7 @@ export default function SettingsShowroomEdit({ route, navigation }) {
                 />
                 <TouchableOpacity style={{borderBottomColor:theme.colors.grey, borderBottomWidth:1,flex:1}} onPress={showEndTime}>
                   <TextInput
-                    label="End Hours"
+                    label="End Hours *"
                     returnKeyType="next"
                     value={endTime.toTimeString().slice(0,5)}
                     disabled={true}

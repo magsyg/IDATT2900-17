@@ -76,7 +76,7 @@ export default function SettingsShowroomSelect({ route, navigation }) {
                   <Subheading style={{marginLeft:16}}>{item.address}/{item.city}</Subheading>
                 </View>
                 {item.is_current &&
-                  <Subheading style={{marginLeft:16, color:theme.colors.secondary}}>Current</Subheading>
+                   <Icon size={16} name='circle' color={theme.colors.secondary}></Icon>
                 }
               </TouchableOpacity>
             }
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
   },
   showroomRow: {
     flexDirection: 'row',
+    alignItems:'center',
     borderBottomWidth: 1,
     marginBottom: 8, 
     padding:8,

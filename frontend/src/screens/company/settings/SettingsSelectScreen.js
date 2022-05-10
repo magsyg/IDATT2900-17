@@ -27,7 +27,6 @@ export default function SettingsSelectScreen({ route, navigation }) {
           <OptionIconLink onPress={() => navigation.navigate('SettingsTeamScreen')} text="Company Members"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
           <OptionIconLink onPress={() => navigation.navigate('SettingsCompanyScreen')} text="Company Settings"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
           { currentUser.company_type == 'BRAND' && <OptionIconLink onPress={() => navigation.navigate('SettingsShowroom')} text="Showroom Settings"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink> }
-          <OptionIconLink text="Date and Time Preference"><Icon name='keyboard-arrow-right' size={30} color={theme.colors.grey}/></OptionIconLink>
         </View>
         <View>
           <TouchableOpacity onPress={handleLogout}>

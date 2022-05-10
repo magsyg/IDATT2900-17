@@ -17,7 +17,7 @@ export default function SettingsTeamScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
   const goToProfile = id => {
-    navigation.navigate('ProfileScreen', {profile_id:id});
+    navigation.navigate('Members', {screen:'CompanyMember', params:{profile_id:id}});
   }
 
   if (!authIsLoading && currentUser !== null) {
@@ -27,7 +27,7 @@ export default function SettingsTeamScreen({ route, navigation }) {
         <View style={styles.column}>
           <View style={[{flex:1,  marginVertical:16}]}>
             <View style={styles.row}>
-              <Header>Manage Users</Header>
+              <Header>Manage Members</Header>
             </View>
             <View style={styles.row}>
               <CompanyLogo
@@ -42,7 +42,7 @@ export default function SettingsTeamScreen({ route, navigation }) {
             </View>
           </View>
           <View style={[styles.buttonRow,{marginTop:32}]}>
-            <Header>Users</Header>
+            <Header>Members</Header>
             <IconButton icon='plus' color={theme.colors.secondary}  onPress={() => navigation.navigate('SettingsTeamCodeScreen')}/>
           </View>
           <View style={{flex:2}}>

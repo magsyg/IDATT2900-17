@@ -13,6 +13,11 @@ import ProfilePicture from '../../../components/ProfilePicture'
 import BackgroundAuth from '../../../components/BackgroundAuth'
 import CurrentUserContext from '../../../../Context'
 import api from '../../../../api'
+import CompanyLogo from '../../../components/CompanyLogo'
+import BackHeader from '../../../components/BackHeader'
+import Button from '../../../components/Button'
+import PillLink from '../../../components/PillLink'
+import OutlinedButton from '../../../components/OutlinedButton'
 
 export default function SettingsTeamCodeScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -115,49 +120,35 @@ export default function SettingsTeamCodeScreen({ route, navigation }) {
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
-        <BackButton goBack={() => navigation.navigate('SettingsTeamScreen')} />
+        <BackHeader goBack={() => navigation.navigate('SettingsTeamScreen')}>
+          <Subheading style={{color:theme.colors.grey}}>Activation codes</Subheading>
+        </BackHeader>
         <View style={styles.column}>
-          <View style={[{flex:1,  marginVertical:16}]}>
-            <View style={[styles.row, {margin:4}]}>
-              <Header>
-                Manage Codes
-              </Header>
-            </View>
-            <View style={styles.row}>
-              <ProfilePicture 
-                size={80} 
-                user={user}
-              />
-            </View>
-            <View style={[styles.row, {margin:4}]}>
-              <Subheading style={{color:theme.colors.secondary}}>
-                  {company.name}
-              </Subheading>
-            </View>
-          </View>
-          <View style={[styles.buttonRow,{marginTop:32}]}>
-            <Header>Activation codes</Header>
-            <IconButton icon='plus' color={theme.colors.secondary} onPress={onNewCodePressed}/>
-          </View>
           <View style={{flex:2}}>
             <FlatList
                 data={company.codes}
                 numColumns={1}
-                contentContainerStyle={{marginHorizontal:16}}
+                contentContainerStyle={{margin:0}}
                 renderItem={({item, index}) => 
+                
                 <View key={index} style={[styles.buttonRow, styles.codeRow]}>
-                  <Text style={styles.text}>{item}</Text>
+                  <Text>{item}</Text>
                   <IconButton icon='delete' color={theme.colors.error} onPress={ () => onDeleteCodePressed(item)}/>
                 </View>
                 }                             
             />
           </View>
-          <View style={{flex:1,marginTop:16}}>
+          <View style={{marginVertical:32}}>
+          <Button onPress={onNewCodePressed}>
+              New Code
+          </Button>
+          </View>
+          <View style={{flex:1}}>
               <Paragraph style={{color:theme.colors.grey}}>
                 Here you can manage activation codes,
                 send an activation code to members of your company
-                which is to be used on registration
-                codes will be deleted after use
+                which is to be used on registration.
+                Codes will be deleted after use
               </Paragraph>
           </View>
         </View>
@@ -182,13 +173,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent:'space-between',
     alignItems:'center',
-    marginBottom:4,
+    marginBottom:2,
     alignSelf: 'stretch',
-    
   },
   codeRow: {
-    borderBottomColor: theme.colors.grey,
-    borderBottomWidth: 1,
+    borderRadius:2, 
+    borderWidth:1,
+    marginVertical:8, 
+    paddingHorizontal:8,
+    borderColor:theme.colors.lightgrey,
+    justifyContent:'space-between',
   },
   column: {
     flex: 2,
