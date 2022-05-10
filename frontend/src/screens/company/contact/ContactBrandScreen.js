@@ -42,7 +42,7 @@ export default function ContactBrandScreen({ route, navigation }) {
       navigation.navigate('Showroom',{appointment_id:item.id});
     }
   }
-  
+
   const goToScheduleContact = () => {
     navigation.navigate('ScheduleContactBrand',{brand_id:brand_id}
     );
@@ -77,7 +77,7 @@ export default function ContactBrandScreen({ route, navigation }) {
       <BackgroundAuth>
         <View style= {styles.column}>
           <View style={styles.row}> 
-            <BackHeader goBack={navigation.goBack}>  
+            <BackHeader goBack={() => navigation.navigate('Contacts')}>  
               <CompanyLogo
                   size={64} 
                   company={brand}
@@ -136,7 +136,7 @@ export default function ContactBrandScreen({ route, navigation }) {
           <View style={{marginVertical:32, justifyContent:'flex-start'}}>
             <Header2>Company Profile</Header2>
             <Paragraph>{brand.bio}</Paragraph>
-            <PillLink>{brand.homepage}</PillLink>
+            <OutlinedButton>{brand.homepage}</OutlinedButton>
           </View>
         </View>
       </BackgroundAuth>

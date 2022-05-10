@@ -84,12 +84,12 @@ export default function ContactRetailerScreen({ route, navigation }) {
           <View>
             <Button>Send Scheduling Reminder</Button>
           </View>
-          <View style={{marginVertical:16}}>
+          <View style={{marginVertical:32}}>
             <Header2>BUYERS</Header2>
             <UserRow users={retailer.members}/>
           </View> 
 
-          <View style={{marginVertical:16}}>
+          <View style={{marginVertical:32}}>
             <Header2>APPOINTMENT HISTORY</Header2>
             <View style={{height:256}}>
             <FlatList
@@ -107,9 +107,9 @@ export default function ContactRetailerScreen({ route, navigation }) {
             </View>
           </View>
           <View style={{marginVertical:32, justifyContent:'flex-start'}}>
-            <Header2>Company Profile</Header2>
+            <Header2>COMPANY PROFILE</Header2>
             <Paragraph>{retailer.bio}</Paragraph>
-            <PillLink>{retailer.homepage}</PillLink>
+            <OutlinedButton>{retailer.homepage}</OutlinedButton>
           </View>
         </View>
       </BackgroundAuth>
