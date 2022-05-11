@@ -16,6 +16,7 @@ import Button from '../../../../components/Button'
 import BackgroundAuth from '../../../../components/BackgroundAuth'
 import CurrentUserContext from '../../../../../Context'
 import api from '../../../../../api'
+import BackHeader from '../../../../components/BackHeader';
 
 export default function SettingsShowroomCreate({ route, navigation }) {
   const { currentUser, authIsLoading, checkLogin } = React.useContext(CurrentUserContext);
@@ -94,7 +95,6 @@ export default function SettingsShowroomCreate({ route, navigation }) {
   api.post('/companies/showroom/create/', payload).then((response) => {
    clearFields();
    navigation.navigate('SettingsShowroomSelect')
-   checkLogin();
   })  .catch(function (error) {
     
     if (error.response) {
@@ -131,22 +131,16 @@ export default function SettingsShowroomCreate({ route, navigation }) {
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
-        <BackButton goBack={navigation.goBack} />
+        <BackHeader goBack={navigation.goBack}>               
+          <CompanyLogo
+            size={48} 
+            company={currentUser.company}  
+          />
+        </BackHeader>
         <View style={styles.column}>
           <View style={[{flex:1,  marginVertical:16}]}>
             <View style={styles.row}>
               <Header>Create Showroom</Header>
-            </View>
-            <View style={styles.row}>
-              <CompanyLogo
-                size={64} 
-                company={currentUser.company}  
-              />
-            </View>
-            <View style={[styles.row, {margin:4}]}>
-              <Subheading style={{color:theme.colors.secondary}}>
-                {currentUser.company.name}
-              </Subheading>
             </View>
           </View>
           
@@ -159,6 +153,7 @@ export default function SettingsShowroomCreate({ route, navigation }) {
                 onChangeText={(text) => setDoorCode({ value: text, error: '' })}
                 error={!!doorCode.error}
                 errorText={doorCode.error}
+                description={'If your location has a doorcode, write it here'}
               />
             </View>
             <View style={styles.row}>  
@@ -169,11 +164,12 @@ export default function SettingsShowroomCreate({ route, navigation }) {
                 onChangeText={(text) => setFloor({ value: text, error: '' })}
                 error={!!floor.error}
                 errorText={floor.error}
+                description={'The floor of your showroom, example ground, -1, 2'}
               />
             </View>
             <View style={styles.row}>  
               <TextInput
-                label="Address"
+                label="Address *"
                 returnKeyType="next"
                 value={address.value}
                 onChangeText={(text) => setAddress({ value: text, error: '' })}
@@ -183,7 +179,7 @@ export default function SettingsShowroomCreate({ route, navigation }) {
             </View>
             <View style={styles.row}>  
               <TextInput
-                label="City"
+                label="City *"
                 returnKeyType="next"
                 value={city.value}
                 onChangeText={(text) => setCity({ value: text, error: '' })}
@@ -193,7 +189,7 @@ export default function SettingsShowroomCreate({ route, navigation }) {
             </View>
             <View style={styles.row}>  
               <TextInput
-                label="Country"
+                label="Country *"
                 returnKeyType="next"
                 value={country.value}
                 onChangeText={(text) => setCountry({ value: text, error: '' })}
@@ -264,8 +260,6 @@ export default function SettingsShowroomCreate({ route, navigation }) {
           </View>
           <View style={[styles.row,{marginBottom:16}]}>  
             <Button
-              mode="contained"
-              style={styles.button}
               onPress={onUpdatePressed}
             >
               Create Showroom

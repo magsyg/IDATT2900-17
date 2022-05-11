@@ -42,6 +42,7 @@ export default function ContactBrandScreen({ route, navigation }) {
       navigation.navigate('Showroom',{appointment_id:item.id});
     }
   }
+
   const goToScheduleContact = () => {
     navigation.navigate('ScheduleContactBrand',{brand_id:brand_id}
     );
@@ -76,7 +77,7 @@ export default function ContactBrandScreen({ route, navigation }) {
       <BackgroundAuth>
         <View style= {styles.column}>
           <View style={styles.row}> 
-            <BackHeader goBack={navigation.goBack}>  
+            <BackHeader goBack={() => navigation.navigate('Contacts')}>  
               <CompanyLogo
                   size={64} 
                   company={brand}
@@ -84,10 +85,9 @@ export default function ContactBrandScreen({ route, navigation }) {
             </BackHeader>
           </View>
           <Header style={{textAlign:'center'}}>{brand.name}</Header>
-          <LocationInfo item={brand.current_showroom}/>
+          <LocationInfo item={brand.current_showroom} only_address={true}/>
           <View style={[styles.row, {marginTop:16}]}>
             <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
-            <OutlinedButton style={{flex:1, marginStart:6}} labelStyle={{fontSize:14}}>Line Sheet</OutlinedButton>
           </View>
           <View>
             <Button onPress={goToScheduleContact}>Schedule</Button>
@@ -98,8 +98,8 @@ export default function ContactBrandScreen({ route, navigation }) {
           <View style={{marginVertical:16}}>
             <Header2>BUYERS</Header2>
             <Avatar.Image 
-                  size={48} 
-                  source={require('../../../assets/default_profile.png')}  
+              size={48} 
+              source={require('../../../assets/default_profile.png')}  
             />
           </View> 
 
@@ -136,7 +136,7 @@ export default function ContactBrandScreen({ route, navigation }) {
           <View style={{marginVertical:32, justifyContent:'flex-start'}}>
             <Header2>Company Profile</Header2>
             <Paragraph>{brand.bio}</Paragraph>
-            <PillLink>{brand.homepage}</PillLink>
+            <OutlinedButton>{brand.homepage}</OutlinedButton>
           </View>
         </View>
       </BackgroundAuth>

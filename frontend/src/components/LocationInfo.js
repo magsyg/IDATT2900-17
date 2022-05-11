@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
 import { theme } from '../core/theme'
 import { transformNiceDate } from '../utils/date_management'
 import OutlinedButton from './OutlinedButton'
-export default function LocationInfo({containerStyle, item}) {
+export default function LocationInfo({containerStyle, item, only_address}) {
 
   if (typeof item !== "undefined") {
   return (
@@ -13,10 +13,12 @@ export default function LocationInfo({containerStyle, item}) {
           <OutlinedButton style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined">{item.address} {item.city}</OutlinedButton>
         </View>
         }
+        {!only_address &&
         <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
           {(item.doorcode != null && item.doorcode.length > 0) && <Text>Door Code: {item.doorcode}</Text> }
           {(item.floor != null && item.floor.length > 0) && <Text>Floor: {item.floor}</Text> }
         </View>
+        }
     </View>
     )
   }

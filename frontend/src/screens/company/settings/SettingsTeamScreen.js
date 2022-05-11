@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList, TouchableHighlight, TouchableOpacity } from 'react-native'
 import { Avatar, Text, Subheading, IconButton } from 'react-native-paper'
 import Background from '../../../components/Background'
 import Header from '../../../components/Header'
@@ -12,48 +12,43 @@ import ProfilePicture from '../../../components/ProfilePicture'
 import CompanyLogo from '../../../components/CompanyLogo'
 import CurrentUserContext from '../../../../Context'
 import BackgroundAuth from '../../../components/BackgroundAuth'
+import BackHeader from '../../../components/BackHeader'
+import Header2 from '../../../components/Header2'
+
 
 export default function SettingsTeamScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
   const goToProfile = id => {
-    navigation.navigate('ProfileScreen', {profile_id:id});
+    navigation.navigate('Members', {screen:'CompanyMember', params:{profile_id:id}});
   }
 
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
-        <BackButton goBack={navigation.goBack} />
-        <View style={styles.column}>
-          <View style={[{flex:1,  marginVertical:16}]}>
-            <View style={styles.row}>
-              <Header>Manage Users</Header>
-            </View>
-            <View style={styles.row}>
-              <CompanyLogo
-                  size={64} 
+        <BackHeader goBack={navigation.goBack}>
+          <Subheading style={{color:theme.colors.grey}}>
+            Manage Team
+          </Subheading>
+            <CompanyLogo
+                  size={48} 
                   company={currentUser.company}  
-              />
-            </View>
-            <View style={[styles.row, {margin:4}]}>
-              <Subheading style={{color:theme.colors.secondary}}>
-                {currentUser.company.name}
-              </Subheading>
-            </View>
-          </View>
-          <View style={[styles.buttonRow,{marginTop:32}]}>
-            <Header>Users</Header>
-            <IconButton icon='plus' color={theme.colors.secondary}  onPress={() => navigation.navigate('SettingsTeamCodeScreen')}/>
+            />
+        </BackHeader>
+        <View style={styles.column}>
+          <View style={styles.buttonRow}>
+            <Header>Members</Header>
+            <IconButton icon='plus' size={32} color={theme.colors.secondary}  onPress={() => navigation.navigate('SettingsTeamCodeScreen')}/>
           </View>
           <View style={{flex:2}}>
             <FlatList
                 data={currentUser.company.members}
                 numColumns={1}
-                contentContainerStyle={{marginHorizontal:16}}
                 renderItem={({item, index}) => 
-                <OptionIconLink key={index}  text={item.first_name + " "+ item.last_name} onPress={() => goToProfile(item.id)}>        
-                  <ProfilePicture size={32} user={item}/>
-                </OptionIconLink>
+                <TouchableOpacity key={index} onPress={() => goToProfile(item.id)} style={styles.userRow}>    
+                    <Subheading>{item.first_name} {item.last_name}</Subheading>
+                    <ProfilePicture size={40} user={item}/>
+                </TouchableOpacity>
                 }                             
             />
           </View>
@@ -82,6 +77,15 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     alignItems:'center',
     marginBottom:4
+  },
+  userRow: {
+    flexDirection: 'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+    marginBottom:8,
+    borderBottomWidth:1,
+    borderBottomColor:theme.colors.lightgrey, 
+    padding:6
   },
   column: {
     flex: 1,
