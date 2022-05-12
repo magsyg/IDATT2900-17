@@ -19,22 +19,24 @@ export default function Note({containerStyle, company}) {
   useEffect(() => {
     console.log(Object.keys(company));
     setModalVisible(false);
-    api.get(`/companies/${company.id}/notes/`).then((response) => {
-      setNotes(response.data);
-    }).catch(function (error) {
-      
-      if (error.response) {
-        // Request made and server responded
-        console.log(error.response.data);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
-      }
-      
-    });
+      if (company) {
+      api.get(`/companies/${company.id}/notes/`).then((response) => {
+        setNotes(response.data);
+      }).catch(function (error) {
+        
+        if (error.response) {
+          // Request made and server responded
+          console.log(error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        
+      });
+    }
   }, [company]);
 
   const createNote = () => {

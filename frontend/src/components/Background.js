@@ -1,9 +1,9 @@
 import React from 'react'
 import {ScrollView, View, StyleSheet, KeyboardAvoidingView } from 'react-native'
 import { theme } from '../core/theme'
-import HoveringBarRetailer from './HoveringBarRetailer'
-import HoveringBarBrand from './HoveringBarBrand'
+
 import CurrentUserContext  from '../../Context'
+import HoveringBar from './HoveringBar';
 
 export default function Background({ withBottomBar, children }) {
   const { currentUser } = React.useContext(CurrentUserContext);
@@ -14,8 +14,7 @@ export default function Background({ withBottomBar, children }) {
             {children}
           </KeyboardAvoidingView>
         </ScrollView>
-        {withBottomBar && currentUser.company_type == 'BRAND' && <HoveringBarBrand/>}
-        {withBottomBar && currentUser.company_type == 'RETAILER' && <HoveringBarRetailer/>}
+        <HoveringBar/>
     </View>
   )
 }
