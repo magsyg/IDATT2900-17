@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    lineHeight: 26,
     color:theme.colors.white
   },
 })

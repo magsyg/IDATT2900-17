@@ -10,7 +10,7 @@ import TextInput from './TextInput'
 
 
 
-export default function PhoneNumberInput({ containerStyle, phoneNumber, countryCode, setPhoneNumber, setCountryCode }) {
+export default function PhoneNumberInput({ containerStyle, phoneNumber, countryCode, setPhoneNumber, setCountryCode, label }) {
 
   const [CCvisible, setCCVisible] = React.useState(false);
   const [CCData, setCCData] = React.useState(countryCodes);
@@ -69,7 +69,7 @@ export default function PhoneNumberInput({ containerStyle, phoneNumber, countryC
               <Text style={{color:theme.colors.secondary}}>{countryCode.value}</Text>
             </TouchableOpacity>
             <TextInput
-              label="Phone Number"
+              label={label ? label:'Phone number'}
               returnKeyType="next"
               value={phoneNumber.value}
               onChangeText={(text) => updatePhoneNumber(text, '')}

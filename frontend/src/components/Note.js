@@ -73,7 +73,7 @@ export default function Note({containerStyle, company}) {
     <View style={containerStyle}>  
       <Modal visible={modalVisible}>
         <BackHeader onPress={hideModal}/>
-        <Header style={{textAlign:'center'}}>Create Note</Header>
+        <Header style={{textAlign:'center'}}>Make a note</Header>
         <TextInput
           label="Note"
           returnKeyType="next"
@@ -84,7 +84,7 @@ export default function Note({containerStyle, company}) {
         <Button onPress ={createNote}>Create</Button>
       </Modal>     
       <View style={[styles.row, {justifyContent:'space-between'}]}>
-        <Header2>MAKE A NOTE</Header2>
+        <Header2>NOTES</Header2>
         <IconButton size={32} icon='plus' color={theme.colors.grey} onPress={showModal}/>
       </View>
     

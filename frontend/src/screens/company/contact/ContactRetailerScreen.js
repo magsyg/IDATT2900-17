@@ -24,6 +24,7 @@ import CurrentUserContext from '../../../../Context'
 import BackgroundAuth from '../../../components/BackgroundAuth'
 import api from '../../../../api';
 import UserRow from '../../../components/UserRow';
+import Note from '../../../components/Note';
 
 export default function ContactRetailerScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -106,6 +107,7 @@ export default function ContactRetailerScreen({ route, navigation }) {
             />
             </View>
           </View>
+          <Note containerStyle={{marginVertical:32}} company={retailer} />
           <View style={{marginVertical:32, justifyContent:'flex-start'}}>
             <Header2>COMPANY PROFILE</Header2>
             <Paragraph>{retailer.bio}</Paragraph>

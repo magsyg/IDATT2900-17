@@ -1,20 +1,20 @@
 import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
 import { theme } from '../core/theme'
-import { transformNiceDate } from '../utils/date_management'
+import { transformMonthDate, transformNiceDate } from '../utils/date_management'
 import OutlinedButton from './OutlinedButton'
 export default function LocationInfo({containerStyle, item, only_address}) {
-
   if (typeof item !== "undefined") {
   return (
     <View style={containerStyle}>
+        <Text style={styles.dateStyle}>{transformMonthDate(item.date_range_start)} - {transformMonthDate(item.date_range_end)}</Text>
         {(item.address != null && item.city != null) && 
-        <View style={{marginTop:16}}>
+        <View style={{marginTop:8}}>
           <OutlinedButton style={{borderRadius:25, marginVertical:8}} labelStyle={{color:theme.colors.primary}} color={theme.colors.grey} mode="outlined">{item.address} {item.city}</OutlinedButton>
         </View>
         }
         {!only_address &&
-        <View style={[styles.row, {marginTop:16, justifyContent:'space-between', paddingHorizontal:32}]}>
+        <View style={[styles.row, {marginTop:8, justifyContent:'space-between', paddingHorizontal:32}]}>
           {(item.doorcode != null && item.doorcode.length > 0) && <Text>Door Code: {item.doorcode}</Text> }
           {(item.floor != null && item.floor.length > 0) && <Text>Floor: {item.floor}</Text> }
         </View>
@@ -49,5 +49,10 @@ const styles = StyleSheet.create({
   buttonStyle: {
     borderRadius:25, 
     marginVertical:8, 
+  },
+  dateStyle: {
+    textAlign:'center',
+    fontStyle:'italic',
+    color:theme.colors.grey
   }
 })

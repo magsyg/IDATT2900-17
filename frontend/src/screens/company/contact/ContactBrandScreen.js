@@ -23,6 +23,9 @@ import CompanyLogo from '../../../components/CompanyLogo'
 import CurrentUserContext from '../../../../Context'
 import BackgroundAuth from '../../../components/BackgroundAuth'
 import api from '../../../../api';
+import UserRow from '../../../components/UserRow';
+import Contact from '../../../components/Contact';
+import Note from '../../../components/Note';
 
 export default function ContactBrandScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
@@ -51,6 +54,7 @@ export default function ContactBrandScreen({ route, navigation }) {
   useEffect(() => {
     api.get(`/companies/brand/${brand_id}/profile/`).then((response) => {
       setBrand(response.data.brand)
+      console.log(response.data.brand.members[0])
       setAppointments(response.data.appointments)
     }).catch(function (error) {
       
@@ -84,31 +88,30 @@ export default function ContactBrandScreen({ route, navigation }) {
               />
             </BackHeader>
           </View>
-          <Header style={{textAlign:'center'}}>{brand.name}</Header>
-          <LocationInfo item={brand.current_showroom} only_address={true}/>
-          <View style={[styles.row, {marginTop:16}]}>
-            <OutlinedButton style={{flex:1, marginEnd:6}} labelStyle={{fontSize:14}}>Lookbook</OutlinedButton>
-          </View>
           <View>
+            <Header style={{textAlign:'center'}}>{brand.name}</Header>
+          </View>
+          <View style={{marginBottom:32}}>
+            <LocationInfo item={brand.current_showroom} only_address={true}/>
+            <View style={{flexDirection:'row'}}>
+              <OutlinedButton style={{flex:1, marginEnd:6}}>Lookbook</OutlinedButton>
+              <OutlinedButton style={{flex:1, marginStart:6}}>Line sheet</OutlinedButton>
+            </View>
+
             <Button onPress={goToScheduleContact}>Schedule</Button>
           </View>
-          <View style={{marginVertical:16}}>
-            <Header2>NEXT SHIPMENT: MM/DD/YY</Header2>
+          <View style={{marginVertical:32}}>
+            <Contact user={brand.members[0]} contactType={'Main Contact'}/>
           </View>
-          <View style={{marginVertical:16}}>
-            <Header2>BUYERS</Header2>
-            <Avatar.Image 
-              size={48} 
-              source={require('../../../assets/default_profile.png')}  
-            />
-          </View> 
 
-          <View style={{marginVertical:16}}>
+          <View style={{marginVertical:32}}>
             <Header2>APPOINTMENT HISTORY</Header2>
+            <View style={{height:256}}>
             <FlatList
               data={appointments}
               numColumns={1}
               scrollEnabled={true}
+              
               renderItem={({item, index}) =>  
                 <OutlinedTouch key={index} style={styles.appointmentButton} onPress={() => goToAppointment(item)}>
                   <Text style={styles.appointmentButtonText}>{item.date}</Text>
@@ -116,23 +119,12 @@ export default function ContactBrandScreen({ route, navigation }) {
                 </OutlinedTouch>
               }
             />
+            </View>
           </View>
-          <View style={{marginVertical:16}}>
-            <Header2>WHOLESALE TEAM</Header2>
-            <ScrollView nestedScrollEnabled = {true} horizontal={true} contentContainerStyle={{flex: 1,justifyContent:'flex-start'}}>
-            {brand.members.map((item, index) => {
-                return(
-                  <TouchableOpacity key={index} style={{margin:2}}>
-                    <ProfilePicture
-                      size={48} 
-                      user={item}
-                    />
-                  </TouchableOpacity>
-                );     
-              })
-            }
-            </ScrollView>
+          <View style={[styles.row, {marginTop:16}]}>
+            
           </View>
+          <Note containerStyle={{marginVertical:32}} company={brand} />
           <View style={{marginVertical:32, justifyContent:'flex-start'}}>
             <Header2>Company Profile</Header2>
             <Paragraph>{brand.bio}</Paragraph>
@@ -145,6 +137,9 @@ export default function ContactBrandScreen({ route, navigation }) {
     return (<BackgroundAuth/>)
   }
 }
+/**
+ * Add Next Shipment
+ */
 
 const styles = StyleSheet.create({
   row: {

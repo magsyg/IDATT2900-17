@@ -24,6 +24,7 @@ import CurrentUserContext from '../../../../Context';
 import BackgroundAuth from '../../../components/BackgroundAuth';
 import api from '../../../../api';
 import LocationInfo from '../../../components/LocationInfo';
+import Header2 from '../../../components/Header2';
 
 
 export default function ShowroomScreen({ route, navigation }) {
@@ -41,7 +42,7 @@ export default function ShowroomScreen({ route, navigation }) {
       },
       'name':'Tradeshow Name','id':-1, 'start_time':'09:00','end_time':'09:00', 'date':'2022-10-10',
     },
-    'brand':{'brand':{'name':'Brand Name'},'main_contact':{}}})
+    'brand':{'brand':{'name':'Brand Name'},'main_contact':{},'brand_participants':[]}})
 
   const isFocused = useIsFocused(); //method for determining if the screen is entered
   useEffect(() => {
@@ -114,10 +115,15 @@ export default function ShowroomScreen({ route, navigation }) {
               addMethod={inviteTeamRetailer}
             />
           }
-          { meta.brand.main_contact !== null &&
-          <View style={{marginTop:32}}>
+          { currentUser.company_type =='RETAILER' && meta.brand.main_contact !== null &&
+          <View style={{marginVertical:32}}>
             <Contact user={meta.brand.main_contact} contactType='Wholesale Contact'/>
           </View>
+          } 
+          { currentUser.company_type =='BRAND' && meta.appointment.retailer.organizer !== null &&
+            <View style={{marginVertical:32}}>
+              <Contact user={meta.appointment.retailer.organizer} contactType='Main Contact'/>
+            </View>
           } 
           { currentUser.company_type =='RETAILER' &&
           <View style={[styles.row, {marginTop:32}]}>
@@ -137,16 +143,18 @@ export default function ShowroomScreen({ route, navigation }) {
           </View>
           }
 
-          <Note company={meta.company} />
+          <Note containerStyle={{marginVertical:32}} company={meta.company} />
           {currentUser.company_type =='BRAND' &&
+            <View style={{marginVertical:32}}>
+            <Header2>ATTENDING TEAM</Header2>
             <TeamSelect 
-              containerStyle={{marginVertical:16}} 
               company={currentUser.company} 
-              selectedUsers={meta.appointment.retailer.retailer_participants} 
-              main_user={meta.appointment.retailer.organizer}
+              selectedUsers={meta.brand.brand_participants} 
+              main_user={meta.brand.main_contact}
               addMethod={inviteTeamRetailer}
               start={true}
             />
+            </View>
           }
         </View>
       </BackgroundAuth>
