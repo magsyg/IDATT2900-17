@@ -101,6 +101,11 @@ export default function RegisterScreen({ route, navigation }) {
     registerRequest()
   }
 
+  const emailValidation = (text) => {
+    const emailError = emailValidator(text)
+    setEmail({ value:text, error: emailError })
+  }
+
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
@@ -110,7 +115,7 @@ export default function RegisterScreen({ route, navigation }) {
       {typeof companyName == 'undefined' ? "Registering as " + teamTypeName[teamType]:"Joining company: " +companyName}</Text>
       {typeof companyName == 'undefined' &&
       <TextInput
-        label="Company/Shop name"
+        label="Company/Shop name *"
         returnKeyType="next"
         value={company.value}
         onChangeText={(text) => setCompany({ value: text, error: '' })}
@@ -119,10 +124,10 @@ export default function RegisterScreen({ route, navigation }) {
       />
       }
       <TextInput
-        label="Email"
+        label="Email *"
         returnKeyType="next"
         value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: '' })}
+        onChangeText={(text) => emailValidation(text)}
         error={!!email.error}
         errorText={email.error}
         autoCapitalize="none"
@@ -131,7 +136,7 @@ export default function RegisterScreen({ route, navigation }) {
         keyboardType="email-address"
       />
       <TextInput
-        label="First Name"
+        label="First Name *"
         returnKeyType="next"
         value={firstName.value}
         onChangeText={(text) => setFirstName({ value: text, error: '' })}
@@ -139,7 +144,7 @@ export default function RegisterScreen({ route, navigation }) {
         errorText={firstName.error}
       />
         <TextInput
-        label="Last Name"
+        label="Last Name *"
         returnKeyType="next"
         value={lastName.value}
         onChangeText={(text) => setLastName({ value: text, error: '' })}
@@ -147,13 +152,14 @@ export default function RegisterScreen({ route, navigation }) {
         errorText={lastName.error}
       />
       <PhoneNumberInput 
+        label="Phone Number *"
         phoneNumber={phoneNumber} 
         setPhoneNumber={setPhoneNumber}
         countryCode={countryCode}
         setCountryCode={setCountryCode}
         />
       <TextInput
-        label="Password"
+        label="Password *"
         returnKeyType="done"
         value={password.value}
         onChangeText={(text) => setPassword({ value: text, error: '' })}
@@ -162,7 +168,7 @@ export default function RegisterScreen({ route, navigation }) {
         secureTextEntry
       />
       <TextInput
-        label="Confirm Password"
+        label="Confirm Password *"
         returnKeyType="done"
         value={confirmPassword.value}
         onChangeText={(text) => setConfirmPassword({ value: text, error: '' })}

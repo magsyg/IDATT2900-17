@@ -5,22 +5,26 @@ import OutlinedButton from './OutlinedButton'
 import ProfilePicture from './ProfilePicture'
 
 export default function Contact({user,contactType}) {
-  return (
-    <View style={styles.row}>
-      <View style={{flex:1}}>
-        <ProfilePicture 
-          size={72} 
-          user={user}
-        />
+  if (user) {
+    return (
+      <View style={styles.row}>
+        <View style={{flex:1}}>
+          <ProfilePicture 
+            size={72} 
+            user={user}
+          />
+        </View>
+        <View style={{flex:3}}>
+          <Text style={styles.name}>{user.first_name} {user.last_name}</Text> 
+          <Text style={styles.contactType}>{contactType}</Text> 
+          <OutlinedButton labelStyle={{fontSize:16}}> {user.phone_number}</OutlinedButton>
+          <OutlinedButton>{user.email}</OutlinedButton>
+        </View>
       </View>
-      <View style={{flex:3}}>
-        <Text style={styles.name}>{user.first_name} {user.last_name}</Text> 
-        <Text style={styles.contactType}>{contactType}</Text> 
-        <OutlinedButton labelStyle={{fontSize:16}}> {user.phone_number}</OutlinedButton>
-        <OutlinedButton>{user.email}</OutlinedButton>
-      </View>
-    </View>
-  )
+    )
+  } else {
+    return (<View/>);
+  }
 }
 
 const styles = StyleSheet.create({
