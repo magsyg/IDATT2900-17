@@ -14,12 +14,18 @@ import MapView from 'react-native-maps'
 export default function AppointmentCalendarScreen({ route, navigation }) {
   const { currentUser, authIsLoading } = React.useContext(CurrentUserContext);
 
+  const goToMap = () => {
+    navigation.navigate('FullMap')
+  }
 
   if (!authIsLoading && currentUser !== null) {
     return (
       <BackgroundAuth>
         <CalendarAppointments user={currentUser.user}/>
-        <MapView style={ styles.map } />
+        <TouchableOpacity
+          onPress={ goToMap }>
+          <MapView style={ styles.map } />
+        </TouchableOpacity>
       </BackgroundAuth>
     )
   } else {

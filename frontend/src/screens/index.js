@@ -3,6 +3,7 @@
 // Misc
 export { default as Dashboard } from './misc//Dashboard'
 export { default as Calendar } from './misc/CalendarScreen'
+export { default as FullMapScreen } from './misc/FullMapScreen.js'
 
 // Appointment
 export { default as AppointmentCreate } from './appointments/create/AppointmentCreate'
